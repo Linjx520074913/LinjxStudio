@@ -5,6 +5,10 @@
       <p>
         If Element is successfully added to this project, you'll see an
         <code v-text="'<el-button>'"></code>
+        <i class="el-icon-edit"></i>
+        <i class="el-icon-share"></i>
+        <i class="el-icon-delete"></i>
+        <el-button type="primary" icon="el-icon-search">搜索</el-button>
         below
       </p>
       <el-button>el-button</el-button>
