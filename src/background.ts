@@ -1,6 +1,6 @@
 'use strict'
 
-import { app, protocol, BrowserWindow, globalShortcut } from 'electron'
+import { app, protocol, BrowserWindow, globalShortcut, ipcMain } from 'electron'
 import { createProtocol } from 'vue-cli-plugin-electron-builder/lib'
 import installExtension, { VUEJS_DEVTOOLS } from 'electron-devtools-installer'
 const isDevelopment = process.env.NODE_ENV !== 'production'
@@ -87,3 +87,7 @@ if (isDevelopment) {
     })
   }
 }
+
+ipcMain.on('minWindow', ()=>{ win.minimize();} )
+ipcMain.on('maxWindow', ()=>{ win.maximize();} )
+ipcMain.on('closeWindow', ()=>{ win.close();} )

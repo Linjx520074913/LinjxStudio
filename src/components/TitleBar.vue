@@ -1,5 +1,6 @@
 <template>
     <div id="title_bar">
+        <el-image id="logo" src="/imgs/orbbec.png"></el-image>
         <el-button-group id="test">
             <i class="el-icon-minus" v-on:click="minimize"></i>
             <i class="el-icon-minus" v-on:click="maximize"></i>
@@ -35,6 +36,10 @@ export default {
     height:40px;
     background:#00ff00;
     -webkit-app-region: drag; /* 让元素可拖动，设置了drag的元素不可点击 */
+}
+#logo{
+    width: auto;
+    height: 40px;
 }
 #test{
      display:flex;
