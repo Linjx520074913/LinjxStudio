@@ -31,15 +31,17 @@ export default {
 </script>
 
 <style>
+
 #title_bar{
+    display:flex;
     width:100%;
-    height:40px;
+    height:100%;
     background:#00ff00;
     -webkit-app-region: drag; /* 让元素可拖动，设置了drag的元素不可点击 */
 }
 #logo{
-    width: auto;
-    height: 40px;
+  height: 32px;
+  width: 32px;
 }
 #test{
      display:flex;
