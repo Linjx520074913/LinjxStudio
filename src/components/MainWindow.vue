@@ -1,25 +1,68 @@
 <template>
-  <el-container>
-    <el-header>
-      <TitleBar/>
-    </el-header>
-    <el-main>Main</el-main>
-    <el-footer>
-      <StatusBar/>
-    </el-footer>
-  </el-container>
+  <div  @mouseup='mouseUp'>
+    <el-container>
+      <el-header>
+        <TitleBar/>
+      </el-header>
+      <el-container>
+        <el-aside :width="sliderBarWidth + 'px'">
+          <SliderBar :slw="sliderBarWidth"/>
+        </el-aside>
+        <div id="resize"  @mousedown='mouseDown'></div>
+        <el-main>
+        </el-main>
+      </el-container>
+      <el-footer>
+        <StatusBar/>
+      </el-footer>
+    </el-container>
+  </div>
 </template>
 
 <script>
 import '../assets/css/reset.css'
 import TitleBar from './TitleBar'
 import StatusBar from './StatusBar'
+import SliderBar from './SliderBar'
 
 export default {
   name: 'MainWindow',
   components: {
     TitleBar,
-    StatusBar
+    StatusBar,
+    SliderBar
+  },
+  data () {
+    return {
+      sliderBarWidth: 100,
+      lastX: 0
+    }
+  },
+  created () {
+    // document.addEventListener('mouseup', this.mouseup)
+  },
+  methods: {
+    mouseDown (event) {
+      console.log('mouseDown')
+      this.lastX = event.clientX
+      document.addEventListener('mousemove', this.mouseMove)
+      // this.lastX = event.screenX
+    },
+    mouseMove (event) {
+      console.log('mouseMove ' + event.button)
+      var diff = event.clientX - this.lastX
+      this.sliderBarWidth = this.sliderBarWidth + diff
+      // 限制 SliderBar 宽度
+      if(this.sliderBarWidth < 100){
+        this.sliderBarWidth = 100
+      }
+      this.lastX = event.clientX
+    },
+    mouseUp (event) {
+      console.log('mouseUp')
+      this.lastX = ''
+      document.removeEventListener('mousemove', this.mouseMove)
+    }
   }
 }
 </script>
@@ -43,5 +86,14 @@ export default {
 .el-main {
   width: 100%;
   height: calc(100vh - 64px); /* calc(100% - 64px) 这种方式无效 */
+}
+#resize{
+  cursor: col-resize;
+  width: 4px;
+  height: calc(100vh - 64px);
+  background-color: #d6d6d6
+}
+.resize:hover{
+  color: #444444
 }
 </style>
