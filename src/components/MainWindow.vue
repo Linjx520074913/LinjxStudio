@@ -4,18 +4,22 @@
       <TitleBar/>
     </el-header>
     <el-main>Main</el-main>
-    <el-footer>Footer</el-footer>
+    <el-footer>
+      <StatusBar/>
+    </el-footer>
   </el-container>
 </template>
 
 <script>
 import '../assets/css/reset.css'
 import TitleBar from './TitleBar'
+import StatusBar from './StatusBar'
 
 export default {
   name: 'MainWindow',
   components: {
-    TitleBar
+    TitleBar,
+    StatusBar
   }
 }
 </script>

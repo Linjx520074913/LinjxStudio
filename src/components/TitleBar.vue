@@ -36,7 +36,7 @@ export default {
     display:flex;
     width:100%;
     height:100%;
-    background:#00ff00;
+    background:#000000;
     -webkit-app-region: drag; /* 让元素可拖动，设置了drag的元素不可点击 */
 }
 #logo{
