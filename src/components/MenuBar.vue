@@ -1,8 +1,8 @@
 <template>
   <div id="menu_container">
-    <ul v-for="item in content" :key="item">
+    <ul v-for="item in content" :key="item.index">
       <a>{{item.text}}</a>
-      <li v-for="child in item.menu" :key="child">
+      <li v-for="child in item.menu" :key="child.index">
         <a>{{child.text}}</a>
       </li>
     </ul>
@@ -15,6 +15,7 @@
 </template>
 
 <script>
+import { ipcRenderer } from 'electron'
 export default {
   name: 'MenuBar',
   data () {
@@ -50,6 +51,20 @@ export default {
       }
       ]
     }
+  },
+  methods: {
+    minimize () {
+      console.log('最小化窗口')
+      ipcRenderer.send('minWindow')
+    },
+    maximize () {
+      console.log('最大化窗口')
+      ipcRenderer.send('maxWindow')
+    },
+    close () {
+      console.log('关闭窗口')
+      ipcRenderer.send('closeWindow')
+    }
   }
 }
 </script>
@@ -58,11 +73,6 @@ export default {
 /* 设置菜单栏元素不响应 drag 事件 */
 #menu_container{
   -webkit-app-region: no-drag;
-}
-#logo{
-  height: 32px;
-  width: 32px;
-  margin-right: 10px; /* 设置图标与右边元素的距离 */
 }
 /* 设置 float : left, 使之在一行上面 */
 #menu_container > ul{
@@ -76,7 +86,7 @@ export default {
 #menu_container > ul > li{
   position:relative;
   float:none;
-  width: 120px;
+  width: 200px;
   z-index: 10;
   background-color: #000;
   display: none; /* 二级菜单默认隐藏 */
