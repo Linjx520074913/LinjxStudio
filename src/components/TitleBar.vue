@@ -67,6 +67,7 @@ export default {
 #logo{
   height: 32px;
   width: 32px;
+  margin-right: 10px; /* 设置图标与右边元素的距离 */
 }
 /* 设置 float : left, 使之在一行上面 */
 #menu_container > ul{
