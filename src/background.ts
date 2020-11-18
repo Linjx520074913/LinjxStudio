@@ -96,6 +96,15 @@ if (isDevelopment) {
   }
 }
 
-ipcMain.on('minWindow', ()=>{ win.minimize();} )
-ipcMain.on('maxWindow', ()=>{ win.maximize();} )
-ipcMain.on('closeWindow', ()=>{ win.close();} )
+ipcMain.on('minWindow', ()=>{ 
+  console.log('recv : 最小化窗口')
+  win.minimize();} 
+)
+ipcMain.on('maxWindow', ()=>{ 
+  console.log('recv : 最大化窗口')
+  win.maximize();} 
+)
+ipcMain.on('closeWindow', ()=>{ 
+  console.log('recv : 关闭窗口')
+  win.close();} 
+)

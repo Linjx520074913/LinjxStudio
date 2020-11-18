@@ -55,7 +55,7 @@ export default {
 #menu_container{
   -webkit-app-region: no-drag;
    margin-left:0px;
-   margin-right:auto;
+   margin-right:auto; /* */
 }
 /* 设置 float : left, 使之在一行上面 */
 #menu_container > ul{
@@ -74,23 +74,23 @@ export default {
   background-color: #000;
   display: none; /* 二级菜单默认隐藏 */
 }
+#menu_container > ul > li > a{
+  text-align: left;
+}
 /* 一级菜单栏悬停时显示二级菜单栏 */
 #menu_container > ul:hover > li{
   display: block;
 }
 /* 菜单栏下 a 标签属性 */
 #menu_container a{
-  color: white;
+  color: #72777b;
   display: block;
   height: 100%;
   user-select:none; /* 设置文本不可选择 */
 }
 /* 菜单栏下 a 标签 hover 时状态 */
 #menu_container a:hover{
-  background-color: #F90
-}
-#test-icon{
-    margin-right:10px;
-    color: #fafafa
+  color: #72777b;
+  background-color:#72777b88;
 }
 </style>

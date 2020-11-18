@@ -5,8 +5,8 @@
         <TitleBar/>
       </el-header>
       <el-container>
-        <el-aside :width="sliderBarWidth + 'px'">
-          <SliderBar :slw="sliderBarWidth"/>
+        <el-aside :width="currentSliderBarWidth + 'px'">
+          <SliderBar :slw="currentSliderBarWidth"/>
         </el-aside>
         <div id="resize"  @mousedown='mouseDown'></div>
         <el-main>
@@ -34,7 +34,9 @@ export default {
   },
   data () {
     return {
-      sliderBarWidth: 100,
+      currentSliderBarWidth: 200,
+      sliderBarMinW: 200,
+      sliderBarMaxW: 400,
       lastX: 0
     }
   },
@@ -51,10 +53,10 @@ export default {
     mouseMove (event) {
       console.log('mouseMove ' + event.button)
       var diff = event.clientX - this.lastX
-      this.sliderBarWidth = this.sliderBarWidth + diff
+      this.currentSliderBarWidth = this.currentSliderBarWidth + diff
       // 限制 SliderBar 宽度
-      if (this.sliderBarWidth < 100) {
-        this.sliderBarWidth = 100
+      if (this.currentSliderBarWidth < 100) {
+        this.currentSliderBarWidth = 100
       }
       this.lastX = event.clientX
     },
@@ -68,10 +70,6 @@ export default {
 </script>
 
 <style>
-#header{
-  -webkit-app-region: drag; /* 让元素可拖动，设置了drag的元素不可点击 */
-}
-
 .el-header, .el-footer, .el-main{
   margin: 0 !important;
   padding: 0 !important;
