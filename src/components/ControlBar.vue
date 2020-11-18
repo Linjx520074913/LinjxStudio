@@ -27,4 +27,7 @@ export default {
 </script>
 
 <style>
+#control_container{
+    -webkit-app-region: no-drag;
+}
 </style>

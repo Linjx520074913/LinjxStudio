@@ -1,8 +1,8 @@
 <template>
-    <div id="title_bar">
+    <div id="title_container">
         <el-image id="logo" src="/imgs/orbbec.png"></el-image>
         <MenuBar/>
-        <ControlBar id="control_bar"/>
+        <ControlBar/>
     </div>
 </template>
 
@@ -20,11 +20,7 @@ export default {
 </script>
 
 <style>
-MenuBar{
-  -webkit-app-region: no-drag;
-  float:left
-}
-#title_bar{
+#title_container{
     display:flex;
     width:100%;
     height:100%;
@@ -35,9 +31,6 @@ MenuBar{
   height: 32px;
   width: 32px;
   margin-right: 10px; /* 设置图标与右边元素的距离 */
-}
-#control_bar{
-  -webkit-app-region: no-drag;
 }
 
 </style>

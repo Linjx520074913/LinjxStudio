@@ -54,6 +54,8 @@ export default {
 /* 设置菜单栏元素不响应 drag 事件 */
 #menu_container{
   -webkit-app-region: no-drag;
+   margin-left:0px;
+   margin-right:auto;
 }
 /* 设置 float : left, 使之在一行上面 */
 #menu_container > ul{
