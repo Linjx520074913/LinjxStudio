@@ -1,0 +1,30 @@
+<template>
+    <div id="control_container">
+        <svg id="test-icon" class="icon" aria-hidden="true" v-on:click="minimize"> <use xlink:href="#icon-minimize"></use></svg>
+        <svg id="test-icon" class="icon" aria-hidden="true" v-on:click="maximize"> <use xlink:href="#icon-maximize"></use></svg>
+    </div>
+</template>
+
+<script>
+import { ipcRenderer } from 'electron'
+export default {
+  name: 'ControlBar',
+  methods: {
+    minimize () {
+      console.log('最小化窗口')
+      ipcRenderer.send('minWindow')
+    },
+    maximize () {
+      console.log('最大化窗口')
+      ipcRenderer.send('maxWindow')
+    },
+    close () {
+      console.log('关闭窗口')
+      ipcRenderer.send('closeWindow')
+    }
+  }
+}
+</script>
+
+<style>
+</style>

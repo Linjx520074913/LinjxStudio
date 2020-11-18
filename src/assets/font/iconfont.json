@@ -1,0 +1,23 @@
+{
+  "id": "2211442",
+  "name": "studio",
+  "font_family": "iconfont",
+  "css_prefix_text": "icon-",
+  "description": "",
+  "glyphs": [
+    {
+      "icon_id": "9262634",
+      "name": "最大化",
+      "font_class": "maximize",
+      "unicode": "e84c",
+      "unicode_decimal": 59468
+    },
+    {
+      "icon_id": "11882447",
+      "name": "最小化",
+      "font_class": "minimize",
+      "unicode": "e7bd",
+      "unicode_decimal": 59325
+    }
+  ]
+}

@@ -6,11 +6,6 @@
         <a>{{child.text}}</a>
       </li>
     </ul>
-    <el-button-group id="test">
-        <i class="el-icon-minus" v-on:click="minimize"></i>
-        <i class="el-icon-minus" v-on:click="maximize"></i>
-        <i class="el-icon-close" v-on:click="close"></i>
-    </el-button-group>
   </div>
 </template>
 
@@ -50,20 +45,6 @@ export default {
         ]
       }
       ]
-    }
-  },
-  methods: {
-    minimize () {
-      console.log('最小化窗口')
-      ipcRenderer.send('minWindow')
-    },
-    maximize () {
-      console.log('最大化窗口')
-      ipcRenderer.send('maxWindow')
-    },
-    close () {
-      console.log('关闭窗口')
-      ipcRenderer.send('closeWindow')
     }
   }
 }
@@ -105,5 +86,9 @@ export default {
 /* 菜单栏下 a 标签 hover 时状态 */
 #menu_container a:hover{
   background-color: #F90
+}
+#test-icon{
+    margin-right:10px;
+    color: #fafafa
 }
 </style>
