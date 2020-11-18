@@ -6,7 +6,6 @@
 </template>
 
 <script>
-import { ipcRenderer } from 'electron'
 import MenuBar from './MenuBar'
 
 export default {
