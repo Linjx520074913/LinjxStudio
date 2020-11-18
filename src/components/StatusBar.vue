@@ -1,6 +1,7 @@
 <template>
   <div id="status_bar">
     <i class="el-icon-edit"></i>
+    <a>11111111111</a>
   </div>
 </template>
 

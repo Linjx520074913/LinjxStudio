@@ -1,40 +1,19 @@
 <template>
     <div id="title_bar">
         <el-image id="logo" src="/imgs/orbbec.png"></el-image>
-        <div id="menu_container">
-         <ul><a>文件(F)</a>
-            <li><a>新建文件</a></li>
-            <li><a>新建窗口</a></li>
-            <li><a>退出</a></li>
-         </ul>
-         <ul><a>编辑(E)</a>
-            <li><a>剪切</a></li>
-            <li><a>复制</a></li>
-            <li><a>查找</a></li>
-         </ul>
-         <ul><a>查看(V)</a>
-            <li><a>外观</a></li>
-            <li><a>中端</a></li>
-            <li><a>切换自动换行</a></li>
-         </ul>
-         <ul><a>帮助(H)</a>
-            <li><a>文档</a></li>
-            <li><a>查看许可证</a></li>
-            <li><a>关于</a></li>
-          </ul>
-        </div>
-        <el-button-group id="test">
-            <i class="el-icon-minus" v-on:click="minimize"></i>
-            <i class="el-icon-minus" v-on:click="maximize"></i>
-            <i class="el-icon-close" v-on:click="close"></i>
-        </el-button-group>
+        <MenuBar/>
     </div>
 </template>
 
 <script>
 import { ipcRenderer } from 'electron'
+import MenuBar from './MenuBar'
+
 export default {
   name: 'TitleBar',
+  components: {
+    MenuBar
+  },
   methods: {
     minimize () {
       console.log('最小化窗口')
@@ -53,7 +32,9 @@ export default {
 </script>
 
 <style>
-
+MenuBar{
+  float:left
+}
 #title_bar{
     display:flex;
     width:100%;
