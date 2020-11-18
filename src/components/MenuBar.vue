@@ -62,7 +62,7 @@ export default {
   float:left;
   margin:0;
   padding:0;
-  width: 80px;
+  width: 65px;
   list-style-type:none; /* 去掉默认列表头样式 */
 }
 /* 设置 z-index，使之在其他元素上层显示 */

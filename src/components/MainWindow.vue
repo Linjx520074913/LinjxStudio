@@ -8,9 +8,13 @@
         <el-aside :width="currentSliderBarWidth + 'px'">
           <SliderBar :slw="currentSliderBarWidth"/>
         </el-aside>
-        <div id="resize"  @mousedown='mouseDown'></div>
+        <div id='resize_left'  @mousedown='mouseDown'></div>
         <el-main>
         </el-main>
+        <div id='resize_right'  @mousedown='mouseDown'></div>
+        <el-aside :width="currentInspectorWidth + 'px'">
+          <Inspector :slw="currentInspectorWidth"/>
+        </el-aside>
       </el-container>
       <el-footer>
         <StatusBar/>
@@ -24,20 +28,26 @@ import '../assets/css/reset.css'
 import TitleBar from './TitleBar'
 import StatusBar from './StatusBar'
 import SliderBar from './SliderBar'
+import Inspector from './Inspector'
 
 export default {
   name: 'MainWindow',
   components: {
     TitleBar,
     StatusBar,
-    SliderBar
+    SliderBar,
+    Inspector
   },
   data () {
     return {
       currentSliderBarWidth: 200,
-      sliderBarMinW: 200,
-      sliderBarMaxW: 400,
-      lastX: 0
+      sliderBarMinW: 150,
+      sliderBarMaxW: 350,
+      currentInspectorWidth: 200,
+      inspectorMinW: 150,
+      inspectorMaxW: 350,
+      lastX: 0,
+      selectedResize: ''
     }
   },
   created () {
@@ -46,22 +56,34 @@ export default {
   methods: {
     mouseDown (event) {
       console.log('mouseDown')
+      this.selectedResize = event.target.id
       this.lastX = event.clientX
       document.addEventListener('mousemove', this.mouseMove)
       // this.lastX = event.screenX
     },
     mouseMove (event) {
-      console.log('mouseMove ' + event.button)
       var diff = event.clientX - this.lastX
-      this.currentSliderBarWidth = this.currentSliderBarWidth + diff
       // 限制 SliderBar 宽度
-      if (this.currentSliderBarWidth < 100) {
-        this.currentSliderBarWidth = 100
+      if (this.selectedResize === 'resize_left') {
+        this.currentSliderBarWidth = this.currentSliderBarWidth + diff
+        if (this.currentSliderBarWidth < this.sliderBarMinW) {
+          this.currentSliderBarWidth = this.sliderBarMinW
+        } else if (this.currentSliderBarWidth > this.sliderBarMaxW) {
+          this.currentSliderBarWidth = this.sliderBarMaxW
+        }
+      } else if (this.selectedResize === 'resize_right') {
+        this.currentInspectorWidth = this.currentInspectorWidth - diff
+        if (this.currentInspectorWidth < this.inspectorMinW) {
+          this.currentInspectorWidth = this.inspectorMinW
+        } else if (this.currentInspectorWidth > this.inspectorMaxW) {
+          this.currentInspectorWidth = this.inspectorMaxW
+        }
       }
       this.lastX = event.clientX
     },
     mouseUp (event) {
       console.log('mouseUp')
+      this.selectedResize = ''
       this.lastX = ''
       document.removeEventListener('mousemove', this.mouseMove)
     }
@@ -83,15 +105,16 @@ export default {
 }
 .el-main {
   width: 100%;
+  background-color: #000;
   height: calc(100vh - 64px); /* calc(100% - 64px) 这种方式无效 */
 }
-#resize{
+#resize_left, #resize_right{
   cursor: col-resize;
-  width: 4px;
+  width: 5px;
   height: calc(100vh - 64px);
-  background-color: ##00212B
+  background-color:#111111;
 }
-.resize:hover{
-  color: #444444
+#resize_left #resize_right:hover{
+
 }
 </style>

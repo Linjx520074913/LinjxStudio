@@ -102,8 +102,12 @@ ipcMain.on('minWindow', ()=>{
 )
 ipcMain.on('maxWindow', ()=>{ 
   console.log('recv : 最大化窗口')
-  win.maximize();} 
-)
+  if (win.isMaximized()) {
+    win.restore()
+  } else {
+    win.maximize()
+  }
+})
 ipcMain.on('closeWindow', ()=>{ 
   console.log('recv : 关闭窗口')
   win.close();} 
