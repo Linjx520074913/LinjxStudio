@@ -17,6 +17,6 @@ export default {
   min-width: 100%; /* 设置该属性，解决 slider_bar 大小改变时，背景颜色没有完全填充的问题 */
   width:100px;
   height:100%;
-  background:#ff0000;
+  background:#141820;
 }
 </style>

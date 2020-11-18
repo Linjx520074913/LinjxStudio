@@ -53,7 +53,7 @@ export default {
       var diff = event.clientX - this.lastX
       this.sliderBarWidth = this.sliderBarWidth + diff
       // 限制 SliderBar 宽度
-      if(this.sliderBarWidth < 100){
+      if (this.sliderBarWidth < 100) {
         this.sliderBarWidth = 100
       }
       this.lastX = event.clientX
@@ -79,7 +79,7 @@ export default {
 
 .el-header, .el-footer {
   height: 32px !important; /* el-header 和 el-footer 默认高度为 60 px, 添加 !important 可以修改默认高度，否则无法修改 */
-  background: #B3C0D1;
+  background-color: #FFFFFF;
   text-align: center;
   line-height: 32px;
 }
@@ -91,7 +91,7 @@ export default {
   cursor: col-resize;
   width: 4px;
   height: calc(100vh - 64px);
-  background-color: #d6d6d6
+  background-color: ##00212B
 }
 .resize:hover{
   color: #444444
