@@ -24,7 +24,7 @@ async function createWindow() {
     height: 690,
     minWidth: 1000,
     minHeight: 690,
-    frame:false,
+    frame: false,
     title: pkg.name,
     icon: windowIcon,
     webPreferences: {

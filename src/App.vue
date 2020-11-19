@@ -1,6 +1,7 @@
 <template>
   <div id="app">
-    <MainWindow/>
+    <router-link to="/"></router-link>
+    <router-view/>
   </div>
 </template>
 
