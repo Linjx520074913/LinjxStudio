@@ -6,6 +6,62 @@
   "description": "",
   "glyphs": [
     {
+      "icon_id": "17811456",
+      "name": "ic_xiaoxi1",
+      "font_class": "ic_xiaoxi1",
+      "unicode": "e637",
+      "unicode_decimal": 58935
+    },
+    {
+      "icon_id": "17811457",
+      "name": "ic_wendu",
+      "font_class": "ic_wendu",
+      "unicode": "e638",
+      "unicode_decimal": 58936
+    },
+    {
+      "icon_id": "17811467",
+      "name": "ic_启用",
+      "font_class": "exit",
+      "unicode": "e639",
+      "unicode_decimal": 58937
+    },
+    {
+      "icon_id": "17811493",
+      "name": "ic_设备查看",
+      "font_class": "new",
+      "unicode": "e63d",
+      "unicode_decimal": 58941
+    },
+    {
+      "icon_id": "17811495",
+      "name": "ic_安装设备",
+      "font_class": "ic_anzhuangshebei",
+      "unicode": "e63e",
+      "unicode_decimal": 58942
+    },
+    {
+      "icon_id": "17811496",
+      "name": "ic_燃料加注",
+      "font_class": "ic_ranliaojiazhu",
+      "unicode": "e63f",
+      "unicode_decimal": 58943
+    },
+    {
+      "icon_id": "17811497",
+      "name": "ic_维修服务",
+      "font_class": "ic_weixiufuwu",
+      "unicode": "e640",
+      "unicode_decimal": 58944
+    },
+    {
+      "icon_id": "17811498",
+      "name": "ic_加装设备",
+      "font_class": "ic_jiazhuangshebei",
+      "unicode": "e641",
+      "unicode_decimal": 58945
+    },
+    {
       "icon_id": "12345156",
       "name": "关  闭",
       "font_class": "close",
