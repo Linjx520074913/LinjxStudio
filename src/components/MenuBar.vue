@@ -4,7 +4,7 @@
       <a class="menu_level_1_title">{{item.text}}</a>
       <li class="menu_level_2" v-for="child in item.menu" :key="child.index">
         <svg class="icon" v-if="'icon' in child" aria-hidden="true" style="height: 32px; margin-left: 10px; margin-right: 10px"> <use v-bind:xlink:href="child.icon"></use></svg>
-        <a>{{child.text}}</a>
+        <a @click="child.click()">{{child.text}}</a>
       </li>
     </ul>
   </div>
@@ -19,33 +19,85 @@ export default {
       content: [{
         text: '文件(F)',
         menu: [
-          { text: '新建文件', icon: '#icon-new' },
-          { text: '新建窗口', icon: '#icon-ic_ranliaojiazhu' },
-          { text: '退出', icon: '#icon-exit' }
+          {
+            text: '新建文件',
+            icon: '#icon-new',
+            click: () => { console.log('[新建文件] 被点击') }
+          },
+          {
+            text: '新建窗口',
+            icon: '#icon-ic_ranliaojiazhu',
+            click: () => { console.log('[新建窗口] 被点击') } },
+          {
+            text: '退出',
+            icon: '#icon-exit',
+            click: () => { console.log('[退出] 被点击') }
+          }
         ]
       }, {
         text: '编辑(E)',
         menu: [
-          { text: '剪切', icon: '#icon-ic_wendu' },
-          { text: '复制', icon: '#icon-ic_anzhuangshebei' },
-          { text: '查找', icon: '#icon-ic_weixiufuwu' }
+          {
+            text: '剪切',
+            icon: '#icon-ic_wendu',
+            click: () => { console.log('[剪切] 被点击') }
+          },
+          {
+            text: '复制',
+            icon: '#icon-ic_anzhuangshebei',
+            click: () => { console.log('[复制] 被点击') }
+          },
+          {
+            text: '查找',
+            icon: '#icon-ic_weixiufuwu',
+            click: () => { console.log('[查找] 被点击') }
+          }
         ]
       }, {
         text: '查看(V)',
         menu: [
-          { text: '外观', icon: '#icon-ic_jiazhuangshebei' },
-          { text: '中端', icon: '#icon-ic_xiaoxi1' },
-          { text: '切换自动换行' }
+          {
+            text: '外观',
+            icon: '#icon-ic_jiazhuangshebei',
+            click: () => { console.log('[外观] 被点击') }
+          },
+          {
+            text: '中端',
+            icon: '#icon-ic_xiaoxi1',
+            click: () => { console.log('[中端] 被点击') }
+          },
+          {
+            text: '切换自动换行',
+            icon: '#icon-ic_xiaoxi1',
+            click: () => { console.log('[切换自动换行] 被点击') }
+          }
         ]
       }, {
         text: '帮助(H)',
         menu: [
-          { text: '文档' },
-          { text: '查看许可证' },
-          { text: '关于' }
+          {
+            text: '文档',
+            icon: '#icon-ic_xiaoxi1',
+            click: () => { console.log('[文档] 被点击') }
+          },
+          {
+            text: '查看许可证',
+            icon: '#icon-ic_xiaoxi1',
+            click: () => { console.log('[查看许可证] 被点击') }
+          },
+          {
+            text: '关于',
+            icon: '#icon-ic_xiaoxi1',
+            click: () => { console.log('[查看许可证] 被点击') }
+          }
         ]
       }
       ]
+    }
+  },
+  methods: {
+    getMethod (obj) {
+      console.log('aaaaaaa ' + obj)
     }
   }
 }
