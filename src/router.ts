@@ -5,17 +5,18 @@ import MainWindow from './components/MainWindow.vue'
 
 Vue.use(Router)
 
+/* 路由默认入口为 '/' */
 export default new Router({
   routes: [
     {
       path: '/',
-      name: 'LoginPage',
-      component: LoginPage
-    },
-    {
-      path: '/MainWindow',
       name: 'MainWindow',
       component: MainWindow
+    },
+    {
+      path: '/LoginPage',
+      name: 'LoginPage',
+      component: LoginPage
     }
   ]
 })

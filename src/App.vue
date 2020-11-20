@@ -8,12 +8,10 @@
 <script>
 import './assets/font/iconfont.js'
 import './assets/font/iconfont.css'
-import MainWindow from './components/MainWindow'
 
 export default {
   name: 'app',
   components: {
-    MainWindow
   }
 }
 </script>

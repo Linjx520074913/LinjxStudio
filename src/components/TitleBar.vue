@@ -1,5 +1,5 @@
 <template>
-    <div id="title_container">
+    <div id="title_bar_root">
         <el-image id="logo" src="/imgs/orbbec.png"></el-image>
         <MenuBar/>
         <ControlBar/>
@@ -20,7 +20,7 @@ export default {
 </script>
 
 <style>
-#title_container{
+#title_bar_root{
     display:flex;
     width:100%;
     height:100%;

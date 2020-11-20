@@ -1,50 +1,10 @@
 'use strict'
+import { app, BrowserWindow, globalShortcut } from 'electron'
+import Studio from './main/Studio'
 
-import { app, protocol, BrowserWindow, globalShortcut, ipcMain } from 'electron'
-import { createProtocol } from 'vue-cli-plugin-electron-builder/lib'
-import installExtension, { VUEJS_DEVTOOLS } from 'electron-devtools-installer'
-import path from 'path'
 const isDevelopment = process.env.NODE_ENV !== 'production'
 
-let pkg = require('../package.json')
-
-let win : BrowserWindow;
-
-// Scheme must be registered before the app is ready
-protocol.registerSchemesAsPrivileged([
-  { scheme: 'app', privileges: { secure: true, standard: true } }
-])
-
-let windowIcon = 'public/imgs/orbbec.png';
-
-async function createWindow() {
-  // Create the browser window.
-  win = new BrowserWindow({
-    width: 1000,
-    height: 690,
-    minWidth: 1000,
-    minHeight: 690,
-    frame: false,
-    title: pkg.name,
-    icon: windowIcon,
-    webPreferences: {
-      // Use pluginOptions.nodeIntegration, leave this alone
-      // See nklayman.github.io/vue-cli-plugin-electron-builder/guide/security.html#node-integration for more info
-      nodeIntegration: (process.env
-          .ELECTRON_NODE_INTEGRATION as unknown) as boolean
-    }
-  })
-
-  if (process.env.WEBPACK_DEV_SERVER_URL) {
-    // Load the url of the dev server if in development mode
-    await win.loadURL(process.env.WEBPACK_DEV_SERVER_URL as string)
-    // if (!process.env.IS_TEST) win.webContents.openDevTools()
-  } else {
-    createProtocol('app')
-    // Load the index.html when not in development
-    win.loadURL('app://./index.html')
-  }
-}
+let studio = new Studio()
 
 // Quit when all windows are closed.
 app.on('window-all-closed', () => {
@@ -58,7 +18,7 @@ app.on('window-all-closed', () => {
 app.on('activate', () => {
   // On macOS it's common to re-create a window in the app when the
   // dock icon is clicked and there are no other windows open.
-  if (BrowserWindow.getAllWindows().length === 0) createWindow()
+  if (BrowserWindow.getAllWindows().length === 0) studio.createMainWindow()
 })
 
 // This method will be called when Electron has finished
@@ -76,9 +36,9 @@ app.on('ready', async () => {
 
    // 在开发环境和生产环境均可通过快捷键打开devTools
   globalShortcut.register('CommandOrControl+Shift+i', function () {
-    win.webContents.openDevTools()
+    studio.openDevTools()
   })
-  createWindow()
+  studio.createMainWindow()
 })
 
 // Exit cleanly on request from parent process in development mode.
@@ -95,20 +55,3 @@ if (isDevelopment) {
     })
   }
 }
-
-ipcMain.on('minWindow', ()=>{ 
-  console.log('recv : 最小化窗口')
-  win.minimize();} 
-)
-ipcMain.on('maxWindow', ()=>{ 
-  console.log('recv : 最大化窗口')
-  if (win.isMaximized()) {
-    win.restore()
-  } else {
-    win.maximize()
-  }
-})
-ipcMain.on('closeWindow', ()=>{ 
-  console.log('recv : 关闭窗口')
-  win.close();} 
-)

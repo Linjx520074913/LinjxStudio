@@ -109,7 +109,7 @@ export default {
   height: calc(100vh - 64px); /* calc(100% - 64px) 这种方式无效 */
 }
 #resize_left, #resize_right{
-  cursor: col-resize;
+  cursor: e-resize;
   width: 5px;
   height: calc(100vh - 64px);
   background-color:#111111;

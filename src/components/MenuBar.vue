@@ -31,7 +31,7 @@ export default {
           {
             text: '退出',
             icon: '#icon-exit',
-            click: () => { console.log('[退出] 被点击') }
+            click: () => { ipcRenderer.send('closeWindow') }
           }
         ]
       }, {
