@@ -3,6 +3,9 @@ import { createProtocol } from 'vue-cli-plugin-electron-builder/lib'
 import installExtension, { VUEJS_DEVTOOLS } from 'electron-devtools-installer'
 import path from 'path'
 
+import About from './About'
+
+/// 导入 package.json 信息
 let pkg = require('../../package.json')
 
 // Scheme must be registered before the app is ready
@@ -21,6 +24,7 @@ export default class Studio {
     this.handleIpcMainEvent()
   }
 
+  /// 创建主窗口
   async createMainWindow () {
 
     // Create the browser window.
@@ -67,9 +71,9 @@ export default class Studio {
   maximize () {
     console.log('[ Studio ] : invoke maximize')
     if (this.win.isMaximized()) {
-    this.win.restore()
+        this.win.restore()
     } else {
-    this.win.maximize()
+        this.win.maximize()
     }
   }
 
@@ -79,6 +83,7 @@ export default class Studio {
     this.win.close()
   }
 
+  /// 处理 ipcMain 事件 : 【minWindow】 【maxWindow】 【close】
   handleIpcMainEvent () {
     ipcMain.on('minWindow', ()=>{
         this.minimize()

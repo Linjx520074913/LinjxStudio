@@ -9,7 +9,7 @@
           <SliderBar :slw="currentSliderBarWidth"/>
         </el-aside>
         <div id='resize_left'  @mousedown='mouseDown'></div>
-        <el-main>
+        <el-main id="mainwork_root">
         </el-main>
         <div id='resize_right'  @mousedown='mouseDown'></div>
         <el-aside :width="currentInspectorWidth + 'px'">
@@ -25,6 +25,9 @@
 
 <script>
 import '../assets/css/reset.css'
+
+import * as THREE from 'three'
+
 import TitleBar from './TitleBar'
 import StatusBar from './StatusBar'
 import SliderBar from './SliderBar'
@@ -47,7 +50,11 @@ export default {
       inspectorMinW: 150,
       inspectorMaxW: 350,
       lastX: 0,
-      selectedResize: ''
+      selectedResize: '',
+      camera: null,
+      scene: null,
+      renderer: null,
+      mesh: null
     }
   },
   created () {
@@ -86,7 +93,31 @@ export default {
       this.selectedResize = ''
       this.lastX = ''
       document.removeEventListener('mousemove', this.mouseMove)
+    },
+    initThreejs () {
+      let container = document.getElementById('mainwork_root')
+      this.camera = new THREE.PerspectiveCamera(70, container.clientWidth / container.clientHeight, 0.01, 10)
+      this.camera.position.z = 0.6
+      this.scene = new THREE.Scene()
+      let geometry = new THREE.BoxGeometry(0.2, 0.2, 0.2)
+      let material = new THREE.MeshNormalMaterial()
+      this.mesh = new THREE.Mesh(geometry, material)
+      this.scene.add(this.mesh)
+
+      this.renderer = new THREE.WebGLRenderer({ antialias: true })
+      this.renderer.setSize(container.clientWidth, container.clientHeight)
+      container.appendChild(this.renderer.domElement)
+    },
+    animate () {
+      requestAnimationFrame(this.animate)
+      this.mesh.rotation.x += 0.01
+      this.mesh.rotation.y += 0.02
+      this.renderer.render(this.scene, this.camera)
     }
+  },
+  mounted () {
+    this.initThreejs()
+    this.animate()
   }
 }
 </script>
