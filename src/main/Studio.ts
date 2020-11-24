@@ -3,7 +3,8 @@ import { createProtocol } from 'vue-cli-plugin-electron-builder/lib'
 import installExtension, { VUEJS_DEVTOOLS } from 'electron-devtools-installer'
 import path from 'path'
 
-import About from './About'
+import About from './AboutWindow'
+import AboutWindow from './AboutWindow'
 
 /// 导入 package.json 信息
 let pkg = require('../../package.json')
@@ -86,13 +87,16 @@ export default class Studio {
   /// 处理 ipcMain 事件 : 【minWindow】 【maxWindow】 【close】
   handleIpcMainEvent () {
     ipcMain.on('minWindow', ()=>{
-        this.minimize()
-      })
-      ipcMain.on('maxWindow', ()=>{
-        this.maximize()
-      })
-      ipcMain.on('closeWindow', ()=>{
-        this.close()
-      })
+      this.minimize()
+    })
+    ipcMain.on('maxWindow', ()=>{
+      this.maximize()
+    })
+    ipcMain.on('closeWindow', ()=>{
+      this.close()
+    })
+    ipcMain.on('openAboutWindow', ()=> {
+      let about = new AboutWindow(this.win)
+    })
   }
 }

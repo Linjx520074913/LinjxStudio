@@ -3,5 +3,7 @@ module.exports = {
         electronBuilder: {
             nodeIntegration: true
         }
-    }
+    },
+
+    lintOnSave: false
 }

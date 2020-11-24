@@ -22,15 +22,20 @@ export default class AboutWindow {
             minHeight: 500,
             frame: false,
             parent: parent,
+            modal: true,
             webPreferences: {
-            // Use pluginOptions.nodeIntegration, leave this alone
-            // See nklayman.github.io/vue-cli-plugin-electron-builder/guide/security.html#node-integration for more info
-            nodeIntegration: (process.env
-                .ELECTRON_NODE_INTEGRATION as unknown) as boolean
+                webSecurity: false,
+                // Use pluginOptions.nodeIntegration, leave this alone
+                // See nklayman.github.io/vue-cli-plugin-electron-builder/guide/security.html#node-integration for more info
+                nodeIntegration: (process.env
+                    .ELECTRON_NODE_INTEGRATION as unknown) as boolean
             }
         })
 
-        this.win.loadURL(path.join(__dirname, 'about.html'))
+        this.win.webContents.openDevTools()
+        // Or load a local HTML file
+        console.log(`file://${__dirname}/app/index.html`)
+        this.win.loadURL(`file://${__dirname}/../public/about.html`)
 
         // if (process.env.WEBPACK_DEV_SERVER_URL) {
         //     console.log('============= A ' + process.env.WEBPACK_DEV_SERVER_URL)

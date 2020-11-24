@@ -88,7 +88,10 @@ export default {
           {
             text: '关于',
             icon: '#icon-ic_xiaoxi1',
-            click: () => { console.log('[查看许可证] 被点击') }
+            click: () => {
+              console.log('[查看许可证] 被点击')
+              ipcRenderer.send('openAboutWindow')
+            }
           }
         ]
       }
@@ -139,10 +142,14 @@ export default {
   z-index: 10;
   background-color: #171C26;
   display: none; /* 二级菜单默认隐藏 */
+  user-select: none
 }
 /* 【二级菜单】：hover 时改变背景颜色 */
 .menu_level_2:hover{
   background-color: #1F2633;
+}
+.menu_level_2:active{
+  display: none;
 }
 /* 【一级菜单】悬停时显示 【二级菜单栏】 */
 .menu_level_1:hover .menu_level_2{

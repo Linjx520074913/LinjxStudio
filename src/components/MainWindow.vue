@@ -8,10 +8,11 @@
         <el-aside :width="currentSliderBarWidth + 'px'">
           <SliderBar :slw="currentSliderBarWidth"/>
         </el-aside>
-        <div id='resize_left'  @mousedown='mouseDown'></div>
+        <div id='resize_left'></div>
         <el-main id="mainwork_root">
+          <div id="preview" ref="preview"></div>
         </el-main>
-        <div id='resize_right'  @mousedown='mouseDown'></div>
+        <div id='resize_right'></div>
         <el-aside :width="currentInspectorWidth + 'px'">
           <Inspector :slw="currentInspectorWidth"/>
         </el-aside>
@@ -27,6 +28,7 @@
 import '../assets/css/reset.css'
 
 import * as THREE from 'three'
+import { OrbitControls } from 'three/examples/jsm/controls/OrbitControls'
 
 import TitleBar from './TitleBar'
 import StatusBar from './StatusBar'
@@ -51,10 +53,10 @@ export default {
       inspectorMaxW: 350,
       lastX: 0,
       selectedResize: '',
-      camera: null,
       scene: null,
+      camera: null,
       renderer: null,
-      mesh: null
+      control: null
     }
   },
   created () {
@@ -94,30 +96,48 @@ export default {
       this.lastX = ''
       document.removeEventListener('mousemove', this.mouseMove)
     },
-    initThreejs () {
-      let container = document.getElementById('mainwork_root')
-      this.camera = new THREE.PerspectiveCamera(70, container.clientWidth / container.clientHeight, 0.01, 10)
-      this.camera.position.z = 0.6
+    initRenderer () {
+      let width = this.$refs.preview.clientWidth
+      let height = this.$refs.preview.clientHeight
       this.scene = new THREE.Scene()
-      let geometry = new THREE.BoxGeometry(0.2, 0.2, 0.2)
-      let material = new THREE.MeshNormalMaterial()
-      this.mesh = new THREE.Mesh(geometry, material)
-      this.scene.add(this.mesh)
+      this.camera = new THREE.PerspectiveCamera(45, width / height, 0.01, 100)
+      this.camera.position.x = -4
+      this.camera.position.y = 4
+      this.camera.position.z = 4
+      this.camera.lookAt(this.scene.position)
 
       this.renderer = new THREE.WebGLRenderer({ antialias: true })
-      this.renderer.setSize(container.clientWidth, container.clientHeight)
-      container.appendChild(this.renderer.domElement)
+      this.renderer.setSize(width, height)
+      this.renderer.shadowMapEnabled = true
+      this.$refs.preview.appendChild(this.renderer.domElement)
+      this.$refs.preview.resize(() => {
+        let width = this.$refs.preview.clientWidth
+        let height = this.$refs.preview.clientHeight
+        this.renderer.setSize(width, height)
+      })
+
+      this.controls = new OrbitControls(this.camera, this.renderer.domElement)
+      this.controls.enableDamping = true // an animation loop is required when either damping or auto-rotation are enabled
+      this.controls.dampingFactor = 0.25
+      this.controls.screenSpacePanning = false
+      this.controls.minDistance = 0.1
+      this.controls.maxDistance = 100
+      this.controls.maxPolarAngle = Math.PI / 2
+
+      this.createGrid()
     },
-    animate () {
-      requestAnimationFrame(this.animate)
-      this.mesh.rotation.x += 0.01
-      this.mesh.rotation.y += 0.02
+    createGrid () {
+      var grid = new THREE.GridHelper(30, 30, 0x444444, 0x888888)
+      this.scene.add(grid)
+    },
+    renderScene () {
+      requestAnimationFrame(this.renderScene)
       this.renderer.render(this.scene, this.camera)
     }
   },
   mounted () {
-    this.initThreejs()
-    this.animate()
+    this.initRenderer()
+    this.renderScene()
   }
 }
 </script>
@@ -134,11 +154,25 @@ export default {
   text-align: center;
   line-height: 32px;
 }
+/* 设置 中间预览区域 el-main 属性 */
+/* el-main 中的元素大小占满，设置方法为 ：外层 el-main 用 flex 纵向布局，display: flex; flex-direction: colum; */
+/*                                     里层元素设置 display: block; flex: 1; 充满整个高度*/
 .el-main {
   width: 100%;
   background-color: #000;
   height: calc(100vh - 64px); /* calc(100% - 64px) 这种方式无效 */
+  overflow: hidden !important;
+  display: flex;
+  flex-direction: colum;
 }
+/* 设置预览区域属性 */
+#preview{
+  width: 100%;
+  height: 100%;
+  display: block;
+  flex: 1;
+}
+/* 拉伸条 */
 #resize_left, #resize_right{
   cursor: e-resize;
   width: 5px;
@@ -148,4 +182,5 @@ export default {
 #resize_left #resize_right:hover{
 
 }
+
 </style>
