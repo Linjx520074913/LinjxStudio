@@ -8,7 +8,6 @@
 <script>
 import './assets/font/iconfont.js'
 import './assets/font/iconfont.css'
-
 export default {
   name: 'app',
   components: {

@@ -10,7 +10,7 @@
         </el-aside>
         <div id='resize_left'></div>
         <el-main id="mainwork_root">
-          <div id="preview" ref="preview"></div>
+          <div id="preview" ref="preview" v-resize="resizePreview"></div>
         </el-main>
         <div id='resize_right'></div>
         <el-aside :width="currentInspectorWidth + 'px'">
@@ -26,6 +26,7 @@
 
 <script>
 import '../assets/css/reset.css'
+import resize from 'vue-resize-directive'
 
 import * as THREE from 'three'
 import { OrbitControls } from 'three/examples/jsm/controls/OrbitControls'
@@ -42,6 +43,9 @@ export default {
     StatusBar,
     SliderBar,
     Inspector
+  },
+  directives: {
+    resize
   },
   data () {
     return {
@@ -110,11 +114,6 @@ export default {
       this.renderer.setSize(width, height)
       this.renderer.shadowMapEnabled = true
       this.$refs.preview.appendChild(this.renderer.domElement)
-      this.$refs.preview.resize(() => {
-        let width = this.$refs.preview.clientWidth
-        let height = this.$refs.preview.clientHeight
-        this.renderer.setSize(width, height)
-      })
 
       this.controls = new OrbitControls(this.camera, this.renderer.domElement)
       this.controls.enableDamping = true // an animation loop is required when either damping or auto-rotation are enabled
@@ -126,13 +125,24 @@ export default {
 
       this.createGrid()
     },
+    // 创建网格赋值线
     createGrid () {
       var grid = new THREE.GridHelper(30, 30, 0x444444, 0x888888)
       this.scene.add(grid)
     },
+    // 渲染场景
     renderScene () {
       requestAnimationFrame(this.renderScene)
       this.renderer.render(this.scene, this.camera)
+    },
+    // preview 区域大小改变处理
+    resizePreview () {
+      let width = this.$refs.preview.clientWidth
+      let height = this.$refs.preview.clientHeight
+
+      this.camera.aspect = width / height
+      this.camera.updateProjectionMatrix()
+      this.renderer.setSize(width, height)
     }
   },
   mounted () {
@@ -178,9 +188,6 @@ export default {
   width: 5px;
   height: calc(100vh - 64px);
   background-color:#111111;
-}
-#resize_left #resize_right:hover{
-
 }
 
 </style>
