@@ -7,13 +7,18 @@
         <a @click="child.click()">{{child.text}}</a>
       </li>
     </ul>
+    <About :isVisible.sync="popupVisible"/>
   </div>
 </template>
 
 <script>
 import { ipcRenderer } from 'electron'
+import About from './About'
 export default {
   name: 'MenuBar',
+  components: {
+    About
+  },
   data () {
     return {
       content: [{
@@ -22,12 +27,21 @@ export default {
           {
             text: '新建文件',
             icon: '#icon-new',
-            click: () => { console.log('[新建文件] 被点击') }
+            click: () => {
+              this.popupVisible = true
+              this.popComponent = ''
+              console.log('[新建文件] 被点击')
+            },
+            popName: 'About'
           },
           {
             text: '新建窗口',
             icon: '#icon-ic_ranliaojiazhu',
-            click: () => { console.log('[新建窗口] 被点击') } },
+            click: () => {
+              this.popupVisible = true
+              console.log('[新建窗口] 被点击')
+            }
+          },
           {
             text: '退出',
             icon: '#icon-exit',
@@ -89,13 +103,16 @@ export default {
             text: '关于',
             icon: '#icon-ic_xiaoxi1',
             click: () => {
-              console.log('[查看许可证] 被点击')
-              ipcRenderer.send('openAboutWindow')
+              this.popupVisible = true
+              this.popComponent = 'About'
+              console.log('[关于] 被点击')
             }
           }
         ]
       }
-      ]
+      ],
+      popupVisible: false,
+      popComponent: ''
     }
   },
   methods: {

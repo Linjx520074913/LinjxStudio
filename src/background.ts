@@ -34,7 +34,7 @@ app.on('ready', async () => {
     // }
   }
 
-   // 在开发环境和生产环境均可通过快捷键打开devTools
+  // 在开发环境和生产环境均可通过快捷键打开devTools
   globalShortcut.register('CommandOrControl+Shift+i', function () {
     studio.openDevTools()
   })
