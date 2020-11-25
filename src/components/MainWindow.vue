@@ -11,8 +11,8 @@
         <div id='resize_left'></div>
         <el-main id="mainwork_root">
           <div id="preview_root" ref="preview_root" v-resize="resizePreview">
-            <div id="preview_main" ref="preview_main"/>
-            <div id="preview_left" ref="preview_left"/>
+            <div id="preview_main" ref="preview_main" @dblclick="doubleClick('preview_main')"/>
+            <div id="preview_left" ref="preview_left" @dblclick="doubleClick('preview_left')"/>
             <div id="preview_top"/>
             <div id="preview_bottom"/>
           </div>
@@ -64,12 +64,19 @@ export default {
       lastX: 0,
       selectedResize: '',
       scene: null,
+      geometry: null,
+      material: null,
+      cloud: null,
       mainCamera: null,
       leftCamera: null,
       mainRenderer: null,
       leftRenderer: null,
       mainControl: null,
-      leftControl: null
+      leftControl: null,
+      mainWidth: '50%',
+      mainHeight: '50%',
+      leftWidth: '50%',
+      leftHeight: '50%'
     }
   },
   created () {
@@ -109,6 +116,8 @@ export default {
       this.lastX = ''
       document.removeEventListener('mousemove', this.mouseMove)
     },
+    doubleClick (id) {
+    },
     initRenderer () {
       this.scene = new THREE.Scene()
       this.initPreviewMain()
@@ -116,15 +125,16 @@ export default {
 
       this.createGrid()
       this.createAxes()
+      this.createPointCloud()
     },
     initPreviewMain () {
       let width = this.$refs.preview_main.clientWidth
       let height = this.$refs.preview_main.clientHeight
       // 创建 Camera
       this.mainCamera = new THREE.PerspectiveCamera(45, width / height, 1, 1000)
-      this.mainCamera.position.x = 10
-      this.mainCamera.position.y = 10
-      this.mainCamera.position.z = 10
+      this.mainCamera.position.x = 100
+      this.mainCamera.position.y = 100
+      this.mainCamera.position.z = 100
       this.mainCamera.lookAt(this.scene.position)
 
       this.mainRenderer = new THREE.WebGLRenderer({ antialias: true })
@@ -136,8 +146,8 @@ export default {
       this.mainControl.enableDamping = true // an animation loop is required when either damping or auto-rotation are enabled
       this.mainControl.dampingFactor = 0.25
       this.mainControl.screenSpacePanning = false
-      this.mainControl.minDistance = 0.1
-      this.mainControl.maxDistance = 100
+      this.mainControl.minDistance = 1
+      this.mainControl.maxDistance = 10000
       this.mainControl.maxPolarAngle = Math.PI / 2
     },
     initPreviewLeft () {
@@ -165,7 +175,7 @@ export default {
     },
     // 创建网格赋值线
     createGrid () {
-      var grid = new THREE.GridHelper(30, 30, 0x444444, 0x888888)
+      var grid = new THREE.GridHelper(100, 100, 0x444444, 0x888888)
       this.scene.add(grid)
     },
     // 创建坐标轴及箭头
@@ -185,6 +195,25 @@ export default {
       var zArrow = new THREE.ArrowHelper(new THREE.Vector3(0, 0, 1), new THREE.Vector3(0, 0, 0), 3, 0x0000FF, 0.3, 0.3)
       this.scene.add(zArrow)
     },
+    // 创建点云
+    createPointCloud () {
+      // 创建 THREE.PointCloud 粒子容器
+      this.geometry = new THREE.Geometry()
+      // 创建 THREE.PointCloud 纹理
+      this.material = new THREE.PointCloudMaterial({ size: 0.1, vertexColors: true, color: 0xffffff })
+
+      // 生成随机点
+      for (var x = -5; x <= 5; x++) {
+        for (var y = -5; y <= 5; y++) {
+          var particle = new THREE.Vector3(x, y, 0)
+          this.geometry.vertices.push(particle)
+          this.geometry.colors.push(new THREE.Color(0xCCCCCC))
+        }
+      }
+
+      this.cloud = new THREE.PointCloud(this.geometry, this.material)
+      this.scene.add(this.cloud)
+    },
     // 渲染场景
     renderScene () {
       requestAnimationFrame(this.renderScene)
@@ -203,7 +232,7 @@ export default {
       let leftPreviewH = this.$refs.preview_left.clientHeight
       this.leftCamera.aspect = leftPreviewW / leftPreviewH
       this.leftCamera.updateProjectionMatrix()
-      this.leftCamera.setSize(leftPreviewW, leftPreviewH)
+      this.mainRenderer.setSize(leftPreviewW, leftPreviewH)
     }
   },
   mounted () {
