@@ -104,10 +104,11 @@ export default {
       let width = this.$refs.preview.clientWidth
       let height = this.$refs.preview.clientHeight
       this.scene = new THREE.Scene()
+      // 创建 Camera
       this.camera = new THREE.PerspectiveCamera(45, width / height, 0.01, 100)
-      this.camera.position.x = -4
-      this.camera.position.y = 4
-      this.camera.position.z = 4
+      this.camera.position.x = 10
+      this.camera.position.y = 10
+      this.camera.position.z = 10
       this.camera.lookAt(this.scene.position)
 
       this.renderer = new THREE.WebGLRenderer({ antialias: true })
@@ -124,11 +125,29 @@ export default {
       this.controls.maxPolarAngle = Math.PI / 2
 
       this.createGrid()
+      this.createAxes()
     },
     // 创建网格赋值线
     createGrid () {
       var grid = new THREE.GridHelper(30, 30, 0x444444, 0x888888)
       this.scene.add(grid)
+    },
+    // 创建坐标轴及箭头
+    createAxes () {
+      // 创建坐标轴
+      // var axes = new THREE.AxesHelper(3)
+      // this.scene.add(axes)
+
+      // 创建箭头
+      // X 方向箭头
+      var xArrow = new THREE.ArrowHelper(new THREE.Vector3(1, 0, 0), new THREE.Vector3(0, 0, 0), 3, 0xFF0000, 0.3, 0.3)
+      this.scene.add(xArrow)
+      // Y 方向箭头
+      var yArrow = new THREE.ArrowHelper(new THREE.Vector3(0, 1, 0), new THREE.Vector3(0, 0, 0), 3, 0x00FF00, 0.3, 0.3)
+      this.scene.add(yArrow)
+      // Z 方向箭头
+      var zArrow = new THREE.ArrowHelper(new THREE.Vector3(0, 0, 1), new THREE.Vector3(0, 0, 0), 3, 0x0000FF, 0.3, 0.3)
+      this.scene.add(zArrow)
     },
     // 渲染场景
     renderScene () {
