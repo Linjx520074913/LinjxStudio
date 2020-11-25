@@ -10,7 +10,12 @@
         </el-aside>
         <div id='resize_left'></div>
         <el-main id="mainwork_root">
-          <div id="preview" ref="preview" v-resize="resizePreview"></div>
+          <div id="preview_root" ref="preview_root" v-resize="resizePreview">
+            <div id="preview_main" ref="preview_main"/>
+            <div id="preview_left" ref="preview_left"/>
+            <div id="preview_top"/>
+            <div id="preview_bottom"/>
+          </div>
         </el-main>
         <div id='resize_right'></div>
         <el-aside :width="currentInspectorWidth + 'px'">
@@ -25,6 +30,7 @@
 </template>
 
 <script>
+
 import '../assets/css/reset.css'
 import resize from 'vue-resize-directive'
 
@@ -58,9 +64,12 @@ export default {
       lastX: 0,
       selectedResize: '',
       scene: null,
-      camera: null,
-      renderer: null,
-      control: null
+      mainCamera: null,
+      leftCamera: null,
+      mainRenderer: null,
+      leftRenderer: null,
+      mainControl: null,
+      leftControl: null
     }
   },
   created () {
@@ -101,31 +110,58 @@ export default {
       document.removeEventListener('mousemove', this.mouseMove)
     },
     initRenderer () {
-      let width = this.$refs.preview.clientWidth
-      let height = this.$refs.preview.clientHeight
       this.scene = new THREE.Scene()
-      // 创建 Camera
-      this.camera = new THREE.PerspectiveCamera(45, width / height, 0.01, 100)
-      this.camera.position.x = 10
-      this.camera.position.y = 10
-      this.camera.position.z = 10
-      this.camera.lookAt(this.scene.position)
-
-      this.renderer = new THREE.WebGLRenderer({ antialias: true })
-      this.renderer.setSize(width, height)
-      this.renderer.shadowMapEnabled = true
-      this.$refs.preview.appendChild(this.renderer.domElement)
-
-      this.controls = new OrbitControls(this.camera, this.renderer.domElement)
-      this.controls.enableDamping = true // an animation loop is required when either damping or auto-rotation are enabled
-      this.controls.dampingFactor = 0.25
-      this.controls.screenSpacePanning = false
-      this.controls.minDistance = 0.1
-      this.controls.maxDistance = 100
-      this.controls.maxPolarAngle = Math.PI / 2
+      this.initPreviewMain()
+      this.initPreviewLeft()
 
       this.createGrid()
       this.createAxes()
+    },
+    initPreviewMain () {
+      let width = this.$refs.preview_main.clientWidth
+      let height = this.$refs.preview_main.clientHeight
+      // 创建 Camera
+      this.mainCamera = new THREE.PerspectiveCamera(45, width / height, 1, 1000)
+      this.mainCamera.position.x = 10
+      this.mainCamera.position.y = 10
+      this.mainCamera.position.z = 10
+      this.mainCamera.lookAt(this.scene.position)
+
+      this.mainRenderer = new THREE.WebGLRenderer({ antialias: true })
+      this.mainRenderer.setSize(width, height)
+      this.mainRenderer.shadowMapEnabled = true
+      this.$refs.preview_main.appendChild(this.mainRenderer.domElement)
+
+      this.mainControl = new OrbitControls(this.mainCamera, this.mainRenderer.domElement)
+      this.mainControl.enableDamping = true // an animation loop is required when either damping or auto-rotation are enabled
+      this.mainControl.dampingFactor = 0.25
+      this.mainControl.screenSpacePanning = false
+      this.mainControl.minDistance = 0.1
+      this.mainControl.maxDistance = 100
+      this.mainControl.maxPolarAngle = Math.PI / 2
+    },
+    initPreviewLeft () {
+      let width = this.$refs.preview_left.clientWidth
+      let height = this.$refs.preview_left.clientHeight
+      // 创建 Camera
+      this.leftCamera = new THREE.PerspectiveCamera(45, width / height, 1, 1000)
+      this.leftCamera.position.x = 10
+      this.leftCamera.position.y = 10
+      this.leftCamera.position.z = 10
+      this.leftCamera.lookAt(this.scene.position)
+
+      this.leftRenderer = new THREE.WebGLRenderer({ antialias: true })
+      this.leftRenderer.setSize(width, height)
+      this.leftRenderer.shadowMapEnabled = true
+      this.$refs.preview_left.appendChild(this.leftRenderer.domElement)
+
+      this.leftControl = new OrbitControls(this.leftCamera, this.leftRenderer.domElement)
+      this.leftControl.enableDamping = true // an animation loop is required when either damping or auto-rotation are enabled
+      this.leftControl.dampingFactor = 0.25
+      this.leftControl.screenSpacePanning = false
+      this.leftControl.minDistance = 0.1
+      this.leftControl.maxDistance = 100
+      this.leftControl.maxPolarAngle = Math.PI / 2
     },
     // 创建网格赋值线
     createGrid () {
@@ -152,16 +188,22 @@ export default {
     // 渲染场景
     renderScene () {
       requestAnimationFrame(this.renderScene)
-      this.renderer.render(this.scene, this.camera)
+      this.mainRenderer.render(this.scene, this.mainCamera)
+      this.leftRenderer.render(this.scene, this.leftCamera)
     },
     // preview 区域大小改变处理
     resizePreview () {
-      let width = this.$refs.preview.clientWidth
-      let height = this.$refs.preview.clientHeight
+      let mainPreviewW = this.$refs.preview_main.clientWidth
+      let mainPreviewH = this.$refs.preview_main.clientHeight
+      this.mainCamera.aspect = mainPreviewW / mainPreviewH
+      this.mainCamera.updateProjectionMatrix()
+      this.mainRenderer.setSize(mainPreviewW, mainPreviewH)
 
-      this.camera.aspect = width / height
-      this.camera.updateProjectionMatrix()
-      this.renderer.setSize(width, height)
+      let leftPreviewW = this.$refs.preview_left.clientWidth
+      let leftPreviewH = this.$refs.preview_left.clientHeight
+      this.leftCamera.aspect = leftPreviewW / leftPreviewH
+      this.leftCamera.updateProjectionMatrix()
+      this.leftCamera.setSize(leftPreviewW, leftPreviewH)
     }
   },
   mounted () {
@@ -195,11 +237,16 @@ export default {
   flex-direction: colum;
 }
 /* 设置预览区域属性 */
-#preview{
+#preview_root {
   width: 100%;
   height: 100%;
-  display: block;
+  display: grid;
   flex: 1;
+  grid-template-columns: 50% 50%;
+  grid-template-rows: 50% 50%;
+}
+#preview_main, #preview_left, #preview_top, #preview_bottom {
+  border: 1px solid #888888;
 }
 /* 拉伸条 */
 #resize_left, #resize_right{

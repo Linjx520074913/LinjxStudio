@@ -1,6 +1,6 @@
 <template>
     <div>
-      <h1>I am License Page</h1>
+      <h1>这是 [查看许可证] 页面</h1>
     </div>
 </template>
 
