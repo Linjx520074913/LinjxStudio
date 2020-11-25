@@ -2,22 +2,26 @@
   <div id="menu_root">
     <ul class="menu_level_1" v-for="item in content" :key="item.index">
       <a class="menu_level_1_title">{{item.text}}</a>
-      <li class="menu_level_2" v-for="child in item.menu" :key="child.index">
+      <li class="menu_level_2" v-for="child in item.menu" :key="child.index" @click="child.click()">
         <svg class="icon" v-if="'icon' in child" aria-hidden="true" style="height: 32px; margin-left: 10px; margin-right: 10px"> <use v-bind:xlink:href="child.icon"></use></svg>
-        <a @click="child.click()">{{child.text}}</a>
+        <a>{{child.text}}</a>
       </li>
     </ul>
-    <About :isVisible.sync="popupVisible"/>
+    <el-dialog :visible.sync="popupVisible">
+      <component :is="popupComponent"/>
+    </el-dialog>
   </div>
 </template>
 
 <script>
 import { ipcRenderer } from 'electron'
 import About from './About'
+import License from './License'
 export default {
   name: 'MenuBar',
   components: {
-    About
+    About,
+    License
   },
   data () {
     return {
@@ -29,10 +33,9 @@ export default {
             icon: '#icon-new',
             click: () => {
               this.popupVisible = true
-              this.popComponent = ''
+              this.popupComponent = ''
               console.log('[新建文件] 被点击')
-            },
-            popName: 'About'
+            }
           },
           {
             text: '新建窗口',
@@ -97,14 +100,18 @@ export default {
           {
             text: '查看许可证',
             icon: '#icon-ic_xiaoxi1',
-            click: () => { console.log('[查看许可证] 被点击') }
+            click: () => {
+              this.popupVisible = true
+              this.popupComponent = 'License'
+              console.log('[查看许可证] 被点击')
+            }
           },
           {
             text: '关于',
             icon: '#icon-ic_xiaoxi1',
             click: () => {
               this.popupVisible = true
-              this.popComponent = 'About'
+              this.popupComponent = 'About'
               console.log('[关于] 被点击')
             }
           }
@@ -112,7 +119,7 @@ export default {
       }
       ],
       popupVisible: false,
-      popComponent: ''
+      popupComponent: ''
     }
   },
   methods: {
