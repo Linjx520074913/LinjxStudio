@@ -1,6 +1,8 @@
 <template>
     <div id="control_container">
-        <el-avatar :size="25" icon="el-icon-user-solid"></el-avatar>
+        <el-tooltip class="item" effect="dark" content="该功能暂未开发" placement="top-start">
+          <el-avatar :size="25" icon="el-icon-user-solid"></el-avatar>
+        </el-tooltip>
         <svg class="icon" aria-hidden="true" v-on:click="minimize"> <use xlink:href="#icon-minimize"></use></svg>
         <svg class="icon" aria-hidden="true" v-on:click="maximize"> <use xlink:href="#icon-maximize"></use></svg>
         <svg class="icon" aria-hidden="true" v-on:click="close"> <use xlink:href="#icon-close"></use></svg>

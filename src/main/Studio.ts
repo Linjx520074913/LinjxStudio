@@ -12,7 +12,7 @@ protocol.registerSchemesAsPrivileged([
 ])
 
 export default class Studio {
-  win : BrowserWindow
+  win? : BrowserWindow
   appIcon : string
 
   constructor () {
@@ -52,30 +52,30 @@ export default class Studio {
 
   /// 打开开发者工具
   openDevTools () {
-    console.log('[ Studio ] : invoke openDevTools')
-    this.win.webContents.openDevTools()
+    console.log('[ Studio ] : invoke openDevTools');
+    (this.win as BrowserWindow).webContents.openDevTools()
   }
 
   /// 最小化
   minimize () {
-    console.log('[ Studio ] : invoke minimize')
-    this.win.minimize()
+    console.log('[ Studio ] : invoke minimize');
+    (this.win as BrowserWindow).minimize()
   }
 
   /// 最大化
   maximize () {
     console.log('[ Studio ] : invoke maximize')
-    if (this.win.isMaximized()) {
-      this.win.restore()
+    if ((this.win as BrowserWindow).isMaximized()) {
+      (this.win as BrowserWindow).restore()
     } else {
-      this.win.maximize()
+      (this.win as BrowserWindow).maximize()
     }
   }
 
   /// 关闭
   close () {
-    console.log('[ Studio ] : invoke close')
-    this.win.close()
+    console.log('[ Studio ] : invoke close');
+    (this.win as BrowserWindow).close()
   }
 
   /// 处理 ipcMain 事件 : 【minWindow】 【maxWindow】 【close】

@@ -1,15 +1,20 @@
 <template>
-  <div id="preview_root" ref="preview_root" v-resize="resizePreview">
-    <div id="preview_main" ref="preview_main" @dblclick="doubleClick('preview_main')"/>
-    <div id="preview_left" ref="preview_left" @dblclick="doubleClick('preview_left')"/>
-    <div id="preview_top"/>
-    <div id="preview_bottom"/>
+  <div id="scene_root">
+    <ToolBar/>
+    <div id="scene_2d_root" ref="scene_2d_root" v-show='this.$store.state.is3D==false'/>
+    <div id="scene_3d_root" ref="scene_3d_root" v-resize="resizePreview" v-show='this.$store.state.is3D'>
+      <div id="preview_main" ref="preview_main" @dblclick="doubleClick('preview_main')"/>
+      <div id="preview_left" ref="preview_left" @dblclick="doubleClick('preview_left')"/>
+      <div id="preview_top"/>
+      <div id="preview_bottom"/>
+    </div>
   </div>
 </template>
 
 <script>
-
 import resize from 'vue-resize-directive'
+
+import ToolBar from './ToolBar'
 
 import * as THREE from 'three'
 import { OrbitControls } from 'three/examples/jsm/controls/OrbitControls'
@@ -18,9 +23,12 @@ import { PLYLoader } from 'three/examples/jsm/loaders/PLYLoader'
 import { STLLoader } from 'three/examples/jsm/loaders/STLLoader.js'
 
 export default {
-  name: 'Scene',
+  name: 'Preview',
   directives: {
     resize
+  },
+  components: {
+    ToolBar
   },
   data () {
     return {
@@ -183,9 +191,14 @@ export default {
 
 <style>
 /* 设置预览区域属性 */
-#preview_root {
+#scene_2d_root {
   width: 100%;
-  height: 100%;
+  height: calc(100vh - 96px);
+  background-color: #F0D
+}
+#scene_3d_root {
+  width: 100%;
+  height: calc(100vh - 96px);
   display: grid;
   flex: 1;
   grid-template-columns: 50% 50%;
@@ -195,4 +208,3 @@ export default {
   border: 1px solid #888888;
 }
 </style>
-

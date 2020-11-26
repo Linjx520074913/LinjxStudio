@@ -10,7 +10,7 @@
         </el-aside>
         <div id='resize_left'></div>
         <el-main id="mainwork_root">
-          <Scene/>
+          <Preview/>
         </el-main>
         <div id='resize_right'></div>
         <el-aside :width="currentInspectorWidth + 'px'">
@@ -32,7 +32,7 @@ import TitleBar from './TitleBar'
 import StatusBar from './StatusBar'
 import SliderBar from './SliderBar'
 import Inspector from './Inspector'
-import Scene from './Scene'
+import Preview from './Preview'
 
 export default {
   name: 'MainWindow',
@@ -41,7 +41,7 @@ export default {
     StatusBar,
     SliderBar,
     Inspector,
-    Scene
+    Preview
   },
   data () {
     return {
@@ -126,7 +126,7 @@ export default {
 /* 拉伸条 */
 #resize_left, #resize_right{
   cursor: e-resize;
-  width: 5px;
+  width: 1px;
   height: calc(100vh - 64px);
   background-color:#111111;
 }
