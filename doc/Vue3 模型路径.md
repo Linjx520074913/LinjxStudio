@@ -1,0 +1,1 @@
+Vue3 中的资源放在 public 文件夹下，不需要经过 webpack 处理，在 Vue3 之前就是放在 static 静态文件夹下

@@ -36,6 +36,9 @@ import resize from 'vue-resize-directive'
 
 import * as THREE from 'three'
 import { OrbitControls } from 'three/examples/jsm/controls/OrbitControls'
+import { PCDLoader } from 'three/examples/jsm/loaders/PCDLoader'
+import { PLYLoader } from 'three/examples/jsm/loaders/PLYLoader'
+import { STLLoader } from 'three/examples/jsm/loaders/STLLoader.js'
 
 import TitleBar from './TitleBar'
 import StatusBar from './StatusBar'
@@ -66,7 +69,9 @@ export default {
       scene: null,
       geometry: null,
       material: null,
+      mesh: null,
       cloud: null,
+      pcdLoader: null,
       mainCamera: null,
       leftCamera: null,
       mainRenderer: null,
@@ -125,21 +130,22 @@ export default {
 
       this.createGrid()
       this.createAxes()
-      this.createPointCloud()
+      // this.createPointCloud()
+      this.loadModel()
     },
     initPreviewMain () {
       let width = this.$refs.preview_main.clientWidth
       let height = this.$refs.preview_main.clientHeight
       // 创建 Camera
       this.mainCamera = new THREE.PerspectiveCamera(45, width / height, 1, 1000)
-      this.mainCamera.position.x = 100
-      this.mainCamera.position.y = 100
-      this.mainCamera.position.z = 100
+      this.mainCamera.position.x = 0
+      this.mainCamera.position.y = 20
+      this.mainCamera.position.z = 50
       this.mainCamera.lookAt(this.scene.position)
 
       this.mainRenderer = new THREE.WebGLRenderer({ antialias: true })
       this.mainRenderer.setSize(width, height)
-      this.mainRenderer.shadowMapEnabled = true
+      this.mainRenderer.shadowMap.enable = true
       this.$refs.preview_main.appendChild(this.mainRenderer.domElement)
 
       this.mainControl = new OrbitControls(this.mainCamera, this.mainRenderer.domElement)
@@ -156,13 +162,13 @@ export default {
       // 创建 Camera
       this.leftCamera = new THREE.PerspectiveCamera(45, width / height, 1, 1000)
       this.leftCamera.position.x = 10
-      this.leftCamera.position.y = 10
-      this.leftCamera.position.z = 10
+      this.leftCamera.position.y = 0
+      this.leftCamera.position.z = 0
       this.leftCamera.lookAt(this.scene.position)
 
       this.leftRenderer = new THREE.WebGLRenderer({ antialias: true })
       this.leftRenderer.setSize(width, height)
-      this.leftRenderer.shadowMapEnabled = true
+      this.leftRenderer.shadowMap.enabled = true
       this.$refs.preview_left.appendChild(this.leftRenderer.domElement)
 
       this.leftControl = new OrbitControls(this.leftCamera, this.leftRenderer.domElement)
@@ -173,7 +179,7 @@ export default {
       this.leftControl.maxDistance = 100
       this.leftControl.maxPolarAngle = Math.PI / 2
     },
-    // 创建网格赋值线
+    // 创建网格辅助线
     createGrid () {
       var grid = new THREE.GridHelper(100, 100, 0x444444, 0x888888)
       this.scene.add(grid)
@@ -184,15 +190,16 @@ export default {
       // var axes = new THREE.AxesHelper(3)
       // this.scene.add(axes)
 
+      var arrowLength = 30
       // 创建箭头
       // X 方向箭头
-      var xArrow = new THREE.ArrowHelper(new THREE.Vector3(1, 0, 0), new THREE.Vector3(0, 0, 0), 3, 0xFF0000, 0.3, 0.3)
+      var xArrow = new THREE.ArrowHelper(new THREE.Vector3(1, 0, 0), new THREE.Vector3(0, 0, 0), arrowLength, 0xFF0000, 0.1 * arrowLength, 0.1 * arrowLength)
       this.scene.add(xArrow)
       // Y 方向箭头
-      var yArrow = new THREE.ArrowHelper(new THREE.Vector3(0, 1, 0), new THREE.Vector3(0, 0, 0), 3, 0x00FF00, 0.3, 0.3)
+      var yArrow = new THREE.ArrowHelper(new THREE.Vector3(0, 1, 0), new THREE.Vector3(0, 0, 0), arrowLength, 0x00FF00, 0.1 * arrowLength, 0.1 * arrowLength)
       this.scene.add(yArrow)
       // Z 方向箭头
-      var zArrow = new THREE.ArrowHelper(new THREE.Vector3(0, 0, 1), new THREE.Vector3(0, 0, 0), 3, 0x0000FF, 0.3, 0.3)
+      var zArrow = new THREE.ArrowHelper(new THREE.Vector3(0, 0, 1), new THREE.Vector3(0, 0, 0), arrowLength, 0x0000FF, 3, 0.1 * arrowLength)
       this.scene.add(zArrow)
     },
     // 创建点云
@@ -214,11 +221,25 @@ export default {
       this.cloud = new THREE.PointCloud(this.geometry, this.material)
       this.scene.add(this.cloud)
     },
+    loadModel () {
+      let scope = this
+      const loader = new PCDLoader()
+      loader.load('models/Zaghetto.pcd', function (points) {
+        var center = points.geometry.boundingSphere.center
+        // 模型太小，适当放大
+        points.geometry.scale(100, 100, 100)
+        points.geometry.translate(-center.x, -center.y, -center.z)
+        // 把模型转正，使面朝向 Z 轴正方向
+        points.geometry.rotateY(3)
+        points.geometry.rotateZ(3)
+        scope.scene.add(points)
+      })
+    },
     // 渲染场景
     renderScene () {
-      requestAnimationFrame(this.renderScene)
       this.mainRenderer.render(this.scene, this.mainCamera)
       this.leftRenderer.render(this.scene, this.leftCamera)
+      requestAnimationFrame(this.renderScene)
     },
     // preview 区域大小改变处理
     resizePreview () {
