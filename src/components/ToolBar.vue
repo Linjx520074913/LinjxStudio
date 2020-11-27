@@ -1,7 +1,13 @@
 <template>
   <div id="toolbar_root">
-    <svg class="icon" aria-hidden="true" v-on:click="showGrid()" id="more"><use xlink:href="#icon-more"></use></svg>
-    <svg class="icon" aria-hidden="true" v-on:click="toggle3D()" :style="{color: icon3DColor}"> <use xlink:href="#icon-3D"></use></svg>
+    <ul class="toolbar_level_1" v-for="item in content" :key="item.index">
+      <svg class="icon" aria-hidden="true" v-on:click="('click' in item) ? item.click() : emptyClick()"><use v-bind:xlink:href="item.icon"></use></svg>
+      <li class="toolbar_level_2" v-for="child in item.menu" :key="child.index">
+        <el-checkbox v-model="child.value" @change="child.change"/>
+        <svg class="icon" v-if="'icon' in child" aria-hidden="true" style="height: 100%"> <use v-bind:xlink:href="child.icon"></use></svg>
+        <a>{{child.title}}</a>
+      </li>
+    </ul>
   </div>
 </template>
 
@@ -10,7 +16,34 @@ export default {
   name: 'ToolBar',
   data () {
     return {
-      icon3DColor: this.$store.state.is3D ? '6A9DEA' : 'DEDEDE'
+      icon3DColor: this.$store.state.is3D ? '6A9DEA' : 'DEDEDE',
+      content: [
+        {
+          icon: '#icon-more',
+          click: () => {},
+          menu: [
+            {
+              icon: '#icon-grid',
+              title: '显示坐标网格',
+              value: this.$store.state.showGrid,
+              change: () => { this.showGrid() }
+            },
+            {
+              icon: '#icon-axes',
+              title: '显示坐标轴',
+              value: this.$store.state.showAxes,
+              change: () => { this.showAxes() }
+            },
+            {
+              icon: '#icon-3D'
+            }
+          ]
+        },
+        {
+          icon: '#icon-3D',
+          click: () => { this.toggle3D() }
+        }
+      ]
     }
   },
   methods: {
@@ -21,6 +54,13 @@ export default {
     },
     showGrid () {
       this.$store.commit('showGrid')
+    },
+    showAxes () {
+      this.$store.commit('showAxes')
+    },
+    // 空点击函数，当菜单项没有具体指明点击函数时，调用该函数
+    emptyClick () {
+      console.log('I am empty')
     }
   }
 }
@@ -28,20 +68,48 @@ export default {
 
 <style scoped>
 #toolbar_root {
-  height: 32px;
+  margin:0;
+  padding:0;
+  display: flex;
+  height: 30px;
   background-color: #171C26;
 }
 .icon {
-  width: 32px;
-  height: 32px;
+  padding: 0px;
+  width: 30px;
+  height: 30px;
   color: #DEDEDE;
   /* 预先设置图标的边框，解决 hover 是抖动的问题 */
-  border:1px solid transparent;
+  /* border:1px solid transparent; */
 }
-.dropdown {
-  float:left;
-  width: 200px;
-  height: 100px;
-  z-index: 10;
+/* 工具栏【一级菜单】 样式*/
+.toolbar_level_1 {
+  list-style-type:none;
+  width: 30px;
+  user-select:none; /* 设置文本不可选择 */
+  margin: 0px;
 }
+/* 工具栏【二级菜单】 样式*/
+.toolbar_level_2 {
+  background-color: #333B4F;
+  color: #BBB;
+  float: left;
+  width: 150px;
+  height: 30px;
+  position:relative; /*只有设置 position 并且该属性值不为 static 时 z-index 生效 */
+  z-index: 100;
+  list-style-type:none;
+  user-select:none; /* 设置文本不可选择 */
+  margin-top: -2px;
+  text-align: center;
+  display: none /* 二级菜单默认隐藏 */
+}
+.toolbar_level_2:hover {
+  background-color: #1F2633;
+}
+/* 【一级菜单】 hover 时显示【二级菜单】 */
+.toolbar_level_1:hover .toolbar_level_2 {
+  display: flex;
+}
+
 </style>

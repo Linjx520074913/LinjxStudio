@@ -9,7 +9,9 @@ export default new Vuex.Store({
     // 是否显示 3D 视图
     is3D: true,
     // 是否显示网格
-    showGrid: true
+    showGrid: true,
+    // 是否显示坐标轴
+    showAxes: true
   },
   mutations: {
     // 切换 2D / 3D 视图
@@ -19,6 +21,9 @@ export default new Vuex.Store({
     // 显示 / 隐藏网格
     showGrid (state) {
       state.showGrid = !state.showGrid
+    },
+    showAxes (state) {
+      state.showAxes = !state.showAxes
     }
   },
   actions: {

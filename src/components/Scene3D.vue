@@ -28,6 +28,9 @@ export default {
       material: null,
       mesh: null,
       grid: null,
+      xArrow: null,
+      yArrow: null,
+      zArrow: null,
       cloud: null,
       pcdLoader: null,
       mainCamera: null,
@@ -109,14 +112,14 @@ export default {
       var arrowLength = 30
       // 创建箭头
       // X 方向箭头
-      var xArrow = new THREE.ArrowHelper(new THREE.Vector3(1, 0, 0), new THREE.Vector3(0, 0, 0), arrowLength, 0xFF0000, 0.1 * arrowLength, 0.1 * arrowLength)
-      this.scene.add(xArrow)
+      this.xArrow = new THREE.ArrowHelper(new THREE.Vector3(1, 0, 0), new THREE.Vector3(0, 0, 0), arrowLength, 0xFF0000, 0.1 * arrowLength, 0.1 * arrowLength)
+      this.scene.add(this.xArrow)
       // Y 方向箭头
-      var yArrow = new THREE.ArrowHelper(new THREE.Vector3(0, 1, 0), new THREE.Vector3(0, 0, 0), arrowLength, 0x00FF00, 0.1 * arrowLength, 0.1 * arrowLength)
-      this.scene.add(yArrow)
+      this.yArrow = new THREE.ArrowHelper(new THREE.Vector3(0, 1, 0), new THREE.Vector3(0, 0, 0), arrowLength, 0x00FF00, 0.1 * arrowLength, 0.1 * arrowLength)
+      this.scene.add(this.yArrow)
       // Z 方向箭头
-      var zArrow = new THREE.ArrowHelper(new THREE.Vector3(0, 0, 1), new THREE.Vector3(0, 0, 0), arrowLength, 0x0000FF, 3, 0.1 * arrowLength)
-      this.scene.add(zArrow)
+      this.zArrow = new THREE.ArrowHelper(new THREE.Vector3(0, 0, 1), new THREE.Vector3(0, 0, 0), arrowLength, 0x0000FF, 3, 0.1 * arrowLength)
+      this.scene.add(this.zArrow)
     },
     // 创建点云
     createPointCloud () {
@@ -155,6 +158,10 @@ export default {
     renderScene () {
       // 显示或隐藏网格
       this.grid.visible = this.$store.state.showGrid
+      // 显示或隐藏坐标轴
+      this.xArrow.visible = this.$store.state.showAxes
+      this.yArrow.visible = this.$store.state.showAxes
+      this.zArrow.visible = this.$store.state.showAxes
       // 渲染 mainCamera
       this.mainRenderer.render(this.scene, this.mainCamera)
       // 渲染 leftCamera
@@ -196,6 +203,6 @@ export default {
   grid-template-rows: 50% 50%;
 }
 #scene_3d_main, #scene_3d_left, #scene_3d_top, #scene_3d_bottom {
-  border: 1px solid #888888;
+  border: 1px solid transparent;
 }
 </style>
