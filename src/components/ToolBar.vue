@@ -3,9 +3,9 @@
     <ul class="toolbar_level_1" v-for="item in content" :key="item.index">
       <svg class="icon" aria-hidden="true" v-on:click="('click' in item) ? item.click() : emptyClick()"><use v-bind:xlink:href="item.icon"></use></svg>
       <li class="toolbar_level_2" v-for="child in item.menu" :key="child.index">
-        <el-checkbox v-model="child.value" @change="child.change"/>
-        <svg class="icon" v-if="'icon' in child" aria-hidden="true" style="height: 100%"> <use v-bind:xlink:href="child.icon"></use></svg>
-        <a>{{child.title}}</a>
+        <el-checkbox class="toolbar_child" v-model="child.value" @change="child.change"/>
+        <svg class="icon" v-if="'icon' in child" aria-hidden="true" style="margin-left:10px;height: 100%"> <use v-bind:xlink:href="child.icon"></use></svg>
+        <a class="toolbar_child">{{child.title}}</a>
       </li>
     </ul>
   </div>
@@ -33,9 +33,6 @@ export default {
               title: '显示坐标轴',
               value: this.$store.state.showAxes,
               change: () => { this.showAxes() }
-            },
-            {
-              icon: '#icon-3D'
             }
           ]
         },
@@ -127,7 +124,7 @@ export default {
   background-color: #333B4F;
   color: #BBB;
   float: left;
-  width: 150px;
+  width: 200px;
   height: 30px;
   position:relative; /*只有设置 position 并且该属性值不为 static 时 z-index 生效 */
   z-index: 100;
@@ -143,6 +140,9 @@ export default {
 /* 【一级菜单】 hover 时显示【二级菜单】 */
 .toolbar_level_1:hover .toolbar_level_2 {
   display: flex;
+}
+.toolbar_child {
+  align-self: center;
 }
 
 </style>
