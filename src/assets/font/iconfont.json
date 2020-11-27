@@ -6,6 +6,48 @@
   "description": "",
   "glyphs": [
     {
+      "icon_id": "1643070",
+      "name": "导出",
+      "font_class": "share",
+      "unicode": "e61e",
+      "unicode_decimal": 58910
+    },
+    {
+      "icon_id": "7132659",
+      "name": "隐藏",
+      "font_class": "eye",
+      "unicode": "e626",
+      "unicode_decimal": 58918
+    },
+    {
+      "icon_id": "14642596",
+      "name": "camera",
+      "font_class": "camera",
+      "unicode": "eb0c",
+      "unicode_decimal": 60172
+    },
+    {
+      "icon_id": "1183244",
+      "name": "平移",
+      "font_class": "pingyi",
+      "unicode": "e659",
+      "unicode_decimal": 58969
+    },
+    {
+      "icon_id": "13015105",
+      "name": "旋转",
+      "font_class": "rotation",
+      "unicode": "e628",
+      "unicode_decimal": 58920
+    },
+    {
+      "icon_id": "16298248",
+      "name": "平移",
+      "font_class": "translation",
+      "unicode": "e603",
+      "unicode_decimal": 58883
+    },
+    {
       "icon_id": "18207340",
       "name": "轴",
       "font_class": "axes",

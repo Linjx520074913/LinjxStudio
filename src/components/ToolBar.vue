@@ -42,6 +42,36 @@ export default {
         {
           icon: '#icon-3D',
           click: () => { this.toggle3D() }
+        },
+        {
+          icon: '#icon-rotation'
+        },
+        {
+          icon: '#icon-camera'
+        },
+        {
+          icon: '#icon-translation'
+        },
+        {
+          icon: '#icon-translation'
+        },
+        {
+          icon: '#icon-translation'
+        },
+        {
+          icon: '#icon-translation'
+        },
+        {
+          icon: '#icon-translation'
+        },
+        {
+          icon: '#icon-translation'
+        },
+        {
+          icon: '#icon-eye'
+        },
+        {
+          icon: '#icon-share'
         }
       ]
     }
@@ -81,6 +111,9 @@ export default {
   color: #DEDEDE;
   /* 预先设置图标的边框，解决 hover 是抖动的问题 */
   /* border:1px solid transparent; */
+}
+.icon:hover {
+  color: #6A9DEA
 }
 /* 工具栏【一级菜单】 样式*/
 .toolbar_level_1 {
