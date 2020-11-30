@@ -3,6 +3,7 @@
     "version": "0.1.0",
     "private": true,
     "main": "background.js",
+    "author": "linjx - 阿爽逼",
     "scripts": {
         "serve": "vue-cli-service serve",
         "build": "vue-cli-service build",

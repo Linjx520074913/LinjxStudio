@@ -4,7 +4,17 @@
       <a class="menu_level_1_title">{{item.text}}</a>
       <li class="menu_level_2" v-for="child in item.menu" :key="child.index" @click="child.click()">
         <svg class="icon" v-if="'icon' in child" aria-hidden="true" style="height: 32px; margin-left: 10px; margin-right: 10px"> <use v-bind:xlink:href="child.icon"></use></svg>
-        <a>{{child.text}}</a>
+      <span v-if="'type' in child && child.type == 'upload'">
+        <el-upload
+          class="upload-demo"
+          :show-file-list="false"
+          action="https://jsonplaceholder.typicode.com/posts/"
+          :on-change="handleChange"
+          style="{cursor: pointer;}">
+          {{child.text}}
+        </el-upload>
+      </span>
+      <a v-else>{{child.text}}</a>
       </li>
     </ul>
     <el-dialog :visible.sync="popupVisible">
@@ -15,8 +25,12 @@
 
 <script>
 import { ipcRenderer } from 'electron'
+
 import About from './About'
 import License from './License'
+
+const { dialog } = require('electron').remote
+
 export default {
   name: 'MenuBar',
   components: {
@@ -29,13 +43,25 @@ export default {
         text: '文件(F)',
         menu: [
           {
-            text: '新建文件',
+            text: '打开',
             icon: '#icon-new',
             click: () => {
-              this.popupVisible = true
+              this.popupVisible = false
               this.popupComponent = ''
-              console.log('[新建文件] 被点击')
-            }
+              console.log('[打开] 被点击')
+              // var files = dialog.showOpenDialog({
+              //   title: '模型导入',
+              //   defaultPath: 'E:\\Practice\\electron-vue\\studio\\public\\models',
+              //   properties: ['openFile'],
+              //   filters: [
+              //     { name: 'Models', extensions: ['ply', 'obj', 'pcd'] }
+              //   ]
+              // }).then(result => {
+              //   console.log(result)
+              //   // this.$EventBus.$emit('openModel', file, result.filePaths[0])
+              // })
+            },
+            type: 'upload'
           },
           {
             text: '新建窗口',
@@ -123,8 +149,8 @@ export default {
     }
   },
   methods: {
-    getMethod (obj) {
-      console.log('aaaaaaa ' + obj)
+    handleChange (file, fileList) {
+      this.$EventBus.$emit('openModel', file.raw)
     }
   }
 }
@@ -179,5 +205,7 @@ export default {
 .menu_level_1:hover .menu_level_2{
   display: flex; /* 设置该属性时，li 中的元素从横向排列 */
 }
-
+.upload-demo {
+  float:left;
+}
 </style>

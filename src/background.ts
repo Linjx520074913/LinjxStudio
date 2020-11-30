@@ -1,6 +1,7 @@
 'use strict'
-import { app, BrowserWindow, globalShortcut } from 'electron'
+import { app, BrowserWindow, globalShortcut, protocol } from 'electron'
 import Studio from './main/Studio'
+import path from 'path'
 
 const isDevelopment = process.env.NODE_ENV !== 'production'
 

@@ -14,7 +14,8 @@ import * as THREE from 'three'
 import { OrbitControls } from 'three/examples/jsm/controls/OrbitControls'
 import { PCDLoader } from 'three/examples/jsm/loaders/PCDLoader'
 import { PLYLoader } from 'three/examples/jsm/loaders/PLYLoader'
-import { STLLoader } from 'three/examples/jsm/loaders/STLLoader.js'
+import { STLLoader } from 'three/examples/jsm/loaders/STLLoader'
+import { OBJLoader } from 'three/examples/jsm/loaders/OBJLoader'
 
 export default {
   name: 'Scene3D',
@@ -44,6 +45,7 @@ export default {
   methods: {
     initRenderer () {
       this.scene = new THREE.Scene()
+      this.scene.background = new THREE.Color(0xAAAAAA)
       this.initPreviewMain()
       this.initPreviewLeft()
 
@@ -57,9 +59,9 @@ export default {
       let height = this.$refs.scene_3d_main.clientHeight
       // 创建 Camera
       this.mainCamera = new THREE.PerspectiveCamera(45, width / height, 1, 1000)
-      this.mainCamera.position.x = 0
-      this.mainCamera.position.y = 20
-      this.mainCamera.position.z = 50
+      this.mainCamera.position.x = -25
+      this.mainCamera.position.y = 15
+      this.mainCamera.position.z = 20
       this.mainCamera.lookAt(this.scene.position)
 
       this.mainRenderer = new THREE.WebGLRenderer({ antialias: true })
@@ -80,8 +82,8 @@ export default {
       let height = this.$refs.scene_3d_left.clientHeight
       // 创建 Camera
       this.leftCamera = new THREE.PerspectiveCamera(45, width / height, 1, 1000)
-      this.leftCamera.position.x = 10
-      this.leftCamera.position.y = 0
+      this.leftCamera.position.x = 0
+      this.leftCamera.position.y = 40
       this.leftCamera.position.z = 0
       this.leftCamera.lookAt(this.scene.position)
 
@@ -100,7 +102,13 @@ export default {
     },
     // 创建网格辅助线
     createGrid () {
-      this.grid = new THREE.GridHelper(100, 100, 0x444444, 0x888888)
+      this.grid = new THREE.GridHelper(30, 30, 0x444444, 0x888888)
+      var array = this.grid.geometry.attributes.color.array
+      for (var i = 0; i < array.length; i += 60) {
+        for (var j = 0; j < 12; j++) {
+          array[i + j] = 0.26
+        }
+      }
       this.scene.add(this.grid)
     },
     // 创建坐标轴及箭头
@@ -109,7 +117,7 @@ export default {
       // var axes = new THREE.AxesHelper(3)
       // this.scene.add(axes)
 
-      var arrowLength = 30
+      var arrowLength = 15
       // 创建箭头
       // X 方向箭头
       this.xArrow = new THREE.ArrowHelper(new THREE.Vector3(1, 0, 0), new THREE.Vector3(0, 0, 0), arrowLength, 0xFF0000, 0.1 * arrowLength, 0.1 * arrowLength)
@@ -141,18 +149,6 @@ export default {
       this.scene.add(this.cloud)
     },
     loadModel () {
-      let scope = this
-      const loader = new PCDLoader()
-      loader.load('models/Zaghetto.pcd', function (points) {
-        var center = points.geometry.boundingSphere.center
-        // 模型太小，适当放大
-        points.geometry.scale(100, 100, 100)
-        points.geometry.translate(-center.x, -center.y, -center.z)
-        // 把模型转正，使面朝向 Z 轴正方向
-        points.geometry.rotateY(3)
-        points.geometry.rotateZ(3)
-        scope.scene.add(points)
-      })
     },
     // 渲染场景
     renderScene () {
@@ -189,6 +185,44 @@ export default {
   mounted () {
     this.initRenderer()
     this.renderScene()
+
+    this.$EventBus.$on('openModel', (file) => {
+      // 获取打开的模型文件的后缀
+      var filename = file.name
+      var extension = filename.split('.').pop().toLowerCase()
+      var reader = new FileReader()
+      console.log('======  ' + filename + '  ' + extension)
+      let scope = this
+      // 根据不同的后缀选择对应的模型加载器
+      switch (extension) {
+        case 'ply':
+          break
+        case 'pcd':
+          let scope = this
+          const loader = new PCDLoader()
+          loader.load('models/Zaghetto.pcd', function (points) {
+            var center = points.geometry.boundingSphere.center
+            // 模型太小，适当放大
+            points.geometry.scale(40, 40, 40)
+            points.geometry.translate(-center.x, -center.y, -center.z)
+            // 把模型转正，使面朝向 Z 轴正方向
+            points.geometry.rotateY(3)
+            points.geometry.rotateZ(3)
+            scope.scene.add(points)
+          })
+          break
+        case 'obj':
+          reader.addEventListener('load', function (event) {
+            var contents = event.target.result
+            var object = new OBJLoader().parse(contents)
+            scope.scene.add(object)
+          }, false)
+          reader.readAsText(file)
+          break
+        default:
+          break
+      }
+    })
   }
 }
 </script>

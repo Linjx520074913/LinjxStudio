@@ -16,9 +16,6 @@ export default {
 </script>
 
 <style>
-#app {
-
-}
 .icon {
   width: 1em;
   height: 1em;

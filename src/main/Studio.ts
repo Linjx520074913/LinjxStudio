@@ -1,7 +1,6 @@
 import { protocol, BrowserWindow, ipcMain } from 'electron'
 import { createProtocol } from 'vue-cli-plugin-electron-builder/lib'
 import installExtension, { VUEJS_DEVTOOLS } from 'electron-devtools-installer'
-import path from 'path'
 
 /// 导入 package.json 信息
 let pkg = require('../../package.json')
@@ -32,6 +31,7 @@ export default class Studio {
       title: pkg.name,
       icon: this.appIcon,
       webPreferences: {
+        webSecurity: false,
         // Use pluginOptions.nodeIntegration, leave this alone
         // See nklayman.github.io/vue-cli-plugin-electron-builder/guide/security.html#node-integration for more info
         nodeIntegration: (process.env
