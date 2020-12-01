@@ -1,5 +1,7 @@
 # studio
 
+![软件截图](./doc/screenshot.jpg)
+
 ## Project setup
 ```
 npm install
