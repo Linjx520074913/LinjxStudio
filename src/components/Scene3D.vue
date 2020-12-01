@@ -1,8 +1,23 @@
 <template>
   <div id="scene_3d_root" ref="scene_3d_root" v-resize="resizePreview" >
-    <div id="scene_3d_main" ref="scene_3d_main" @dblclick="doubleClick('scene_3d_main')"/>
-    <div id="scene_3d_left" ref="scene_3d_left" v-show='this.$store.state.show4Views==true' @dblclick="doubleClick('scene_3d_left')"/>
-    <div id="scene_3d_top" ref="scene_3d_top" v-show='this.$store.state.show4Views==true'/>
+    <div id="scene_3d_main" ref="scene_3d_main" @dblclick="doubleClick('scene_3d_main')">
+      <div class="prompt_container">
+        <svg class="view_icon" aria-hidden="true"><use xlink:href="#icon-main_view"></use></svg>
+        <a class="view_title">正视图</a>
+      </div>
+    </div>
+    <div id="scene_3d_left" ref="scene_3d_left" v-show='this.$store.state.show4Views==true' @dblclick="doubleClick('scene_3d_left')">
+      <div class="prompt_container">
+        <svg class="view_icon" aria-hidden="true"><use xlink:href="#icon-left_view"></use></svg>
+        <a class="view_title">侧视图</a>
+      </div>
+    </div>
+    <div id="scene_3d_top" ref="scene_3d_top" v-show='this.$store.state.show4Views==true'>
+      <div  class="prompt_container">
+        <svg class="view_icon" aria-hidden="true"><use xlink:href="#icon-top_view"></use></svg>
+        <a class="view_title">俯视图</a>
+      </div>
+    </div>
     <div id="scene_3d_bottom" ref="scene_3d_bottom" v-show='this.$store.state.show4Views==true'/>
   </div>
 </template>
@@ -36,10 +51,13 @@ export default {
       pcdLoader: null,
       mainCamera: null,
       leftCamera: null,
+      topCamera: null,
       mainRenderer: null,
       leftRenderer: null,
+      topRenderer: null,
       mainControl: null,
-      leftControl: null
+      leftControl: null,
+      topControl: null
     }
   },
   methods: {
@@ -48,6 +66,7 @@ export default {
       this.scene.background = new THREE.Color(0xAAAAAA)
       this.initPreviewMain()
       this.initPreviewLeft()
+      this.initPreviewTop()
 
       this.createGrid()
       this.createAxes()
@@ -59,9 +78,9 @@ export default {
       let height = this.$refs.scene_3d_main.clientHeight
       // 创建 Camera
       this.mainCamera = new THREE.PerspectiveCamera(45, width / height, 1, 1000)
-      this.mainCamera.position.x = -25
-      this.mainCamera.position.y = 15
-      this.mainCamera.position.z = 20
+      this.mainCamera.position.x = 0
+      this.mainCamera.position.y = 0
+      this.mainCamera.position.z = 15
       this.mainCamera.lookAt(this.scene.position)
 
       this.mainRenderer = new THREE.WebGLRenderer({ antialias: true })
@@ -82,8 +101,8 @@ export default {
       let height = this.$refs.scene_3d_left.clientHeight
       // 创建 Camera
       this.leftCamera = new THREE.PerspectiveCamera(45, width / height, 1, 1000)
-      this.leftCamera.position.x = 0
-      this.leftCamera.position.y = 40
+      this.leftCamera.position.x = -15
+      this.leftCamera.position.y = 0
       this.leftCamera.position.z = 0
       this.leftCamera.lookAt(this.scene.position)
 
@@ -96,9 +115,34 @@ export default {
       this.leftControl.enableDamping = true // an animation loop is required when either damping or auto-rotation are enabled
       this.leftControl.dampingFactor = 0.25
       this.leftControl.screenSpacePanning = false
+      this.leftControl.enableRotate = false
       this.leftControl.minDistance = 0.1
       this.leftControl.maxDistance = 100
       this.leftControl.maxPolarAngle = Math.PI / 2
+    },
+    initPreviewTop () {
+      let width = this.$refs.scene_3d_top.clientWidth
+      let height = this.$refs.scene_3d_top.clientHeight
+      // 创建 Camera
+      this.topCamera = new THREE.PerspectiveCamera(45, width / height, 1, 1000)
+      this.topCamera.position.x = 0
+      this.topCamera.position.y = 15
+      this.topCamera.position.z = 0
+      this.topCamera.lookAt(this.scene.position)
+
+      this.topRenderer = new THREE.WebGLRenderer({ antialias: true })
+      this.topRenderer.setSize(width, height)
+      this.topRenderer.shadowMap.enable = true
+      this.$refs.scene_3d_top.appendChild(this.topRenderer.domElement)
+
+      this.topControl = new OrbitControls(this.topCamera, this.topRenderer.domElement)
+      this.topControl.enableDamping = true // an animation loop is required when either damping or auto-rotation are enabled
+      this.topControl.dampingFactor = 0.25
+      this.topControl.screenSpacePanning = false
+      this.topControl.enableRotate = false
+      this.topControl.minDistance = 1
+      this.topControl.maxDistance = 10000
+      this.topControl.maxPolarAngle = Math.PI / 2
     },
     // 创建网格辅助线
     createGrid () {
@@ -149,6 +193,18 @@ export default {
       this.scene.add(this.cloud)
     },
     loadModel () {
+      let scope = this
+      const loader = new PCDLoader()
+      loader.load('models/Zaghetto.pcd', function (points) {
+        var center = points.geometry.boundingSphere.center
+        // 模型太小，适当放大
+        points.geometry.scale(50, 50, 50)
+        points.geometry.translate(-center.x, -center.y, -center.z)
+        // 把模型转正，使面朝向 Z 轴正方向
+        points.geometry.rotateY(3)
+        points.geometry.rotateZ(3)
+        scope.scene.add(points)
+      })
     },
     // 渲染场景
     renderScene () {
@@ -162,6 +218,8 @@ export default {
       this.mainRenderer.render(this.scene, this.mainCamera)
       // 渲染 leftCamera
       this.leftRenderer.render(this.scene, this.leftCamera)
+      // 渲染 topCamera
+      this.topRenderer.render(this.scene, this.topCamera)
       // 刷新
       requestAnimationFrame(this.renderScene)
     },
@@ -169,7 +227,6 @@ export default {
     resizePreview () {
       let mainPreviewW = this.$refs.scene_3d_main.clientWidth
       let mainPreviewH = this.$refs.scene_3d_main.clientHeight
-      console.log('W = ' + mainPreviewW + ' ' + mainPreviewH)
       this.mainCamera.aspect = mainPreviewW / mainPreviewH
       this.mainCamera.updateProjectionMatrix()
       this.mainRenderer.setSize(mainPreviewW, mainPreviewH)
@@ -179,6 +236,12 @@ export default {
       this.leftCamera.aspect = leftPreviewW / leftPreviewH
       this.leftCamera.updateProjectionMatrix()
       this.leftRenderer.setSize(leftPreviewW, leftPreviewH)
+
+      let topPreviewW = this.$refs.scene_3d_top.clientWidth
+      let topPreviewH = this.$refs.scene_3d_top.clientHeight
+      this.topCamera.aspect = topPreviewW / topPreviewH
+      this.topCamera.updateProjectionMatrix()
+      this.topRenderer.setSize(topPreviewW, topPreviewH)
     },
     doubleClick (id) {
       switch (id) {
@@ -197,8 +260,9 @@ export default {
       // 动态改变 scene_3d_root 样式，达到显示 4 视图效果
       if (show4Views) {
         this.$refs.scene_3d_root.style.cssText = 'width:100%; height=calc(100vh - 96px);display: grid;flex: 1;grid-template-columns: 50% 50%;grid-template-rows: 50% 50%'
-        this.$refs.scene_3d_main.style.cssText = 'border:1 px solid transparent;width:100%; height:100%;'
+        this.$refs.scene_3d_main.style.cssText = 'border:1 px solid transparent;width:100%; height:100%;display:flex;'
         this.$refs.scene_3d_left.style.cssText = 'border:1 px solid transparent;width:100%; height:100%;'
+        this.$refs.scene_3d_top.style.cssText = 'border:1 px solid transparent;width:100%; height:100%;'
       } else {
         this.$refs.scene_3d_root.style.cssText = 'border:1 px solid transparent;width:100%; height=calc(100vh - 96px);display: grid;flex: 1;grid-template-columns: 100% 0%;grid-template-rows: 100% 0%'
         this.$refs.scene_3d_main.style.cssText = 'border:1 px solid transparent;width:100%; height=calc(100vh - 96px)'
@@ -261,7 +325,7 @@ export default {
 }
 </script>
 
-<style>
+<style scoped>
 #scene_3d_root {
   width: 100%;
   height: calc(100vh - 96px);
@@ -272,5 +336,19 @@ export default {
 }
 #scene_3d_main, #scene_3d_left, #scene_3d_top, #scene_3d_bottom {
   border: 1px solid transparent;
+}
+/* 视图左上角图标和标题样式 */
+.prompt_container {
+  position:absolute;
+  z-index:10;
+}
+.view_icon {
+  width:40px;
+  height:40px;
+}
+.view_title {
+  float:right;
+  height:40px;
+  line-height:40px;
 }
 </style>

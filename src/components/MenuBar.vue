@@ -17,7 +17,7 @@
       <a v-else>{{child.text}}</a>
       </li>
     </ul>
-    <el-dialog :visible.sync="popupVisible">
+    <el-dialog :visible.sync="popupVisible" id="popup_dialog">
       <component :is="popupComponent"/>
     </el-dialog>
   </div>
@@ -205,7 +205,11 @@ export default {
 .menu_level_1:hover .menu_level_2{
   display: flex; /* 设置该属性时，li 中的元素从横向排列 */
 }
-.upload-demo {
-  float:left;
+/* el-dialog 弹窗默认为白色背景，此为修改弹窗样式 */
+.el-dialog__header {
+  background-color: #202531
+}
+.el-dialog__body {
+  background-color: #202531
 }
 </style>

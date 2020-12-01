@@ -6,6 +6,27 @@
   "description": "",
   "glyphs": [
     {
+      "icon_id": "10000645",
+      "name": "主视图",
+      "font_class": "main_view",
+      "unicode": "e602",
+      "unicode_decimal": 58882
+    },
+    {
+      "icon_id": "10000648",
+      "name": "俯视图 (2)",
+      "font_class": "top_view",
+      "unicode": "e604",
+      "unicode_decimal": 58884
+    },
+    {
+      "icon_id": "10377712",
+      "name": "侧视图",
+      "font_class": "left_view",
+      "unicode": "e605",
+      "unicode_decimal": 58885
+    },
+    {
       "icon_id": "1643070",
       "name": "导出",
       "font_class": "share",
