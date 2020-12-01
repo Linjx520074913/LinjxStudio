@@ -27,7 +27,7 @@ export default new Vuex.Store({
     showAxes (state) {
       state.showAxes = !state.showAxes
     },
-    toggleVies (state) {
+    toggleViews (state) {
       state.show4Views = !state.show4Views
     }
   },

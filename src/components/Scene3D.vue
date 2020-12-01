@@ -2,8 +2,8 @@
   <div id="scene_3d_root" ref="scene_3d_root" v-resize="resizePreview" >
     <div id="scene_3d_main" ref="scene_3d_main" @dblclick="doubleClick('scene_3d_main')"/>
     <div id="scene_3d_left" ref="scene_3d_left" v-show='this.$store.state.show4Views==true' @dblclick="doubleClick('scene_3d_left')"/>
-    <div id="scene_3d_top" ref="scene_3d_left" v-show='this.$store.state.show4Views==true'/>
-    <div id="scene_3d_bottom" ref="scene_3d_left" v-show='this.$store.state.show4Views==true'/>
+    <div id="scene_3d_top" ref="scene_3d_top" v-show='this.$store.state.show4Views==true'/>
+    <div id="scene_3d_bottom" ref="scene_3d_bottom" v-show='this.$store.state.show4Views==true'/>
   </div>
 </template>
 
@@ -181,11 +181,33 @@ export default {
       this.leftRenderer.setSize(leftPreviewW, leftPreviewH)
     },
     doubleClick (id) {
+      switch (id) {
+        case 'scene_3d_main':
+          this.$store.commit('toggleViews')
+          this.toggleViews(this.$store.state.show4Views)
+          break
+        case 'scene_3d_left':
+          break
+        default:
+          break
+      }
+    },
+    toggleViews (show4Views) {
+      console.log('toggleViews ' + show4Views)
+      // 动态改变 scene_3d_root 样式，达到显示 4 视图效果
+      if (show4Views) {
+        this.$refs.scene_3d_root.style.cssText = 'width:100%; height=calc(100vh - 96px);display: grid;flex: 1;grid-template-columns: 50% 50%;grid-template-rows: 50% 50%'
+        this.$refs.scene_3d_main.style.cssText = 'border:1 px solid transparent;width:100%; height:100%;'
+        this.$refs.scene_3d_left.style.cssText = 'border:1 px solid transparent;width:100%; height:100%;'
+      } else {
+        this.$refs.scene_3d_root.style.cssText = 'border:1 px solid transparent;width:100%; height=calc(100vh - 96px);display: grid;flex: 1;grid-template-columns: 100% 0%;grid-template-rows: 100% 0%'
+        this.$refs.scene_3d_main.style.cssText = 'border:1 px solid transparent;width:100%; height=calc(100vh - 96px)'
+      }
+      // 同步修改 renderer 大小
+      this.resizePreview()
     }
   },
   created () {
-    // this.$EventBus.$emit('toggleVies', this.$store.state.show4Vies)
-    // this.setViewStyle()
   },
   mounted () {
     this.initRenderer()
@@ -229,16 +251,12 @@ export default {
       }
     })
 
-    this.$EventBus.$on('toggleVies', (show4Views) => {
-      // 动态 scene_3d_root 样式，达到显示 4 视图效果
-      if (show4Views) {
-        this.$refs.scene_3d_root.style.cssText = 'width:100%; height=calc(100vh - 96px);display: grid;flex: 1;grid-template-columns: 50% 50%;grid-template-rows: 50% 50%'
-      } else {
-        this.$refs.scene_3d_root.style.cssText = 'width:100%; height=calc(100vh - 96px);display: grid;flex: 1;grid-template-columns: 100% 0%;grid-template-rows: 100% 0%'
-      }
-      // 同步修改 renderer 大小
-      this.resizePreview()
+    this.$EventBus.$on('toggleViews', (show4Views) => {
+      console.log('toggleViews ' + show4Views)
+      this.toggleViews(this.$store.state.show4Views)
     })
+
+    this.toggleViews(this.$store.state.show4Views)
   }
 }
 </script>

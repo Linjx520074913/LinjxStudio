@@ -94,8 +94,8 @@ export default {
       this.$store.commit('showAxes')
     },
     toggleVies () {
-      this.$store.commit('toggleVies')
-      this.$EventBus.$emit('toggleVies', this.$store.state.show4Views)
+      this.$store.commit('toggleViews')
+      this.$EventBus.$emit('toggleViews', this.$store.state.show4Views)
     },
     // 空点击函数，当菜单项没有具体指明点击函数时，调用该函数
     emptyClick () {
