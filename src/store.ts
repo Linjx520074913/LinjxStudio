@@ -11,7 +11,9 @@ export default new Vuex.Store({
     // 是否显示网格
     showGrid: true,
     // 是否显示坐标轴
-    showAxes: true
+    showAxes: true,
+    // 是否显示 4 视图
+    show4Views: false
   },
   mutations: {
     // 切换 2D / 3D 视图
@@ -24,6 +26,9 @@ export default new Vuex.Store({
     },
     showAxes (state) {
       state.showAxes = !state.showAxes
+    },
+    toggleVies (state) {
+      state.show4Views = !state.show4Views
     }
   },
   actions: {

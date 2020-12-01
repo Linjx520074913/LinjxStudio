@@ -33,6 +33,12 @@ export default {
               title: '显示坐标轴',
               value: this.$store.state.showAxes,
               change: () => { this.showAxes() }
+            },
+            {
+              icon: '#icon-axes',
+              title: '4 视图',
+              value: this.$store.state.show4Views,
+              change: () => { this.toggleVies() }
             }
           ]
         },
@@ -80,10 +86,16 @@ export default {
       this.icon3DColor = this.$store.state.is3D ? '6A9DEA' : 'DEDEDE'
     },
     showGrid () {
+      // 改变 showGrid 值， 【Scene3D】 渲染的时候，会根据该值决定是否渲染网格
       this.$store.commit('showGrid')
     },
     showAxes () {
+      // 改变 showAxes 值， 【Scene3D】 渲染的时候，会根据该值决定是否渲染坐标轴
       this.$store.commit('showAxes')
+    },
+    toggleVies () {
+      this.$store.commit('toggleVies')
+      this.$EventBus.$emit('toggleVies', this.$store.state.show4Views)
     },
     // 空点击函数，当菜单项没有具体指明点击函数时，调用该函数
     emptyClick () {

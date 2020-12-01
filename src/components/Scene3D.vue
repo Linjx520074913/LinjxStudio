@@ -1,9 +1,9 @@
 <template>
   <div id="scene_3d_root" ref="scene_3d_root" v-resize="resizePreview" >
     <div id="scene_3d_main" ref="scene_3d_main" @dblclick="doubleClick('scene_3d_main')"/>
-    <div id="scene_3d_left" ref="scene_3d_left" @dblclick="doubleClick('scene_3d_left')"/>
-    <div id="scene_3d_top"/>
-    <div id="scene_3d_bottom"/>
+    <div id="scene_3d_left" ref="scene_3d_left" v-show='this.$store.state.show4Views==true' @dblclick="doubleClick('scene_3d_left')"/>
+    <div id="scene_3d_top" ref="scene_3d_left" v-show='this.$store.state.show4Views==true'/>
+    <div id="scene_3d_bottom" ref="scene_3d_left" v-show='this.$store.state.show4Views==true'/>
   </div>
 </template>
 
@@ -169,6 +169,7 @@ export default {
     resizePreview () {
       let mainPreviewW = this.$refs.scene_3d_main.clientWidth
       let mainPreviewH = this.$refs.scene_3d_main.clientHeight
+      console.log('W = ' + mainPreviewW + ' ' + mainPreviewH)
       this.mainCamera.aspect = mainPreviewW / mainPreviewH
       this.mainCamera.updateProjectionMatrix()
       this.mainRenderer.setSize(mainPreviewW, mainPreviewH)
@@ -181,6 +182,10 @@ export default {
     },
     doubleClick (id) {
     }
+  },
+  created () {
+    // this.$EventBus.$emit('toggleVies', this.$store.state.show4Vies)
+    // this.setViewStyle()
   },
   mounted () {
     this.initRenderer()
@@ -223,6 +228,17 @@ export default {
           break
       }
     })
+
+    this.$EventBus.$on('toggleVies', (show4Views) => {
+      // 动态 scene_3d_root 样式，达到显示 4 视图效果
+      if (show4Views) {
+        this.$refs.scene_3d_root.style.cssText = 'width:100%; height=calc(100vh - 96px);display: grid;flex: 1;grid-template-columns: 50% 50%;grid-template-rows: 50% 50%'
+      } else {
+        this.$refs.scene_3d_root.style.cssText = 'width:100%; height=calc(100vh - 96px);display: grid;flex: 1;grid-template-columns: 100% 0%;grid-template-rows: 100% 0%'
+      }
+      // 同步修改 renderer 大小
+      this.resizePreview()
+    })
   }
 }
 </script>
@@ -233,8 +249,8 @@ export default {
   height: calc(100vh - 96px);
   display: grid;
   flex: 1;
-  grid-template-columns: 50% 50%;
-  grid-template-rows: 50% 50%;
+  grid-template-columns: 100% 0%;
+  grid-template-rows: 100% 0%;
 }
 #scene_3d_main, #scene_3d_left, #scene_3d_top, #scene_3d_bottom {
   border: 1px solid transparent;
