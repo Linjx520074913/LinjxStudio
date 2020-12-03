@@ -56,11 +56,14 @@ export default {
               //   filters: [
               //     { name: 'Models', extensions: ['ply', 'obj', 'pcd'] }
               //   ]
-              // }).then(result => {
-              //   console.log(result)
+              // }).then(files => {
+              //   if (files) {
+              //     console.log(files)
+              //   }
               //   // this.$EventBus.$emit('openModel', file, result.filePaths[0])
               // })
             },
+            // 添加该属性，在渲染的时候就会多出一个 input 标签供选择文件
             type: 'upload'
           },
           {
@@ -81,14 +84,34 @@ export default {
         text: '编辑(E)',
         menu: [
           {
-            text: '剪切',
+            text: '人像',
             icon: '#icon-ic_wendu',
-            click: () => { console.log('[剪切] 被点击') }
+            click: () => {
+              console.log('[剪切] 被点击')
+              this.$EventBus.$emit('loadModel', 'models/Zaghetto.pcd', 'Zaghetto.pcd')
+            }
           },
           {
-            text: '复制',
+            text: '树',
             icon: '#icon-ic_anzhuangshebei',
-            click: () => { console.log('[复制] 被点击') }
+            click: () => {
+              console.log('[复制] 被点击')
+              this.$EventBus.$emit('loadModel', 'models/obj/tree.obj', 'tree.obj')
+            }
+          },
+          {
+            text: 'elf.dae',
+            icon: '#icon-ic_wendu',
+            click: () => {
+              this.$EventBus.$emit('loadModel', 'models/collada/elf/elf.dae', 'elf.dae')
+            }
+          },
+          {
+            text: '添加聚光灯',
+            icon: '#icon-ic_wendu',
+            click: () => {
+              this.$EventBus.$emit('addSpotLight')
+            }
           },
           {
             text: '查找',

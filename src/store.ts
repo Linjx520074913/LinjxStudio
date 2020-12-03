@@ -13,7 +13,7 @@ export default new Vuex.Store({
     // 是否显示坐标轴
     showAxes: true,
     // 是否显示 4 视图
-    show4Views: false
+    show4Views: true
   },
   mutations: {
     // 切换 2D / 3D 视图

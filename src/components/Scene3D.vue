@@ -31,6 +31,8 @@ import { PCDLoader } from 'three/examples/jsm/loaders/PCDLoader'
 import { PLYLoader } from 'three/examples/jsm/loaders/PLYLoader'
 import { STLLoader } from 'three/examples/jsm/loaders/STLLoader'
 import { OBJLoader } from 'three/examples/jsm/loaders/OBJLoader'
+import { ColladaLoader } from 'three/examples/jsm/loaders/ColladaLoader'
+import { SpotLight } from '../ts/SpotLight'
 
 export default {
   name: 'Scene3D',
@@ -70,8 +72,8 @@ export default {
 
       this.createGrid()
       this.createAxes()
+
       // this.createPointCloud()
-      this.loadModel()
     },
     initPreviewMain () {
       let width = this.$refs.scene_3d_main.clientWidth
@@ -126,7 +128,7 @@ export default {
       // 创建 Camera
       this.topCamera = new THREE.PerspectiveCamera(45, width / height, 1, 1000)
       this.topCamera.position.x = 0
-      this.topCamera.position.y = 15
+      this.topCamera.position.y = 45
       this.topCamera.position.z = 0
       this.topCamera.lookAt(this.scene.position)
 
@@ -192,19 +194,63 @@ export default {
       this.cloud = new THREE.PointCloud(this.geometry, this.material)
       this.scene.add(this.cloud)
     },
-    loadModel () {
+    loadModel (path, fileName) {
+      // 获取打开的模型文件的后缀
+      var extension = fileName.split('.').pop().toLowerCase()
+      // var reader = new FileReader()
       let scope = this
-      const loader = new PCDLoader()
-      loader.load('models/Zaghetto.pcd', function (points) {
-        var center = points.geometry.boundingSphere.center
-        // 模型太小，适当放大
-        points.geometry.scale(50, 50, 50)
-        points.geometry.translate(-center.x, -center.y, -center.z)
-        // 把模型转正，使面朝向 Z 轴正方向
-        points.geometry.rotateY(3)
-        points.geometry.rotateZ(3)
-        scope.scene.add(points)
-      })
+      // 根据不同的后缀选择对应的模型加载器
+      switch (extension) {
+        case 'ply':
+          break
+        case 'pcd':
+          var pcdLoader = new PCDLoader()
+          pcdLoader.load(path, function (points) {
+            var center = points.geometry.boundingSphere.center
+            // 模型太小，适当放大
+            points.geometry.scale(40, 40, 40)
+            points.geometry.translate(-center.x, -center.y, -center.z)
+            // 把模型转正，使面朝向 Z 轴正方向
+            points.geometry.rotateY(3)
+            points.geometry.rotateZ(3)
+            scope.scene.add(points)
+          })
+          break
+        case 'dae':
+          var colladaLoader = new ColladaLoader()
+          colladaLoader.load(path, function (collada) {
+            scope.scene.add(collada.scene)
+          })
+          break
+        case 'obj':
+          // reader.addEventListener('load', function (event) {
+          //   var contents = event.target.result
+          //   var object = new OBJLoader().parse(contents)
+          //   scope.scene.add(object)
+          // }, false)
+          // reader.readAsText(file)
+          var objLoader = new OBJLoader()
+          objLoader.load(path, function (obj) {
+            scope.scene.add(obj)
+          }, () => {}, () => {})
+          break
+        default:
+          break
+      }
+      // let scope = this
+      // const loader = new PCDLoader()
+      // loader.load('models/Zaghetto.pcd', function (points) {
+      //   var center = points.geometry.boundingSphere.center
+      //   // 模型太小，适当放大
+      //   points.geometry.scale(50, 50, 50)
+      //   points.geometry.colors = 0xFF0000
+      //   points.geometry.translate(-center.x, -center.y, -center.z)
+      //   // 把模型转正，使面朝向 Z 轴正方向
+      //   points.geometry.rotateY(3)
+      //   points.geometry.rotateZ(3)
+      //   scope.scene.add(points)
+      // })
+      // 加载模型
     },
     // 渲染场景
     renderScene () {
@@ -225,6 +271,7 @@ export default {
     },
     // preview 区域大小改变处理
     resizePreview () {
+      console.log('resizePreview')
       let mainPreviewW = this.$refs.scene_3d_main.clientWidth
       let mainPreviewH = this.$refs.scene_3d_main.clientHeight
       this.mainCamera.aspect = mainPreviewW / mainPreviewH
@@ -269,7 +316,20 @@ export default {
       }
       // 同步修改 renderer 大小
       this.resizePreview()
+    },
+    addLight (type) {
+      switch (type) {
+        case 'SpotLight':
+          var spotLight = new SpotLight(new THREE.Color(0xFFFFFF), new THREE.Vector3(0, 10, 0))
+          spotLight.attachToScene(this.scene)
+          break
+        case 'AmbientLight':
+          var ambient = new THREE.AmbientLight(0xF0FF0D)
+          this.scene.add(ambient)
+          break
+      }
     }
+
   },
   created () {
   },
@@ -278,46 +338,20 @@ export default {
     this.renderScene()
 
     this.$EventBus.$on('openModel', (file) => {
-      // 获取打开的模型文件的后缀
-      var filename = file.name
-      var extension = filename.split('.').pop().toLowerCase()
-      var reader = new FileReader()
-      console.log('======  ' + filename + '  ' + extension)
-      let scope = this
-      // 根据不同的后缀选择对应的模型加载器
-      switch (extension) {
-        case 'ply':
-          break
-        case 'pcd':
-          let scope = this
-          const loader = new PCDLoader()
-          loader.load('models/Zaghetto.pcd', function (points) {
-            var center = points.geometry.boundingSphere.center
-            // 模型太小，适当放大
-            points.geometry.scale(40, 40, 40)
-            points.geometry.translate(-center.x, -center.y, -center.z)
-            // 把模型转正，使面朝向 Z 轴正方向
-            points.geometry.rotateY(3)
-            points.geometry.rotateZ(3)
-            scope.scene.add(points)
-          })
-          break
-        case 'obj':
-          reader.addEventListener('load', function (event) {
-            var contents = event.target.result
-            var object = new OBJLoader().parse(contents)
-            scope.scene.add(object)
-          }, false)
-          reader.readAsText(file)
-          break
-        default:
-          break
-      }
+      this.loadModel()
     })
 
     this.$EventBus.$on('toggleViews', (show4Views) => {
       console.log('toggleViews ' + show4Views)
       this.toggleViews(this.$store.state.show4Views)
+    })
+
+    this.$EventBus.$on('loadModel', (path, fileName) => {
+      this.loadModel(path, fileName)
+    })
+
+    this.$EventBus.$on('addSpotLight', () => {
+      this.addLight('SpotLight')
     })
 
     this.toggleViews(this.$store.state.show4Views)
@@ -340,7 +374,7 @@ export default {
 /* 视图左上角图标和标题样式 */
 .prompt_container {
   position:absolute;
-  z-index:10;
+  z-index:5;
 }
 .view_icon {
   width:40px;

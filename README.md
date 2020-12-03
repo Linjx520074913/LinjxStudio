@@ -26,3 +26,6 @@ npm run test
 ```
 npm run lint
 ```
+
+# 打包
+要把 public 整个文件夹拷贝到可执行程序下
