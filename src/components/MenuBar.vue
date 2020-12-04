@@ -217,17 +217,22 @@ export default {
   display: none; /* 二级菜单默认隐藏 */
   user-select: none
 }
-/* 【二级菜单】：hover 时改变背景颜色 */
-.menu_level_2:hover{
-  background-color: #1F2633;
+
+/*【二级菜单】：点击时隐藏 
+.menu_level_1 .menu_level_2:active{
+  display: none
 }
-.menu_level_2:active{
-  display: none;
-}
+*/
 /* 【一级菜单】悬停时显示 【二级菜单栏】 */
 .menu_level_1:hover .menu_level_2{
   display: flex; /* 设置该属性时，li 中的元素从横向排列 */
 }
+/* 【二级菜单】：hover 时改变背景颜色 */
+.menu_level_1 .menu_level_2:hover{
+  background-color: #1F2633;
+}
+
+
 /* el-dialog 弹窗默认为白色背景，此为修改弹窗样式 */
 .el-dialog__header {
   background-color: #202531

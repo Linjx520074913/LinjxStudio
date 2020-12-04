@@ -33,6 +33,7 @@ import { STLLoader } from 'three/examples/jsm/loaders/STLLoader'
 import { OBJLoader } from 'three/examples/jsm/loaders/OBJLoader'
 import { ColladaLoader } from 'three/examples/jsm/loaders/ColladaLoader'
 import { SpotLight } from '../ts/SpotLight'
+import { ipcRenderer } from 'electron'
 
 export default {
   name: 'Scene3D',
@@ -41,7 +42,7 @@ export default {
   },
   data () {
     return {
-      scene: null,
+      scene: new THREE.Scene(),
       geometry: null,
       material: null,
       mesh: null,
@@ -59,12 +60,15 @@ export default {
       topRenderer: null,
       mainControl: null,
       leftControl: null,
-      topControl: null
+      topControl: null,
+      // 鼠标在 scene_main 上的归一化坐标，范围为[-1,1]
+      normalizeMouse: new THREE.Vector2(),
+      rayCaster: new THREE.Raycaster(),
+      intersected: null
     }
   },
   methods: {
     initRenderer () {
-      this.scene = new THREE.Scene()
       this.scene.background = new THREE.Color(0xAAAAAA)
       this.initPreviewMain()
       this.initPreviewLeft()
@@ -254,20 +258,40 @@ export default {
     },
     // 渲染场景
     renderScene () {
+      // 刷新
+      requestAnimationFrame(this.renderScene)
+
       // 显示或隐藏网格
-      this.grid.visible = this.$store.state.showGrid
+      if (this.grid != null) {
+        this.grid.visible = this.$store.state.showGrid
+      }
+
       // 显示或隐藏坐标轴
       this.xArrow.visible = this.$store.state.showAxes
       this.yArrow.visible = this.$store.state.showAxes
       this.zArrow.visible = this.$store.state.showAxes
+
+      // 通过摄像机和鼠标位置更新射线
+      // this.rayCaster.setFromCamera(this.normalizeMouse, this.mainCamera)
+      // var standarVec = new THREE.Vector3(this.normalizeMouse.x, this.normalizeMouse.y, 1)
+      // var worldVec = standarVec.unproject(this.mainCamera)
+      // var ray = worldVec.sub(this.mainCamera.position).normalize()
+      // var rayCaster = new THREE.Raycaster(this.mainCamera.position, ray)
+      // // 计算射线和物体的交点
+      // var intersects = rayCaster.intersectObjects(this.scene.children, true)
+      // if (intersects.length > 0) {
+      //   console.log(intersects)
+      //   if (this.intersected !== intersects[0].object) {
+      //     if (this.intersected) this.intersected.material.emissive.setHex(this.intersected.currentHex)
+      //   }
+      // }
+
       // 渲染 mainCamera
       this.mainRenderer.render(this.scene, this.mainCamera)
       // 渲染 leftCamera
       this.leftRenderer.render(this.scene, this.leftCamera)
       // 渲染 topCamera
       this.topRenderer.render(this.scene, this.topCamera)
-      // 刷新
-      requestAnimationFrame(this.renderScene)
     },
     // preview 区域大小改变处理
     resizePreview () {
@@ -328,8 +352,14 @@ export default {
           this.scene.add(ambient)
           break
       }
+    },
+    handleMouseMoveEvent (event) {
+      // 坐标归一化,转换到标准设备坐标系
+      // 设备标准坐标系原点在中心，x 往右为正方向 [-1, 1], y 往上为正方向 [-1, 1]
+      var sceneMain = this.$refs.scene_3d_main
+      this.normalizeMouse.x = (event.offsetX / sceneMain.getBoundingClientRect().width) * 2 - 1
+      this.normalizeMouse.y = -(event.offsetY / sceneMain.getBoundingClientRect().height) * 2 + 1
     }
-
   },
   created () {
   },
@@ -355,6 +385,8 @@ export default {
     })
 
     this.toggleViews(this.$store.state.show4Views)
+
+    this.$refs.scene_3d_main.addEventListener('mousemove', this.handleMouseMoveEvent, false)
   }
 }
 </script>

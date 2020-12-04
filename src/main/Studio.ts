@@ -89,5 +89,8 @@ export default class Studio {
     ipcMain.on('closeWindow', () => {
       this.close()
     })
+    // ipcMain.on('updatePos', (event, x, y) => {
+    //   console.log(x + ' ' + y)
+    // })
   }
 }
