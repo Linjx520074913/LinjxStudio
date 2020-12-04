@@ -1,10 +1,11 @@
 import * as THREE from 'three'
-import Light from './Light'
+import { ExtLight } from './ExtLight'
 
-export class SpotLight extends Light {
+export class ExtSpotLight extends ExtLight {
   constructor (col: THREE.Color, pos: THREE.Vector3) {
     super(col, pos)
     this.light = new THREE.SpotLight(col)
-    this.light.position.set(pos.x, pos.y, pos.z)
+
+    this.init()
   }
 }

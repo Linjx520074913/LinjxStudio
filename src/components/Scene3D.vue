@@ -32,7 +32,7 @@ import { PLYLoader } from 'three/examples/jsm/loaders/PLYLoader'
 import { STLLoader } from 'three/examples/jsm/loaders/STLLoader'
 import { OBJLoader } from 'three/examples/jsm/loaders/OBJLoader'
 import { ColladaLoader } from 'three/examples/jsm/loaders/ColladaLoader'
-import { SpotLight } from '../ts/SpotLight'
+import { ExtSpotLight } from '../ts/ExtSpotLight'
 import { ipcRenderer } from 'electron'
 
 export default {
@@ -344,8 +344,8 @@ export default {
     addLight (type) {
       switch (type) {
         case 'SpotLight':
-          var spotLight = new SpotLight(new THREE.Color(0xFFFFFF), new THREE.Vector3(0, 10, 0))
-          spotLight.attachToScene(this.scene)
+          var spotLight = new ExtSpotLight(new THREE.Color(0xFFFFFF), new THREE.Vector3(0, 10, 0))
+          this.scene.add(spotLight)
           break
         case 'AmbientLight':
           var ambient = new THREE.AmbientLight(0xF0FF0D)
