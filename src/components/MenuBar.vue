@@ -1,21 +1,23 @@
 <template>
   <div id="menu_root">
-    <ul class="menu_level_1" v-for="item in content" :key="item.index">
+    <ul class="menu_level_1" v-for="item in content" :key="item.index" @click="toggleMenu2Active()">
       <a class="menu_level_1_title">{{item.text}}</a>
-      <li class="menu_level_2" v-for="child in item.menu" :key="child.index" @click="child.click()">
-        <svg class="icon" v-if="'icon' in child" aria-hidden="true" style="height: 32px; margin-left: 10px; margin-right: 10px"> <use v-bind:xlink:href="child.icon"></use></svg>
-      <span v-if="'type' in child && child.type == 'upload'">
-        <el-upload
-          class="upload-demo"
-          :show-file-list="false"
-          action="https://jsonplaceholder.typicode.com/posts/"
-          :on-change="handleChange"
-          style="{cursor: pointer;}">
-          {{child.text}}
-        </el-upload>
-      </span>
-      <a v-else>{{child.text}}</a>
-      </li>
+      <div v-if="isMenu2Active">
+        <li class="menu_level_2" v-for="child in item.menu" :key="child.index" @click="child.click()">
+          <svg class="icon" v-if="'icon' in child" aria-hidden="true" style="height: 32px; margin-left: 10px; margin-right: 10px"> <use v-bind:xlink:href="child.icon"></use></svg>
+          <span v-if="'type' in child && child.type == 'upload'">
+            <el-upload
+              class="upload-demo"
+              :show-file-list="false"
+              action="https://jsonplaceholder.typicode.com/posts/"
+              :on-change="handleChange"
+              style="{cursor: pointer;}">
+              {{child.text}}
+            </el-upload>
+          </span>
+          <a v-else>{{child.text}}</a>
+        </li>
+      </div>
     </ul>
     <el-dialog :visible.sync="popupVisible" id="popup_dialog">
       <component :is="popupComponent"/>
@@ -168,12 +170,16 @@ export default {
       }
       ],
       popupVisible: false,
-      popupComponent: ''
+      popupComponent: '',
+      isMenu2Active: false
     }
   },
   methods: {
     handleChange (file, fileList) {
       this.$EventBus.$emit('openModel', file.raw)
+    },
+    toggleMenu2Active () {
+      this.isMenu2Active = !this.isMenu2Active
     }
   }
 }
@@ -218,7 +224,7 @@ export default {
   user-select: none
 }
 
-/*【二级菜单】：点击时隐藏 
+/*【二级菜单】：点击时隐藏
 .menu_level_1 .menu_level_2:active{
   display: none
 }
@@ -231,7 +237,6 @@ export default {
 .menu_level_1 .menu_level_2:hover{
   background-color: #1F2633;
 }
-
 
 /* el-dialog 弹窗默认为白色背景，此为修改弹窗样式 */
 .el-dialog__header {

@@ -346,6 +346,8 @@ export default {
         case 'SpotLight':
           var spotLight = new ExtSpotLight(new THREE.Color(0xFFFFFF), new THREE.Vector3(0, 10, 0))
           this.scene.add(spotLight)
+          console.log('========= send')
+          this.$EventBus.$emit('showPanel', 'SpotLightPanel')
           break
         case 'AmbientLight':
           var ambient = new THREE.AmbientLight(0xF0FF0D)
