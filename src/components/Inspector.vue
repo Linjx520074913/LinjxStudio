@@ -5,7 +5,7 @@
 </template>
 
 <script>
-import SpotLightPanel from '../components/Inspector/SpotLightPanel'
+import SpotLightPanel from '../components/Inspector/SpotLightPanel/SpotLightPanel'
 export default {
   name: 'Inspector',
   components: {

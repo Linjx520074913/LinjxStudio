@@ -6,6 +6,20 @@
   "description": "",
   "glyphs": [
     {
+      "icon_id": "6820275",
+      "name": "icon-spatial-operati",
+      "font_class": "spatial",
+      "unicode": "eba7",
+      "unicode_decimal": 60327
+    },
+    {
+      "icon_id": "3738905",
+      "name": "聚光灯",
+      "font_class": "spotlight",
+      "unicode": "e627",
+      "unicode_decimal": 58919
+    },
+    {
       "icon_id": "10000645",
       "name": "主视图",
       "font_class": "main_view",

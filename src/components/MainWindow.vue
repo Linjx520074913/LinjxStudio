@@ -48,7 +48,7 @@ export default {
       currentSliderBarWidth: 200,
       sliderBarMinW: 150,
       sliderBarMaxW: 350,
-      currentInspectorWidth: 200,
+      currentInspectorWidth: 300,
       inspectorMinW: 150,
       inspectorMaxW: 350,
       lastX: 0,
