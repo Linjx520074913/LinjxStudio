@@ -136,18 +136,18 @@
       intensity (newVal, oldVal) {
         console.log('Intensity ' + this.$store.state.light.intensity)
         this.intensity = newVal
-        this.$store.commit('setIntensity', this.intensity)
+        this.$store.commit('light/setIntensity', this.intensity)
       },
       // 监听 transform 对象数值
       transform: {
         handler (newValue, oldValue) {
-          this.$store.commit('updateTransform', newValue)
+          this.$store.commit('light/updateTransform', newValue)
         },
         deep: true
       },
       scale: {
         handler (newValue, oldValue) {
-          this.$store.commit('updateScale', newValue)
+          this.$store.commit('light/updateScale', newValue)
         },
         deep: true
       }
