@@ -10,10 +10,18 @@
           <el-collapse-item>
             <span class="collapse-title" slot="title">Light</span>
             <div class="grid">
-              <a>颜色</a>
+              <a>color</a>
               <input id="colorpicker" type="color" v-model="color">
-              <a>Energy</a>
-              <a>4</a>
+              <a>intensity</a>
+              <el-input v-model="intensity" placeholder=""></el-input>
+              <a>distance</a>
+              <el-input v-model="distance" placeholder=""></el-input>
+              <a>angle</a>
+              <el-input v-model="angle" placeholder=""></el-input>
+              <a>penumbra</a>
+              <el-input v-model="penumbra" placeholder=""></el-input>
+              <a>decay</a>
+              <el-input v-model="decay" placeholder=""></el-input>
             </div>
           </el-collapse-item>
           <el-collapse-item>
@@ -92,7 +100,12 @@
     name: 'SpotLightPropertyPanel',
     data () {
       return {
-        color: 'rgba(255, 69, 0, 0.68)'
+        color: 'rgba(255, 69, 0, 0.68)',
+        intensity: 0,
+        distance: 1,
+        angle: 2,
+        penumbra: 3,
+        decay: 4
       }
     }
   }
@@ -126,16 +139,16 @@ a {
   line-height: 30px;
 }
 
-/* 设置详细属性内容布局 */
+/* 设置【详细属性内容】布局 */
 .detail {
-  height:auto;
   margin: 5px;
   display: flex;
   flex-direction: column;
   border: 1px solid;
+  height: auto
 }
 
-/* 设置 collapse 箭头在左边（默认在右边） */
+/* 设置 【collapse 箭头】在左边（默认在右边） */
 .collapse-title {
   flex: 1 0 90%;
   order: 1;
@@ -145,7 +158,7 @@ a {
   padding: 1px;
   border: 1px solid transparent!important;
 }
-/* 修改 el-collapse-item__header 高度，默认为 48px */
+/* 修改 【el-collapse-item__header】 高度，默认为 48px */
 .el-collapse-item__header {
   height: 30px !important;
   line-height: 30px !important;
@@ -161,19 +174,37 @@ a {
 .el-collapse-item__content {
   padding: 0px !important;
 }
+/* 修改 【el-input 输入框】 样式 */
+.el-input {
+  padding: 2px 0px 2px 0px;
+}
+.el-input__inner {
+  width: 95% !important;
+  height: 26px !important;
+  padding: 0px !important;
+  background: #202531 !important;
+  border-radius: 0px !important;
+  border: 1px solid transparent !important;
+}
+/* el-input 获取焦点时，边框为淡蓝色 */
+.el-input__inner:focus {
+  border: 1px solid #87CEFA !important;
+}
 
+/* 网格行自动扩展 */
 .grid {
+  padding-left: 10px;
   display: grid;
   grid-template-columns: 40% 60%;
-  grid-template-rows: 50% 50%;
+  grid-auto-rows: initial
 }
 
 #colorpicker {
-  width: auto;
-  height: 30px;
+  width: 95%;
+  height: 26px;
   border: 0px
 }
-
+/* 垂直布局 */
 .vertical_layout {
   display: flex;
   flex-direction: column;

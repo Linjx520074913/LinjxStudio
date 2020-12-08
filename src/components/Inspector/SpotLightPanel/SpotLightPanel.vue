@@ -6,18 +6,23 @@
       </div>
     </div>
     <div class="property_content">
-      <component :is="activatedProperty.component"/>
+      <!-- NOTE : 组件切换时，通过 keep-alive 保存组件的状态 -->
+      <keep-alive>
+        <component :is="activatedProperty.component"/>
+      </keep-alive>
     </div>
   </section>
 </template>
 
 <script>
 import SpotLightPropertyPanel from './SpotLightPropertyPanel'
+import SpotLightNode from './SpotLightNode'
 
 export default {
   name: 'SpotLightPanel',
   components: {
-    SpotLightPropertyPanel
+    SpotLightPropertyPanel,
+    SpotLightNode
   },
   data() {
     return {
@@ -29,7 +34,7 @@ export default {
         },
         {
           name: "节点",
-          component: 'SpotLightPropertyPanel'
+          component: 'SpotLightNode'
         }
       ],
       // 选中的属性索引
