@@ -1,8 +1,12 @@
 import { StaticReadUsage } from 'three'
 import Vue from 'vue'
 import Vuex from 'vuex'
+import { ExtSpotLight } from './ts/ExtSpotLight'
+import * as THREE from 'three'
 
 Vue.use(Vuex)
+
+var extSpotLight = new ExtSpotLight(new THREE.Vector3(0, 0, 0), new THREE.Color(0xFFFFFF), 3, 2, 1, 5, 1)
 
 export default new Vuex.Store({
   state: {
@@ -13,7 +17,8 @@ export default new Vuex.Store({
     // 是否显示坐标轴
     showAxes: true,
     // 是否显示 4 视图
-    show4Views: true
+    show4Views: true,
+    light: extSpotLight
   },
   mutations: {
     // 切换 2D / 3D 视图
@@ -29,6 +34,18 @@ export default new Vuex.Store({
     },
     toggleViews (state) {
       state.show4Views = !state.show4Views
+    },
+    setExtSpotLight(state, light){
+      state.light = light
+    },
+    setIntensity(state, value) {
+      state.light.intensity = value
+    },
+    updateTransform(state, value) {
+      state.light.updatePosition(new THREE.Vector3(value.X, value.Y, value.Z))
+    },
+    updateScale(state, value) {
+      state.light.updateScale(new THREE.Vector3(value.X, value.Y, value.Z))
     }
   },
   actions: {

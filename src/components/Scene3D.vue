@@ -344,9 +344,11 @@ export default {
     addLight (type) {
       switch (type) {
         case 'SpotLight':
-          // var spotLight = new ExtSpotLight(new THREE.Color(0xFFFFFF), new THREE.Vector3(0, 10, 0))
-          // this.scene.add(spotLight)
           console.log('========= send')
+          var spotLight = new ExtSpotLight(new THREE.Vector3(0, 10, 0), new THREE.Color(0xFFFFFF), 3, 2, 1, 5, 1)
+          // var spotLight = new THREE.SpotLight(new THREE.Color(0xFFFFFF))
+          this.scene.add(spotLight)
+          this.$store.commit('setExtSpotLight', spotLight)
           this.$EventBus.$emit('showPanel', 'SpotLightPanel')
           break
         case 'AmbientLight':

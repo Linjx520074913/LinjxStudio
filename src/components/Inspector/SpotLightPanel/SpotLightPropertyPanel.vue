@@ -44,12 +44,15 @@
               <div style="{width:100%;display:grid;grid-template-columns: 1fr 1fr 1fr;}">
                 <div class="light_black">
                   <div class="X">X</div>
+                  <el-input v-model="transform.X" placeholder=""></el-input>
                 </div>
                 <div class="light_black">
                   <div class="Y">Y</div>
+                  <el-input v-model="transform.Y" placeholder=""></el-input>
                 </div>
                 <div class="light_black">
                   <div class="Z">Z</div>
+                  <el-input v-model="transform.Z" placeholder=""></el-input>
                 </div>
               </div>
             </div>
@@ -58,12 +61,15 @@
               <div style="{width:100%;display:grid;grid-template-columns: 1fr 1fr 1fr;}">
                 <div class="light_black">
                   <div class="X">X</div>
+                  <el-input v-model="scale.X" placeholder=""></el-input>
                 </div>
                 <div class="light_black">
                   <div class="Y">Y</div>
+                  <el-input v-model="scale.Y" placeholder=""></el-input>
                 </div>
                 <div class="light_black">
                   <div class="Z">Z</div>
+                  <el-input v-model="scale.Z" placeholder=""></el-input>
                 </div>
               </div>
             </div>
@@ -72,12 +78,15 @@
               <div style="{width:100%;display:grid;grid-template-columns: 1fr 1fr 1fr;}">
                 <div class="light_black">
                   <div class="X">X</div>
+                  <el-input v-model="rotation.X" placeholder=""></el-input>
                 </div>
                 <div class="light_black">
                   <div class="Y">Y</div>
+                  <el-input v-model="rotation.Y" placeholder=""></el-input>
                 </div>
                 <div class="light_black">
                   <div class="Z">Z</div>
+                  <el-input v-model="rotation.Z" placeholder=""></el-input>
                 </div>
               </div>
             </div>
@@ -105,7 +114,42 @@
         distance: 1,
         angle: 2,
         penumbra: 3,
-        decay: 4
+        decay: 4,
+        transform: {
+          'X': 1,
+          'Y': 2,
+          'Z': 3
+        },
+        rotation: {
+          'X': 4,
+          'Y': 5,
+          'Z': 6
+        },
+        scale: {
+          'X': 7,
+          'Y': 8,
+          'Z': 9
+        }
+      }
+    },
+    watch: {
+      intensity (newVal, oldVal) {
+        console.log('Intensity ' + this.$store.state.light.intensity)
+        this.intensity = newVal
+        this.$store.commit('setIntensity', this.intensity)
+      },
+      // 监听 transform 对象数值
+      transform: {
+        handler (newValue, oldValue) {
+          this.$store.commit('updateTransform', newValue)
+        },
+        deep: true
+      },
+      scale: {
+        handler (newValue, oldValue) {
+          this.$store.commit('updateScale', newValue)
+        },
+        deep: true
       }
     }
   }
@@ -185,6 +229,7 @@ a {
   background: #202531 !important;
   border-radius: 0px !important;
   border: 1px solid transparent !important;
+  text-align: center !important
 }
 /* el-input 获取焦点时，边框为淡蓝色 */
 .el-input__inner:focus {
@@ -212,6 +257,7 @@ a {
 }
 /* 淡黑色 */
 .light_black {
+  display:flex;
   background:#202531
 }
 .X {
