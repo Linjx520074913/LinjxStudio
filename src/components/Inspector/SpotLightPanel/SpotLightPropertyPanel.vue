@@ -44,15 +44,15 @@
               <div style="{width:100%;display:grid;grid-template-columns: 1fr 1fr 1fr;}">
                 <div class="light_black">
                   <div class="X">X</div>
-                  <el-input v-model="transform.X" placeholder=""></el-input>
+                  <el-input v-model="transform.x" placeholder=""></el-input>
                 </div>
                 <div class="light_black">
                   <div class="Y">Y</div>
-                  <el-input v-model="transform.Y" placeholder=""></el-input>
+                  <el-input v-model="transform.y" placeholder=""></el-input>
                 </div>
                 <div class="light_black">
                   <div class="Z">Z</div>
-                  <el-input v-model="transform.Z" placeholder=""></el-input>
+                  <el-input v-model="transform.z" placeholder=""></el-input>
                 </div>
               </div>
             </div>
@@ -61,15 +61,15 @@
               <div style="{width:100%;display:grid;grid-template-columns: 1fr 1fr 1fr;}">
                 <div class="light_black">
                   <div class="X">X</div>
-                  <el-input v-model="scale.X" placeholder=""></el-input>
+                  <el-input v-model="scale.x" placeholder=""></el-input>
                 </div>
                 <div class="light_black">
                   <div class="Y">Y</div>
-                  <el-input v-model="scale.Y" placeholder=""></el-input>
+                  <el-input v-model="scale.y" placeholder=""></el-input>
                 </div>
                 <div class="light_black">
                   <div class="Z">Z</div>
-                  <el-input v-model="scale.Z" placeholder=""></el-input>
+                  <el-input v-model="scale.z" placeholder=""></el-input>
                 </div>
               </div>
             </div>
@@ -78,15 +78,15 @@
               <div style="{width:100%;display:grid;grid-template-columns: 1fr 1fr 1fr;}">
                 <div class="light_black">
                   <div class="X">X</div>
-                  <el-input v-model="rotation.X" placeholder=""></el-input>
+                  <el-input v-model="rotation.x" placeholder=""></el-input>
                 </div>
                 <div class="light_black">
                   <div class="Y">Y</div>
-                  <el-input v-model="rotation.Y" placeholder=""></el-input>
+                  <el-input v-model="rotation.y" placeholder=""></el-input>
                 </div>
                 <div class="light_black">
                   <div class="Z">Z</div>
-                  <el-input v-model="rotation.Z" placeholder=""></el-input>
+                  <el-input v-model="rotation.z" placeholder=""></el-input>
                 </div>
               </div>
             </div>
@@ -94,7 +94,7 @@
           <el-collapse-item>
             <span class="collapse-title" slot="title">Matrix</span>
             <div class="grid">
-              <a>1</a>
+              <el-checkbox v-model="isVisible">Visible</el-checkbox>
               <a>2</a>
             </div>
           </el-collapse-item>
@@ -105,54 +105,63 @@
 </template>
 
 <script>
-  export default {
-    name: 'SpotLightPropertyPanel',
-    data () {
-      return {
-        color: 'rgba(255, 69, 0, 0.68)',
-        intensity: 0,
-        distance: 1,
-        angle: 2,
-        penumbra: 3,
-        decay: 4,
-        transform: {
-          'X': 1,
-          'Y': 2,
-          'Z': 3
-        },
-        rotation: {
-          'X': 4,
-          'Y': 5,
-          'Z': 6
-        },
-        scale: {
-          'X': 7,
-          'Y': 8,
-          'Z': 9
-        }
-      }
+import * as THREE from 'three'
+export default {
+  name: 'SpotLightPropertyPanel',
+  data () {
+    return {
+      color: 'rgba(255, 69, 0, 0.68)',
+      intensity: 0,
+      distance: 1,
+      angle: 2,
+      penumbra: 3,
+      decay: 4,
+      transform: new THREE.Vector3(0, 1, 0),
+      rotation: new THREE.Vector3(0, 0, 0),
+      scale: new THREE.Vector3(0, 0, 0),
+      isVisible: true
+    }
+  },
+  activated () {
+    // 组件激活时，把各变量值赋值为 ExtSpotLight 对应变量的值
+    var light = this.$store.state.extspotlight.instance.light
+    this.intensity = light.intensity
+    this.distance = light.distance
+    this.angle = light.angle
+    this.penumbra = light.penumbra
+    this.decay = light.penumbra
+    this.transform.set(light.position.x, light.position.y, light.position.z)
+    this.rotation.set(light.rotation.x, light.rotation.y, light.rotation.z)
+    this.scale.set(light.scale.x, light.scale.y, light.scale.z)
+    // this.isVisible = light.isVisible
+  },
+  mounted () {
+  },
+  watch: {
+    intensity (newValue, oldValue) {
+      this.intensity = newValue
+      this.$store.commit('extspotlight/setIntensity', this.intensity)
     },
-    watch: {
-      intensity (newVal, oldVal) {
-        console.log('Intensity ' + this.$store.state.light.intensity)
-        this.intensity = newVal
-        this.$store.commit('light/setIntensity', this.intensity)
+    isVisible (newValue, oldValue) {
+        console.log('===NewValue ' + newValue)
+        this.isVisible = newValue
+        this.$store.commit('extspotlight/show', this.isVisible)
+    },
+    // 监听 transform 对象数值
+    transform: {
+      handler (newValue, oldValue) {
+        this.$store.commit('extspotlight/updateTransform', newValue)
       },
-      // 监听 transform 对象数值
-      transform: {
-        handler (newValue, oldValue) {
-          this.$store.commit('light/updateTransform', newValue)
-        },
-        deep: true
+      deep: true
+    },
+    scale: {
+      handler (newValue, oldValue) {
+        this.$store.commit('extspotlight/updateScale', newValue)
       },
-      scale: {
-        handler (newValue, oldValue) {
-          this.$store.commit('light/updateScale', newValue)
-        },
-        deep: true
-      }
+      deep: true
     }
   }
+}
 </script>
 
 <style>
