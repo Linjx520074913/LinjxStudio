@@ -152,7 +152,7 @@ export default {
     },
     // 创建网格辅助线
     createGrid () {
-      this.grid = new THREE.GridHelper(20, 10, 0x444444, 0x888888)
+      this.grid = new THREE.GridHelper(20, 20, 0x444444, 0x888888)
       var array = this.grid.geometry.attributes.color.array
       for (var i = 0; i < array.length; i += 60) {
         for (var j = 0; j < 12; j++) {
@@ -344,7 +344,7 @@ export default {
     addLight (type) {
       switch (type) {
         case 'SpotLight':
-          var spotLight = new ExtSpotLight(new THREE.Vector3(0, 0, 1), new THREE.Color(0xFFFFFF), 1, 5)
+          var spotLight = new ExtSpotLight(new THREE.Vector3(0, 0, 4), new THREE.Color(0xFFFFFF), 1, 6)
           this.scene.add(spotLight)
           this.$store.commit('extspotlight/setExtSpotLight', spotLight)
           this.$EventBus.$emit('showPanel', 'SpotLightPanel')
