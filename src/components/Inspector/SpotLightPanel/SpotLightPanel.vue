@@ -6,7 +6,7 @@
       </div>
     </div>
     <div class="property_content">
-      <!-- NOTE : 组件切换时，通过 keep-alive 保存组件的状态 -->
+      <!-- 【NOTE】 : 组件切换时，通过 keep-alive 保存组件的状态 -->
       <keep-alive>
         <component :is="activatedProperty.component"/>
       </keep-alive>

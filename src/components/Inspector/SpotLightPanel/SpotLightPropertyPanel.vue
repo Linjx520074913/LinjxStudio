@@ -221,7 +221,7 @@ export default {
 </script>
 
 <style>
-/* NOTE:
+/* 【NOTE】:
   style标签中不要添加scoped属性。
   在有写scoped的style标签中书写的样式不会覆盖 ElementUI 默认的样式
   一开始的写法就是 <style scoped>,结果无论怎么修改 el-collapse 和 el-collapse-item 都不生效
