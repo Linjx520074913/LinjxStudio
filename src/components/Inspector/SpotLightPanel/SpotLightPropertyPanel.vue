@@ -27,8 +27,12 @@
           <el-collapse-item>
             <span class="collapse-title" slot="title">Shadow</span>
             <div class="grid">
-              <a>1</a>
-              <a>2</a>
+              <a>产生阴影</a>
+              <el-checkbox v-model="castShadow"></el-checkbox>
+              <a>可见</a>
+              <el-checkbox v-model="isVisible"></el-checkbox>
+              <a>光源辅助</a>
+              <el-checkbox v-model="isHelperVisible"></el-checkbox>
             </div>
           </el-collapse-item>
         </el-collapse>
@@ -129,20 +133,28 @@ export default {
   name: 'SpotLightPropertyPanel',
   data () {
     return {
+      // 光源颜色
       color: 'rgba(255, 69, 0, 0.68)',
+      // 光源强度
       intensity: 0,
+      // 光源照射距离
       distance: 1,
+      // 光源照射角度
       angle: 2,
       penumbra: 3,
       decay: 4,
+      // 光源位置信息
       transform: new THREE.Vector3(0, 0, 0),
       rotation: new Euler(),
       scale: new THREE.Vector3(0, 0, 0),
+      // 光源照射目标
       target: new THREE.Vector3(0, 0, 0),
       // 光源是否可见
       isVisible: true,
       // 光源辅助线是否可见
-      isHelperVisible: true
+      isHelperVisible: true,
+      // 是否产生阴影
+      castShadow: true
     }
   },
   activated () {
@@ -159,6 +171,7 @@ export default {
     this.target.set(light.target.position.x, light.target.position.y, light.target.position.z)
     this.isVisible = light.visible
     this.isHelperVisible = light.isHelperVisible()
+    this.castShadow = light.castShadow
   },
   mounted () {
   },
@@ -190,6 +203,10 @@ export default {
     isHelperVisible (newValue, oldValue) {
       this.isHelperVisible = newValue
       this.$store.commit('extspotlight/showHelper', this.isHelperVisible)
+    },
+    castShadow (newValue, oldValue) {
+      this.castShadow = newValue
+      this.$store.commit('extspotlight/enableShadow', this.castShadow)
     },
     // 监听 transform 对象数值
     transform: {

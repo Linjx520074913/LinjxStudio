@@ -38,8 +38,11 @@ export const ExtSpotLightStore = {
     updateScale(state: any, value: THREE.Vector3) {
       state.instance.updateScale(value)
     },
-    updateRotation(state: any, value: THREE.Vector3){
+    updateRotation(state: any, value: THREE.Vector3) {
       state.instance.updateRotation(value)
+    },
+    enableShadow(state: any, value: boolean) {
+      state.instance.enableShadow(value)
     },
     lookAt(state: any, value: THREE.Vector3){
       state.instance.lookAt(value)

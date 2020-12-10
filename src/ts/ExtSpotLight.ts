@@ -88,8 +88,12 @@ export class ExtSpotLight extends THREE.SpotLight{
     this.updateHelper()
   }
 
+  // 开启 / 关闭阴影
+  enableShadow (value: boolean) {
+    this.castShadow = value
+  }
+
   lookAt (targetPos: THREE.Vector3) {
-    console.log('LookAt Recv ' + targetPos.x + ' ' + targetPos.y + ' ' + targetPos.z)
     this.target.position.set(targetPos.x, targetPos.y, targetPos.z)
     this.target.updateMatrixWorld()
     this.updateHelper()

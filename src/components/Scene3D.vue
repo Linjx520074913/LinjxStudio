@@ -95,8 +95,8 @@ export default {
       let height = this.$refs.scene_3d_main.clientHeight
       // 创建 Camera
       this.mainCamera = new THREE.PerspectiveCamera(45, width / height, 1, 1000)
-      this.mainCamera.position.x = 0
-      this.mainCamera.position.y = 0
+      this.mainCamera.position.x = 20
+      this.mainCamera.position.y = 20
       this.mainCamera.position.z = 15
       this.mainCamera.lookAt(this.scene.position)
 
@@ -391,7 +391,7 @@ export default {
     addLight (type) {
       switch (type) {
         case 'SpotLight':
-          var spotLight = new ExtSpotLight(new THREE.Vector3(0, 3, 3))
+          var spotLight = new ExtSpotLight(new THREE.Vector3(0, 10, 5))
           this.scene.add(spotLight)
           console.log(spotLight)
           this.$store.commit('extspotlight/setExtSpotLight', spotLight)
