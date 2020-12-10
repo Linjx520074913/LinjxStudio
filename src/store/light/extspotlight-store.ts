@@ -27,8 +27,10 @@ export const ExtSpotLightStore = {
       state.instance.updateScale(new THREE.Vector3(value.x, value.y, value.z))
     },
     show(state: any, value: boolean) {
-      console.log('[Recv] : ' + value)
-      state.instance.light.show(value)
+      state.instance.show(value)
+    },
+    showHelper(state: any, value: boolean) {
+      state.instance.showHelper(value)
     }
   },
   actions: {

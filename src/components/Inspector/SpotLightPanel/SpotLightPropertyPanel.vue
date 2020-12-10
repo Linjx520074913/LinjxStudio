@@ -94,7 +94,8 @@
           <el-collapse-item>
             <span class="collapse-title" slot="title">Matrix</span>
             <div class="grid">
-              <el-checkbox v-model="isVisible">Visible</el-checkbox>
+              <el-checkbox v-model="isLightVisible">Visible</el-checkbox>
+              <el-checkbox v-model="isHelperVisible">Helper</el-checkbox>
               <a>2</a>
             </div>
           </el-collapse-item>
@@ -116,24 +117,29 @@ export default {
       angle: 2,
       penumbra: 3,
       decay: 4,
-      transform: new THREE.Vector3(0, 1, 0),
+      transform: new THREE.Vector3(0, 0, 0),
       rotation: new THREE.Vector3(0, 0, 0),
       scale: new THREE.Vector3(0, 0, 0),
-      isVisible: true
+      // 光源是否可见
+      isLightVisible: true,
+      // 光源辅助线是否可见
+      isHelperVisible: false
     }
   },
   activated () {
     // 组件激活时，把各变量值赋值为 ExtSpotLight 对应变量的值
-    var light = this.$store.state.extspotlight.instance.light
+    var parent = this.$store.state.extspotlight.instance
+    var light = parent.light
     this.intensity = light.intensity
     this.distance = light.distance
     this.angle = light.angle
     this.penumbra = light.penumbra
     this.decay = light.penumbra
-    this.transform.set(light.position.x, light.position.y, light.position.z)
+    this.transform.set(parent.position.x, parent.position.y, parent.position.z)
     this.rotation.set(light.rotation.x, light.rotation.y, light.rotation.z)
     this.scale.set(light.scale.x, light.scale.y, light.scale.z)
-    // this.isVisible = light.isVisible
+    this.isLightVisible = parent.isLightVisible()
+    this.isHelperVisible = parent.isHelperVisible()
   },
   mounted () {
   },
@@ -143,22 +149,20 @@ export default {
       this.$store.commit('extspotlight/setIntensity', this.intensity)
     },
     isVisible (newValue, oldValue) {
-        console.log('===NewValue ' + newValue)
-        this.isVisible = newValue
-        this.$store.commit('extspotlight/show', this.isVisible)
+        this.isLightVisible = newValue
+        this.$store.commit('extspotlight/show', this.isLightVisible)
     },
     // 监听 transform 对象数值
     transform: {
       handler (newValue, oldValue) {
         this.$store.commit('extspotlight/updateTransform', newValue)
       },
-      deep: true
+      deep: true,
     },
     scale: {
       handler (newValue, oldValue) {
         this.$store.commit('extspotlight/updateScale', newValue)
-      },
-      deep: true
+      }
     }
   }
 }

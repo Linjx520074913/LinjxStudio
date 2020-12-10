@@ -10,6 +10,7 @@ export class ExtSpotLight extends Object3D{
   material: THREE.MeshBasicMaterial
   light: THREE.SpotLight
   helper: THREE.SpotLightHelper
+  
   constructor( pos: THREE.Vector3, color: THREE.Color | string | number, intensity: number, distance: number, angle: number, penumbra: number, decay: number) {
     super()
     // 创建圆球体
@@ -25,7 +26,6 @@ export class ExtSpotLight extends Object3D{
     this.light = new THREE.SpotLight(color, intensity, distance, angle, penumbra, decay)
     this.light.position.set(0, 0, 0)
     this.helper = new SpotLightHelper(this.light)
-    // this.light.add(this.sphere)
     this.add(this.sphere)
     this.add(this.light)
     this.add(this.helper)
@@ -34,10 +34,11 @@ export class ExtSpotLight extends Object3D{
 
   // 更新光源及显示球位置
   updatePosition (pos: THREE.Vector3) {
-    console.log(this)
-    // this.position.set(pos.x, pos.y, pos.z)
-    this.sphere.position.set(pos.x, pos.y, pos.z)
-    this.light.position.set(pos.x, pos.y, pos.z)
+    console.log('update [ ' + pos.x + ', ' + pos.y + ', ' + pos.z + ' ]')
+    this.position.set(pos.x, pos.y, pos.z)
+    this.helper.matrix = this.light.matrix
+    // this.sphere.position.set(pos.x, pos.y, pos.z)
+    // this.light.position.set(pos.x, pos.y, pos.z)
     this.helper.update()
   }
   // 更新光源及显示求大小
@@ -46,12 +47,23 @@ export class ExtSpotLight extends Object3D{
     // this.scale.set(scale.x, scale.y, scale.z)
   }
 
-  show (isVisible: boolean) {
-    console.log('[SHOW] ' + isVisible)
-    this.sphere.visible = isVisible
+  show (visible: boolean) {
+    // this.sphere.visible = visible
+    this.visible = visible
   }
 
-  isVisible () {
-    return true
+  showHelper (visible: boolean) {
+    this.sphere.visible = visible
+    this.helper.visible = visible
+  }
+
+  // 光源是否可见
+  isLightVisible () {
+    return this.visible
+  }
+
+  // 光源辅助线是否可见
+  isHelperVisible () {
+    return this.helper.visible
   }
 }
