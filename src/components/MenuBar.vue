@@ -116,9 +116,11 @@ export default {
             }
           },
           {
-            text: '查找',
+            text: '添加地板',
             icon: '#icon-ic_weixiufuwu',
-            click: () => { console.log('[查找] 被点击') }
+            click: () => {
+              this.$EventBus.$emit('addFloor')
+            }
           }
         ]
       }, {

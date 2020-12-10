@@ -75,9 +75,20 @@ export default {
       this.initPreviewTop()
 
       this.createGrid()
+      this.createFloor()
       this.createAxes()
 
-      // this.createPointCloud()
+      this.addLight('AmbientLight')
+
+      // var material = new THREE.MeshPhongMaterial( { color: 0x4080ff, dithering: true } );
+
+      // var geometry = new THREE.CylinderBufferGeometry( 2, 2, 0.5, 32, 1, false );
+
+      // var mesh = new THREE.Mesh( geometry, material );
+      // mesh.position.set( 0, 2, 0 );
+      // mesh.castShadow = true;
+      // this.scene.add( mesh );
+    // this.createPointCloud()
     },
     initPreviewMain () {
       let width = this.$refs.scene_3d_main.clientWidth
@@ -91,7 +102,10 @@ export default {
 
       this.mainRenderer = new THREE.WebGLRenderer({ antialias: true })
       this.mainRenderer.setSize(width, height)
-      this.mainRenderer.shadowMap.enable = true
+      // 允许阴影投射
+      this.mainRenderer.shadowMap.enabled = true
+      // 阴影边渲染出来更加模糊，比默认效果要好
+      this.mainRenderer.shadowMap.type = THREE.PCFSoftShadowMap
       this.$refs.scene_3d_main.appendChild(this.mainRenderer.domElement)
 
       this.mainControl = new OrbitControls(this.mainCamera, this.mainRenderer.domElement)
@@ -114,13 +128,14 @@ export default {
 
       this.leftRenderer = new THREE.WebGLRenderer({ antialias: true })
       this.leftRenderer.setSize(width, height)
+      // 允许阴影投射
       this.leftRenderer.shadowMap.enabled = true
       this.$refs.scene_3d_left.appendChild(this.leftRenderer.domElement)
 
       this.leftControl = new OrbitControls(this.leftCamera, this.leftRenderer.domElement)
       this.leftControl.enableDamping = true // an animation loop is required when either damping or auto-rotation are enabled
       this.leftControl.dampingFactor = 0.25
-      this.leftControl.screenSpacePanning = false
+      this.leftControl.screenSpacePanning = true
       this.leftControl.enableRotate = false
       this.leftControl.minDistance = 0.1
       this.leftControl.maxDistance = 100
@@ -138,7 +153,7 @@ export default {
 
       this.topRenderer = new THREE.WebGLRenderer({ antialias: true })
       this.topRenderer.setSize(width, height)
-      this.topRenderer.shadowMap.enable = true
+      this.topRenderer.shadowMap.enabled = true
       this.$refs.scene_3d_top.appendChild(this.topRenderer.domElement)
 
       this.topControl = new OrbitControls(this.topCamera, this.topRenderer.domElement)
@@ -179,6 +194,19 @@ export default {
       this.zArrow = new THREE.ArrowHelper(new THREE.Vector3(0, 0, 1), new THREE.Vector3(0, 0, 0), arrowLength, 0x0000FF, 3, 0.1 * arrowLength)
       this.scene.add(this.zArrow)
     },
+    createFloor () {
+      // 【NOTE】要配合光照才可以看到材质的颜色
+      let material = new THREE.MeshPhongMaterial( { color: 0xD0D0D0, depthWrite: false } )
+      let geometry = new THREE.PlaneBufferGeometry( 20, 20 )
+
+      let mesh = new THREE.Mesh( geometry, material )
+      mesh.position.set(0, -0.01,  0)
+      mesh.rotation.x = - Math.PI * 0.5
+      // 接受阴影
+      mesh.castShadow = true
+      mesh.receiveShadow = true
+      this.scene.add( mesh )
+    },
     // 创建点云
     createPointCloud () {
       // 创建 THREE.PointCloud 粒子容器
@@ -210,6 +238,7 @@ export default {
         case 'pcd':
           var pcdLoader = new PCDLoader()
           pcdLoader.load(path, function (points) {
+            points.castShadow = true
             var center = points.geometry.boundingSphere.center
             // 模型太小，适当放大
             points.geometry.scale(40, 40, 40)
@@ -221,8 +250,21 @@ export default {
           })
           break
         case 'dae':
+          // 【NOTE】:
+          // 如果想要让模型产生阴影，那么应该对该模型所有类型为 THREE.Mesh
+          // 的子节点设置 castShadow = true 属性，不能简单得对模型对象设置 castShadow = true
           var colladaLoader = new ColladaLoader()
           colladaLoader.load(path, function (collada) {
+            collada.scene.traverse(function(child){
+              if (child instanceof THREE.Mesh) {
+                //设置模型生成阴影并接收阴影
+                child.castShadow = true
+                child.receiveShadow = true
+              }
+            })
+            // 简单这样设置模型 castShadow = true 是不能产生阴影的
+            // collada.scene.castShadow = true
+            // collada.scene.receiveShadow = true
             scope.scene.add(collada.scene)
           })
           break
@@ -235,6 +277,13 @@ export default {
           // reader.readAsText(file)
           var objLoader = new OBJLoader()
           objLoader.load(path, function (obj) {
+            obj.traverse(function(child){
+              if (child instanceof THREE.Mesh) {
+                //设置模型生成阴影并接收阴影
+                child.castShadow = true
+                child.receiveShadow = true
+              }
+            })
             scope.scene.add(obj)
           }, () => {}, () => {})
           break
@@ -349,7 +398,7 @@ export default {
           this.$EventBus.$emit('showPanel', 'SpotLightPanel')
           break
         case 'AmbientLight':
-          var ambient = new THREE.AmbientLight(0xF0FF0D)
+          var ambient = new THREE.AmbientLight(0xFFFFFF, 0.8)
           this.scene.add(ambient)
           break
       }
@@ -383,6 +432,10 @@ export default {
 
     this.$EventBus.$on('addSpotLight', () => {
       this.addLight('SpotLight')
+    })
+
+    this.$EventBus.$on('addFloor', () => {
+
     })
 
     this.toggleViews(this.$store.state.show4Views)

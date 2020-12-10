@@ -10,8 +10,16 @@ export class ExtSpotLight extends THREE.SpotLight{
   material: THREE.MeshBasicMaterial
   helper: THREE.SpotLightHelper
 
-  constructor( pos: THREE.Vector3 = new THREE.Vector3(0, 0, 0), color: THREE.Color | string | number = new THREE.Color('#FFF'), intensity: number = 1, distance: number = 5, angle: number, penumbra: number, decay: number) {
+  constructor( pos: THREE.Vector3 = new THREE.Vector3(0, 0, 0), color: THREE.Color | string | number = new THREE.Color('#FFFFFF'), intensity: number = 1, distance: number = 20, angle: number = Math.PI / 4, penumbra: number = 0.1, decay: number = 2) {
     super(color, intensity, distance, angle, penumbra, decay)
+
+    this.castShadow = true
+    // this.shadow.mapSize.width = 512
+    // this.shadow.mapSize.height = 512
+    // this.shadow.camera.near = 0.1
+    // this.shadow.camera.far = 200
+    // this.shadow.focus = 1
+
     // 创建圆球体
     this.geometry = new THREE.SphereGeometry(0.2, 10, 10)
     this.material = new THREE.MeshBasicMaterial({
@@ -98,6 +106,7 @@ export class ExtSpotLight extends THREE.SpotLight{
   updateHelper () {
     this.helper.matrix = this.matrix
     this.helper.update()
+    this.shadow.camera.updateProjectionMatrix()
   }
 
   // 显示
