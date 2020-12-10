@@ -91,7 +91,6 @@ export default {
       this.lastX = event.clientX
     },
     mouseUp (event) {
-      console.log('mouseUp')
       this.selectedResize = ''
       this.lastX = ''
       document.removeEventListener('mousemove', this.mouseMove)

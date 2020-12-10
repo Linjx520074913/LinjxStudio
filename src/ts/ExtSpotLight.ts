@@ -1,18 +1,17 @@
 import * as THREE from 'three'
 import { Color, Object3D, SpotLightHelper } from 'three'
 
-export class ExtSpotLight extends Object3D{
+export class ExtSpotLight extends THREE.SpotLight{
   // 球体网格
   sphere: THREE.Mesh
   // 球体几何体
   geometry: THREE.SphereGeometry
   // 球体材质
   material: THREE.MeshBasicMaterial
-  light: THREE.SpotLight
   helper: THREE.SpotLightHelper
-  
-  constructor( pos: THREE.Vector3, color: THREE.Color | string | number, intensity: number, distance: number, angle: number, penumbra: number, decay: number) {
-    super()
+
+  constructor( pos: THREE.Vector3 = new THREE.Vector3(0, 0, 0), color: THREE.Color | string | number = new THREE.Color('#FFF'), intensity: number = 1, distance: number = 5, angle: number, penumbra: number, decay: number) {
+    super(color, intensity, distance, angle, penumbra, decay)
     // 创建圆球体
     this.geometry = new THREE.SphereGeometry(0.2, 10, 10)
     this.material = new THREE.MeshBasicMaterial({
@@ -20,46 +19,97 @@ export class ExtSpotLight extends Object3D{
       wireframe: false
     })
     this.sphere = new THREE.Mesh(this.geometry, this.material)
-    this.sphere.position.set(0, 0, 0)
 
     // 创建 SpotLight 及 SpotLightHelper
-    this.light = new THREE.SpotLight(color, intensity, distance, angle, penumbra, decay)
-    this.light.position.set(0, 0, 0)
-    this.helper = new SpotLightHelper(this.light)
+    this.helper = new SpotLightHelper(this)
+    // 【NOTE】 :
+    // helper 做为 light 的子对象，要更新正确的 helper 的位置，需要设置
+    // 1、this.helper.matrixAutoUpdate = true
+    // 2、this.helper.matrix = this.matrix
+    // 3、this.helper.upate()
+    this.helper.matrixAutoUpdate = true
     this.add(this.sphere)
-    this.add(this.light)
     this.add(this.helper)
     this.updatePosition(pos)
   }
 
-  // 更新光源及显示球位置
-  updatePosition (pos: THREE.Vector3) {
-    console.log('update [ ' + pos.x + ', ' + pos.y + ', ' + pos.z + ' ]')
-    this.position.set(pos.x, pos.y, pos.z)
-    this.helper.matrix = this.light.matrix
-    // this.sphere.position.set(pos.x, pos.y, pos.z)
-    // this.light.position.set(pos.x, pos.y, pos.z)
-    this.helper.update()
-  }
-  // 更新光源及显示求大小
-  updateScale (scale: THREE.Vector3){
-    // this.sphere.scale.set(scale.x, scale.y, scale.z)
-    // this.scale.set(scale.x, scale.y, scale.z)
+  // 更新光照强度，默认为 1
+  updateIntensity (value: number) {
+    this.intensity = value
+    this.updateHelper()
   }
 
+  // 更新光照距离,其强度根据光源距离线性衰减
+  updateDistance (value: number) {
+    this.distance = value
+    this.updateHelper()
+  }
+
+  // 更新光线散射角度，即圆锥体的半顶角度，最大为 Math.PI / 2 (90度)
+  updateAngle (value: number) {
+    this.angle = value
+    this.updateHelper()
+  }
+
+  // 更新聚光锥的半影衰减百分比，即光照边缘的模糊化程度。在 0 和 1 之间的值。默认为 0，不模糊。
+  updatePenumbra (value: number) {
+    this.penumbra = value
+    this.updateHelper()
+  }
+
+  // 更新光照随距离衰减程度
+  updateDecay (value: number) {
+    this.decay = value
+    this.updateHelper()
+  }
+
+  // 更新光源及显示球位置
+  updatePosition (pos: THREE.Vector3) {
+    this.position.set(pos.x, pos.y, pos.z)
+    this.updateHelper()
+  }
+  // 更新光源及显示球大小
+  updateScale (scale: THREE.Vector3){
+    this.scale.set(scale.x, scale.y, scale.z)
+    this.updateHelper()
+  }
+  // 更新光源旋转角
+  updateRotation (rotation: THREE.Vector3){
+    console.log('updateRotation Recv ' + rotation.x)
+    this.rotation.set(rotation.x, rotation.y, rotation.z)
+    this.updateHelper()
+  }
+
+  lookAt (targetPos: THREE.Vector3) {
+    console.log('LookAt Recv ' + targetPos.x + ' ' + targetPos.y + ' ' + targetPos.z)
+    this.target.position.set(targetPos.x, targetPos.y, targetPos.z)
+    this.target.updateMatrixWorld()
+    this.updateHelper()
+
+    // https://stackoverflow.com/questions/32203806/three-js-spotlight-orientation-direction-issue
+    // 【NOTE】 : 更新 light.target 位置后,光照不生效
+    // You have to update your light.target after changing (eg. setting position):
+    // light.target.updateMatrixWorld();
+    // Or just add your light.target to the scene:
+    // scene.add( light.target );
+  }
+
+  // 更新光源辅助线
+  updateHelper () {
+    this.helper.matrix = this.matrix
+    this.helper.update()
+  }
+
+  // 显示
   show (visible: boolean) {
     // this.sphere.visible = visible
     this.visible = visible
   }
 
+  // 显示 SoptLightHelper
   showHelper (visible: boolean) {
     this.sphere.visible = visible
     this.helper.visible = visible
-  }
-
-  // 光源是否可见
-  isLightVisible () {
-    return this.visible
   }
 
   // 光源辅助线是否可见

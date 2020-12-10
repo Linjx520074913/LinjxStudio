@@ -17,14 +17,32 @@ export const ExtSpotLightStore = {
     setExtSpotLight(state: any, light: ExtSpotLight){
       state.instance = light
     },
-    setIntensity(state: any, value: THREE.Vector3) {
-      state.instance.intensity = value
+    updateIntensity(state: any, value: number) {
+      state.instance.updateIntensity(value)
+    },
+    updateDistance(state: any, value: number) {
+      state.instance.updateDistance(value)
+    },
+    updateAngle(state: any, value: number){
+      state.instance.updateAngle(value)
+    },
+    updatePenumbra(state: any, value: number) {
+      state.instance.updatePenumbra(value)
+    },
+    updateDecay(state: any, value: number) {
+      state.instance.updateDecay(value)
     },
     updateTransform(state: any, value: THREE.Vector3) {
-      state.instance.updatePosition(new THREE.Vector3(value.x, value.y, value.z))
+      state.instance.updatePosition(value)
     },
     updateScale(state: any, value: THREE.Vector3) {
-      state.instance.updateScale(new THREE.Vector3(value.x, value.y, value.z))
+      state.instance.updateScale(value)
+    },
+    updateRotation(state: any, value: THREE.Vector3){
+      state.instance.updateRotation(value)
+    },
+    lookAt(state: any, value: THREE.Vector3){
+      state.instance.lookAt(value)
     },
     show(state: any, value: boolean) {
       state.instance.show(value)

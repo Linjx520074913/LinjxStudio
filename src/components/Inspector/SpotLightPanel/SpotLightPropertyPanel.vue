@@ -74,7 +74,7 @@
               </div>
             </div>
             <div class="vertical_layout">
-              <a>Rotation</a>
+              <a>Rotation(How to use?TBD)</a>
               <div style="{width:100%;display:grid;grid-template-columns: 1fr 1fr 1fr;}">
                 <div class="light_black">
                   <div class="X">X</div>
@@ -90,11 +90,28 @@
                 </div>
               </div>
             </div>
+            <div class="vertical_layout">
+              <a>Target</a>
+              <div style="{width:100%;display:grid;grid-template-columns: 1fr 1fr 1fr;}">
+                <div class="light_black">
+                  <div class="X">X</div>
+                  <el-input v-model="target.x" placeholder=""></el-input>
+                </div>
+                <div class="light_black">
+                  <div class="Y">Y</div>
+                  <el-input v-model="target.y" placeholder=""></el-input>
+                </div>
+                <div class="light_black">
+                  <div class="Z">Z</div>
+                  <el-input v-model="target.z" placeholder=""></el-input>
+                </div>
+              </div>
+            </div>
           </el-collapse-item>
           <el-collapse-item>
             <span class="collapse-title" slot="title">Matrix</span>
             <div class="grid">
-              <el-checkbox v-model="isLightVisible">Visible</el-checkbox>
+              <el-checkbox v-model="isVisible">Visible</el-checkbox>
               <el-checkbox v-model="isHelperVisible">Helper</el-checkbox>
               <a>2</a>
             </div>
@@ -107,6 +124,7 @@
 
 <script>
 import * as THREE from 'three'
+import { Euler } from 'three'
 export default {
   name: 'SpotLightPropertyPanel',
   data () {
@@ -118,51 +136,85 @@ export default {
       penumbra: 3,
       decay: 4,
       transform: new THREE.Vector3(0, 0, 0),
-      rotation: new THREE.Vector3(0, 0, 0),
+      rotation: new Euler(),
       scale: new THREE.Vector3(0, 0, 0),
+      target: new THREE.Vector3(0, 0, 0),
       // 光源是否可见
-      isLightVisible: true,
+      isVisible: true,
       // 光源辅助线是否可见
-      isHelperVisible: false
+      isHelperVisible: true
     }
   },
   activated () {
     // 组件激活时，把各变量值赋值为 ExtSpotLight 对应变量的值
-    var parent = this.$store.state.extspotlight.instance
-    var light = parent.light
+    var light = this.$store.state.extspotlight.instance
     this.intensity = light.intensity
     this.distance = light.distance
     this.angle = light.angle
     this.penumbra = light.penumbra
     this.decay = light.penumbra
-    this.transform.set(parent.position.x, parent.position.y, parent.position.z)
-    this.rotation.set(light.rotation.x, light.rotation.y, light.rotation.z)
+    this.transform.set(light.position.x, light.position.y, light.position.z)
     this.scale.set(light.scale.x, light.scale.y, light.scale.z)
-    this.isLightVisible = parent.isLightVisible()
-    this.isHelperVisible = parent.isHelperVisible()
+    this.rotation.set(light.rotation.x, light.rotation.y, light.rotation.z)
+    this.target.set(light.target.position.x, light.target.position.y, light.target.position.z)
+    this.isVisible = light.visible
+    this.isHelperVisible = light.isHelperVisible()
   },
   mounted () {
   },
   watch: {
     intensity (newValue, oldValue) {
       this.intensity = newValue
-      this.$store.commit('extspotlight/setIntensity', this.intensity)
+      this.$store.commit('extspotlight/updateIntensity', this.intensity)
+    },
+    distance (newValue, oldValue) {
+      this.distance = newValue
+      this.$store.commit('extspotlight/updateDistance', this.distance)
+    },
+    angle (newValue, oldValue) {
+      this.angle = newValue
+      this.$store.commit('extspotlight/updateAngle', this.angle)
+    },
+    decay (newValue, oldValue) {
+      this.decay = newValue
+      this.$store.commit('extspotlight/updateDecay', this.decay)
+    },
+    penumbra (newValue, oldValue) {
+      this.penumbra = newValue
+      this.$store.commit('extspotlight/updatePenumbra', this.penumbra)
     },
     isVisible (newValue, oldValue) {
-        this.isLightVisible = newValue
-        this.$store.commit('extspotlight/show', this.isLightVisible)
+      this.isVisible = newValue
+      this.$store.commit('extspotlight/show', this.isVisible)
+    },
+    isHelperVisible (newValue, oldValue) {
+      this.isHelperVisible = newValue
+      this.$store.commit('extspotlight/showHelper', this.isHelperVisible)
     },
     // 监听 transform 对象数值
     transform: {
       handler (newValue, oldValue) {
         this.$store.commit('extspotlight/updateTransform', newValue)
       },
-      deep: true,
+      deep: true
     },
     scale: {
       handler (newValue, oldValue) {
         this.$store.commit('extspotlight/updateScale', newValue)
-      }
+      },
+      deep: true
+    },
+    rotation: {
+      handler (newValue, oldValue) {
+        this.$store.commit('extspotlight/updateRotation', newValue)
+      },
+      deep: true
+    },
+    target: {
+      handler (newValue, oldValue) {
+        this.$store.commit('extspotlight/lookAt', newValue)
+      },
+      deep: true
     }
   }
 }

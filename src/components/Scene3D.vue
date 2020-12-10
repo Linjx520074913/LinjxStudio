@@ -295,7 +295,6 @@ export default {
     },
     // preview 区域大小改变处理
     resizePreview () {
-      console.log('resizePreview')
       let mainPreviewW = this.$refs.scene_3d_main.clientWidth
       let mainPreviewH = this.$refs.scene_3d_main.clientHeight
       this.mainCamera.aspect = mainPreviewW / mainPreviewH
@@ -327,7 +326,6 @@ export default {
       }
     },
     toggleViews (show4Views) {
-      console.log('toggleViews ' + show4Views)
       // 动态改变 scene_3d_root 样式，达到显示 4 视图效果
       if (show4Views) {
         this.$refs.scene_3d_root.style.cssText = 'width:100%; height=calc(100vh - 96px);display: grid;flex: 1;grid-template-columns: 50% 50%;grid-template-rows: 50% 50%'
@@ -344,7 +342,7 @@ export default {
     addLight (type) {
       switch (type) {
         case 'SpotLight':
-          var spotLight = new ExtSpotLight(new THREE.Vector3(0, 2, 4), new THREE.Color(0xFFFFFF), 1, 6)
+          var spotLight = new ExtSpotLight(new THREE.Vector3(0, 3, 3))
           this.scene.add(spotLight)
           console.log(spotLight)
           this.$store.commit('extspotlight/setExtSpotLight', spotLight)
