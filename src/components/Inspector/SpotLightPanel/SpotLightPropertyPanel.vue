@@ -270,7 +270,7 @@ a {
   margin: 5px;
   display: flex;
   flex-direction: column;
-  border: 1px solid;
+  border: 1px solid #666;
   height: auto
 }
 

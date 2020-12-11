@@ -114,13 +114,6 @@ export default {
             click: () => {
               this.$EventBus.$emit('addSpotLight')
             }
-          },
-          {
-            text: '添加地板',
-            icon: '#icon-ic_weixiufuwu',
-            click: () => {
-              this.$EventBus.$emit('addFloor')
-            }
           }
         ]
       }, {

@@ -45,10 +45,10 @@ export default {
   },
   data () {
     return {
-      currentSliderBarWidth: 200,
+      currentSliderBarWidth: 250,
       sliderBarMinW: 150,
       sliderBarMaxW: 350,
-      currentInspectorWidth: 300,
+      currentInspectorWidth: 250,
       inspectorMinW: 150,
       inspectorMaxW: 350,
       lastX: 0,

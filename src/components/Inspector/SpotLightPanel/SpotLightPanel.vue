@@ -1,7 +1,7 @@
 <template>
   <section class="spotlight_panel_root">
     <div class="spotlight_propertys">
-      <div v-for="(property, index) in propertys" @click="selectProperty(index)" class="property_item" :style="{background: changeBackground(index)}">
+      <div v-for="(property, index) in propertys" :key="index" @click="selectProperty(index)" class="property_item" :style="{background: changeBackground(index)}">
         {{ property.name }}
       </div>
     </div>
