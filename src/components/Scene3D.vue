@@ -42,7 +42,7 @@ export default {
   },
   data () {
     return {
-      scene: new THREE.Scene(),
+      scene: this.$store.state.renderer.scene,
       geometry: null,
       material: null,
       mesh: null,

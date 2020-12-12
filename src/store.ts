@@ -1,12 +1,14 @@
 import Vue from 'vue'
 import Vuex from 'vuex'
 import { ExtSpotLightStore } from './store/light/extspotlight-store'
+import { RendererStore } from './store/threejs/renderer-store'
 
 Vue.use(Vuex)
 
 export default new Vuex.Store({
   modules: {
-    extspotlight: ExtSpotLightStore
+    extspotlight: ExtSpotLightStore,
+    renderer: RendererStore
   },
   state: {
     // 是否显示 3D 视图

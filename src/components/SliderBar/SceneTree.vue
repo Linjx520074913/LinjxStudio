@@ -1,60 +1,53 @@
 <template>
   <div id="scenetree_root">
     <div id="scenetree_content">
-      <el-tree :data="data" :props="defaultProps" @node-click="handleNodeClick()"></el-tree>
+      <el-tree :data="childrensTree" :props="defaultProps" @node-click="handleNodeClick"></el-tree>
     </div>
   </div>
 </template>
 
 <script>
+import * as THREE from 'three'
+import { Object3D } from 'three'
 export default {
   name: 'SceneTree',
   data() {
       return {
-        data: [{
-          label: '一级 1',
-          children: [{
-            label: '二级 1-1',
-            children: [{
-              label: '三级 1-1-1'
-            }]
-          }]
-        }, {
-          label: '一级 2',
-          children: [{
-            label: '二级 2-1',
-            children: [{
-              label: '三级 2-1-1'
-            }]
-          }, {
-            label: '二级 2-2',
-            children: [{
-              label: '三级 2-2-1'
-            }]
-          }]
-        }, {
-          label: '一级 3',
-          children: [{
-            label: '二级 3-1',
-            children: [{
-              label: '三级 3-1-1'
-            }]
-          }, {
-            label: '二级 3-2',
-            children: [{
-              label: '三级 3-2-1'
-            }]
-          }]
-        }],
+        scene: this.$store.state.renderer.scene,
+        childrensTree: [],
         defaultProps: {
-          children: 'children',
-          label: 'label'
+          label: 'label',
+          children: 'children'
         }
       };
     },
     methods: {
       handleNodeClick(data) {
         console.log(data);
+      },
+      buildChildrensTree() {
+        console.log(this.scene)
+        this.childrensTree.length = 0
+        this.scene.traverse( function(obj) {
+
+        })
+        for (var child of this.scene.children) {
+          var item = {
+            label: child.name == '' ? '' + child.type : child.name
+          }
+          if (!this.childrensTree.includes(item)) {
+            this.childrensTree.push(item)
+          }
+        }
+        console.log(this.childrensTree)
+      }
+    },
+    watch: {
+      scene: {
+        handler (newValue, oldValue){
+          this.buildChildrensTree()
+        },
+        deep: true
       }
     }
 }
