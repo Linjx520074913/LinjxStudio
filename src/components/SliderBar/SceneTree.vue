@@ -13,41 +13,71 @@ export default {
   name: 'SceneTree',
   data() {
       return {
-        scene: this.$store.state.renderer.scene,
         childrensTree: [],
         defaultProps: {
           label: 'label',
+          uuid: '',
           children: 'children'
         }
       };
     },
+    created() {
+    },
+    actived () {
+    },
+    computed: {
+      getSceneChildrens () {
+        return this.$store.state.renderer.scene.children
+      }
+    },
     methods: {
-      handleNodeClick(data) {
-        console.log(data);
+      // 处理 el-tree 点击事件
+      handleNodeClick(node) {
+        // 选中的节点对象的 uuid
+        var uuid = node.uuid
+        // 根据 uuid 找到对应的对象
+        var selectedObject = this.$store.getters['renderer/findObjectByUuid'](uuid)
+        // Inspector 显示选中对象属性面板
+        this.$EventBus.$emit('showPanel', 'MeshPanel')
       },
-      buildChildrensTree() {
-        console.log(this.scene)
-        this.childrensTree.length = 0
-        this.scene.traverse( function(obj) {
+      // 重建场景树
+      buildChildrensTree(parent, node) {
+        // 遍历 parent 下所有的 parent.children 对象
+        parent.children.forEach( (child, index) => {
+          // 判断是否在 childrensTree 中更新 child 对象
+          var update = true
+          for (item of node.children) {
+            if (child.uuid == item.uuid) {
+              update = false
+              break
+            }
+          }
 
+          // 往 childrensTree 中添加 child 对象
+          if (update) {
+            var item = {
+            label: child.name == '' ? '' + child.type : child.name,
+            uuid: child.uuid,
+            children: []
+          }
+          node.children.push(item)
+          this.buildChildrensTree(child, node.children[index])
+          }
         })
-        for (var child of this.scene.children) {
-          var item = {
-            label: child.name == '' ? '' + child.type : child.name
-          }
-          if (!this.childrensTree.includes(item)) {
-            this.childrensTree.push(item)
-          }
-        }
-        console.log(this.childrensTree)
       }
     },
     watch: {
-      scene: {
-        handler (newValue, oldValue){
-          this.buildChildrensTree()
-        },
-        deep: true
+      // 监听 scene 中子对象的变化
+      getSceneChildrens (childrens) {
+        var scene = this.$store.state.renderer.scene
+        if (this.childrensTree.length == 0) {
+          this.childrensTree.push({
+          label: 'Scene',
+          uuid: scene.uuid,
+          children: []
+          })
+        }
+        this.buildChildrensTree(this.$store.state.renderer.scene, this.childrensTree[0])
       }
     }
 }

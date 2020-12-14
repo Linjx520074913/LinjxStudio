@@ -1,15 +1,15 @@
 <template>
     <div id="inspector_container" :width="slw + 'px'">
-      <component :is="panelName"/>
+      <ObjectPropertyPanel/>
     </div>
 </template>
 
 <script>
-import SpotLightPanel from '../components/Inspector/SpotLightPanel/SpotLightPanel'
+import ObjectPropertyPanel from '../components/Inspector/ObjectPropertyPanel/ObjectPropertyPanel'
 export default {
   name: 'Inspector',
   components: {
-    SpotLightPanel
+    ObjectPropertyPanel
   },
   data () {
     return {
@@ -18,9 +18,7 @@ export default {
   },
   props: ['slw'],
   mounted () {
-    this.$EventBus.$on('showPanel', (name) => {
-      this.panelName = name
-    })
+
   }
 }
 </script>

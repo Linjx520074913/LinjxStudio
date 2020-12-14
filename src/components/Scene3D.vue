@@ -42,7 +42,7 @@ export default {
   },
   data () {
     return {
-      scene: this.$store.state.renderer.scene,
+      scene: new THREE.Scene(),
       geometry: null,
       material: null,
       mesh: null,
@@ -69,6 +69,8 @@ export default {
   },
   methods: {
     initRenderer () {
+      this.scene.name = '主场景'
+      this.$store.commit('renderer/setScene', this.scene)
       this.scene.background = new THREE.Color(0xAAAAAA)
       this.initPreviewMain()
       this.initPreviewLeft()
@@ -174,24 +176,26 @@ export default {
           array[i + j] = 0.26
         }
       }
+      this.grid.name = '坐标辅助网格'
       this.scene.add(this.grid)
     },
     // 创建坐标轴及箭头
     createAxes () {
       // 创建坐标轴
-      // var axes = new THREE.AxesHelper(3)
-      // this.scene.add(axes)
 
       var arrowLength = 15
       // 创建箭头
       // X 方向箭头
       this.xArrow = new THREE.ArrowHelper(new THREE.Vector3(1, 0, 0), new THREE.Vector3(0, 0, 0), arrowLength, 0xFF0000, 0.1 * arrowLength, 0.1 * arrowLength)
+      this.xArrow.name = 'X 轴箭头'
       this.scene.add(this.xArrow)
       // Y 方向箭头
       this.yArrow = new THREE.ArrowHelper(new THREE.Vector3(0, 1, 0), new THREE.Vector3(0, 0, 0), arrowLength, 0x00FF00, 0.1 * arrowLength, 0.1 * arrowLength)
+      this.yArrow.name = 'Y 轴箭头'
       this.scene.add(this.yArrow)
       // Z 方向箭头
       this.zArrow = new THREE.ArrowHelper(new THREE.Vector3(0, 0, 1), new THREE.Vector3(0, 0, 0), arrowLength, 0x0000FF, 3, 0.1 * arrowLength)
+      this.zArrow.name = 'Z 轴箭头'
       this.scene.add(this.zArrow)
     },
     createFloor () {
@@ -205,6 +209,7 @@ export default {
       // 接受阴影
       mesh.castShadow = true
       mesh.receiveShadow = true
+      mesh.name = '地板'
       this.scene.add( mesh )
     },
     // 创建点云
@@ -255,6 +260,7 @@ export default {
           // 的子节点设置 castShadow = true 属性，不能简单得对模型对象设置 castShadow = true
           var colladaLoader = new ColladaLoader()
           colladaLoader.load(path, function (collada) {
+            collada.name = 'collada'
             collada.scene.traverse(function(child){
               if (child instanceof THREE.Mesh) {
                 //设置模型生成阴影并接收阴影
@@ -265,7 +271,11 @@ export default {
             // 简单这样设置模型 castShadow = true 是不能产生阴影的
             // collada.scene.castShadow = true
             // collada.scene.receiveShadow = true
+            // const box = new THREE.BoxHelper(collada.scene, 0xff0000);
+            // collada.scene.add(box);
             scope.scene.add(collada.scene)
+
+            console.log(scope.scene.toJSON())
           })
           break
         case 'obj':
@@ -391,14 +401,18 @@ export default {
     addLight (type) {
       switch (type) {
         case 'SpotLight':
+          // 新建聚光灯对象
           var spotLight = new ExtSpotLight(new THREE.Vector3(0, 10, 5))
+          spotLight.name = '聚光灯'
           this.scene.add(spotLight)
-          console.log(spotLight)
+          // 往 extspotlight-store 中更新聚光灯对象
           this.$store.commit('extspotlight/setExtSpotLight', spotLight)
+          // 发送消息，显示聚光灯属性面板
           this.$EventBus.$emit('showPanel', 'SpotLightPanel')
           break
         case 'AmbientLight':
           var ambient = new THREE.AmbientLight(0xFFFFFF, 0.8)
+          ambient.name = '环境光'
           this.scene.add(ambient)
           break
       }
