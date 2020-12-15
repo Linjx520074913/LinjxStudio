@@ -135,3 +135,12 @@ table {
     border-collapse: collapse;
     border-spacing: 0;
 }
+
+
+/* 设置字体颜色 */
+
+a {
+    color: #CCCED3;
+    height: 30px;
+    line-height: 30px;
+}

@@ -19,6 +19,7 @@
         "core-js": "^2.6.5",
         "element-ui": "^2.4.5",
         "three": "^0.122.0",
+        "type-signals": "^1.1.0",
         "vue": "^2.6.10",
         "vue-class-component": "^7.0.2",
         "vue-file-toolbar-menu": "^1.1.3",

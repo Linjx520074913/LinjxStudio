@@ -38,7 +38,8 @@ export class ExtSpotLight extends THREE.SpotLight{
     this.helper.matrixAutoUpdate = true
     this.add(this.sphere)
     this.add(this.helper)
-    this.updatePosition(pos)
+    this.position.set(pos.x, pos.y, pos.z)
+    this.update()
   }
 
   // 更新光照强度，默认为 1
@@ -68,23 +69,6 @@ export class ExtSpotLight extends THREE.SpotLight{
   // 更新光照随距离衰减程度
   updateDecay (value: number) {
     this.decay = value
-    this.updateHelper()
-  }
-
-  // 更新光源及显示球位置
-  updatePosition (pos: THREE.Vector3) {
-    this.position.set(pos.x, pos.y, pos.z)
-    this.updateHelper()
-  }
-  // 更新光源及显示球大小
-  updateScale (scale: THREE.Vector3){
-    this.scale.set(scale.x, scale.y, scale.z)
-    this.updateHelper()
-  }
-  // 更新光源旋转角
-  updateRotation (rotation: THREE.Vector3){
-    console.log('updateRotation Recv ' + rotation.x)
-    this.rotation.set(rotation.x, rotation.y, rotation.z)
     this.updateHelper()
   }
 

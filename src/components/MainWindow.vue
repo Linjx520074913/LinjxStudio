@@ -31,7 +31,7 @@ import '../assets/css/reset.css'
 import TitleBar from './TitleBar'
 import StatusBar from './StatusBar'
 import SliderBar from './SliderBar'
-import Inspector from './Inspector'
+import Inspector from './Inspector/Inspector'
 import Preview from './Preview'
 
 export default {

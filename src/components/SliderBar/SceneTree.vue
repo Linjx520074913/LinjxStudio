@@ -38,7 +38,7 @@ export default {
         // 根据 uuid 找到对应的对象
         var selectedObject = this.$store.getters['renderer/findObjectByUuid'](uuid)
         // Inspector 显示选中对象属性面板
-        this.$EventBus.$emit('showPanel', 'MeshPanel')
+        this.$EventBus.$emit('showPanel', 'LightPanel', selectedObject)
       },
       // 重建场景树
       buildChildrensTree(parent, node) {

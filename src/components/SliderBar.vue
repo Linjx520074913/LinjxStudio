@@ -65,5 +65,6 @@ export default {
   padding-right: 10px;
   margin-right: 2px;
   background: #333B4F;
+  user-select: none;
 }
 </style>

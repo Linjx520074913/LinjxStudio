@@ -81,16 +81,6 @@ export default {
       this.createAxes()
 
       this.addLight('AmbientLight')
-
-      // var material = new THREE.MeshPhongMaterial( { color: 0x4080ff, dithering: true } );
-
-      // var geometry = new THREE.CylinderBufferGeometry( 2, 2, 0.5, 32, 1, false );
-
-      // var mesh = new THREE.Mesh( geometry, material );
-      // mesh.position.set( 0, 2, 0 );
-      // mesh.castShadow = true;
-      // this.scene.add( mesh );
-    // this.createPointCloud()
     },
     initPreviewMain () {
       let width = this.$refs.scene_3d_main.clientWidth
@@ -200,7 +190,8 @@ export default {
     },
     createFloor () {
       // 【NOTE】要配合光照才可以看到材质的颜色
-      let material = new THREE.MeshPhongMaterial( { color: 0xD0D0D0, depthWrite: false } )
+      let material = new THREE.MeshPhongMaterial( { color: 0xFF0000, depthWrite: false } )
+      material.side = THREE.DoubleSide
       let geometry = new THREE.PlaneBufferGeometry( 20, 20 )
 
       let mesh = new THREE.Mesh( geometry, material )
@@ -408,7 +399,7 @@ export default {
           // 往 extspotlight-store 中更新聚光灯对象
           this.$store.commit('extspotlight/setExtSpotLight', spotLight)
           // 发送消息，显示聚光灯属性面板
-          this.$EventBus.$emit('showPanel', 'SpotLightPanel')
+          this.$EventBus.$emit('showPanel', 'LightPanel', spotLight)
           break
         case 'AmbientLight':
           var ambient = new THREE.AmbientLight(0xFFFFFF, 0.8)
@@ -446,10 +437,6 @@ export default {
 
     this.$EventBus.$on('addSpotLight', () => {
       this.addLight('SpotLight')
-    })
-
-    this.$EventBus.$on('addFloor', () => {
-
     })
 
     this.toggleViews(this.$store.state.show4Views)

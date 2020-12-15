@@ -1,6 +1,6 @@
 <template>
-  <div>
-    
+  <div id="property_panel_root">
+    <>
   </div>
 </template>
 

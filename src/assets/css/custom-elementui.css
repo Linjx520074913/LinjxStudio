@@ -1,0 +1,57 @@
+/* 设置 【collapse 箭头】在左边（默认在右边） */
+
+.collapse-title {
+    flex: 1 0 90%;
+    order: 1;
+}
+
+.el-collapse {
+    height: auto;
+    padding: 1px;
+    border: 1px solid transparent!important;
+}
+
+
+/* 修改 【el-collapse-item__header】 高度，默认为 48px */
+
+.el-collapse-item__header {
+    height: 30px !important;
+    line-height: 30px !important;
+    background: #333947 !important;
+    Color: #CCCED3 !important;
+    border: 0px !important;
+}
+
+.el-collapse-item__wrap {
+    background: #262C3B !important;
+    Color: #CCCED3 !important;
+    border: 0px !important
+}
+
+.el-collapse-item__content {
+    padding: 0px !important;
+}
+
+
+/* 修改 【el-input 输入框】 样式 */
+
+.el-input {
+    padding: 2px 0px 2px 0px;
+}
+
+.el-input__inner {
+    width: 95% !important;
+    height: 26px !important;
+    padding: 0px !important;
+    background: #202531 !important;
+    border-radius: 0px !important;
+    border: 1px solid transparent !important;
+    text-align: center !important
+}
+
+
+/* el-input 获取焦点时，边框为淡蓝色 */
+
+.el-input__inner:focus {
+    border: 1px solid #87CEFA !important;
+}
