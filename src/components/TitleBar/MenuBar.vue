@@ -28,8 +28,8 @@
 <script>
 import { ipcRenderer } from 'electron'
 
-import About from './About'
-import License from './License'
+import About from '../About'
+import License from '../License'
 
 const { dialog } = require('electron').remote
 

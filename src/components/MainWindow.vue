@@ -28,11 +28,11 @@
 
 import '../assets/css/reset.css'
 
-import TitleBar from './TitleBar'
-import StatusBar from './StatusBar'
-import SliderBar from './SliderBar'
+import TitleBar from './TitleBar/TitleBar'
+import StatusBar from './StatusBar/StatusBar'
+import SliderBar from './SliderBar/SliderBar'
 import Inspector from './Inspector/Inspector'
-import Preview from './Preview'
+import Preview from './Workspace/Preview'
 
 export default {
   name: 'MainWindow',

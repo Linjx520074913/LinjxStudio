@@ -12,7 +12,7 @@
 </template>
 
 <script>
-import SceneTree from './SliderBar/SceneTree'
+import SceneTree from './SceneTree'
 export default {
   name: 'SliderBar',
   components: {

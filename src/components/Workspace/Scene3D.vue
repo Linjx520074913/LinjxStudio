@@ -32,7 +32,7 @@ import { PLYLoader } from 'three/examples/jsm/loaders/PLYLoader'
 import { STLLoader } from 'three/examples/jsm/loaders/STLLoader'
 import { OBJLoader } from 'three/examples/jsm/loaders/OBJLoader'
 import { ColladaLoader } from 'three/examples/jsm/loaders/ColladaLoader'
-import { ExtSpotLight } from '../ts/ExtSpotLight'
+import { ExtSpotLight } from '../../ts/ExtSpotLight'
 import { ipcRenderer } from 'electron'
 
 export default {
@@ -471,5 +471,6 @@ export default {
   float:right;
   height:40px;
   line-height:40px;
+  user-select: none;
 }
 </style>
