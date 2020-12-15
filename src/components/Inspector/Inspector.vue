@@ -15,7 +15,7 @@
             <a>类型</a>
             <a>{{type}}</a>
             <a>名字</a>
-            <a>{{name}}</a>
+            <el-input v-model="name" placeholder=""></el-input>
             <a>UUID</a>
             <a style="overflow:hidden;text-overflow:ellipsis;">{{uuid}}</a>
           </div>
@@ -119,11 +119,11 @@ export default {
       // 当前面板中显示的对象
       obj: null,
       // 名字
-      name: '',
+      name: ' ',
       // 类型
-      type: '',
+      type: ' ',
       // uuid, 唯一标识 object 对象
-      uuid: '',
+      uuid: ' ',
       // 位置
       position: new THREE.Vector3(0, 0, 0),
       // 旋转, NOTE:Object3D 中的这个属性类型是 Euler 弧度，而在属性面板上显示是 角度，所以在
@@ -163,9 +163,9 @@ export default {
     this.$EventBus.$on('showPanel', (componentName, object) => {
       this.activedComponent = componentName
       this.obj = object
-      this.name = object.name
-      this.type = object.type
-      this.uuid = object.uuid
+      this.name = this.obj.name
+      this.type = this.obj.type
+      this.uuid = this.obj.uuid
 
       this.position = this.obj.position
       this.rotation.set(THREE.Math.radToDeg(object.rotation.x),
@@ -181,6 +181,12 @@ export default {
         this.obj.rotation.set(THREE.Math.degToRad(newValue.x), THREE.Math.degToRad(newValue.y), THREE.Math.degToRad(newValue.z))
       },
       deep: true
+    },
+    // NOTE : this.name = this.obj.name， 为什么修改 this.name, thi.obj.name 不会跟着修改呢
+    // 同样的操作，this.position 是会修改的？？？？？？？
+    name (newValue, oldValue) {
+      this.obj.name = newValue
+      console.log(this.obj)
     }
   }
 }

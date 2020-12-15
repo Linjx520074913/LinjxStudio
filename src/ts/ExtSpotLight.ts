@@ -14,11 +14,6 @@ export class ExtSpotLight extends THREE.SpotLight{
     super(color, intensity, distance, angle, penumbra, decay)
 
     this.castShadow = true
-    // this.shadow.mapSize.width = 512
-    // this.shadow.mapSize.height = 512
-    // this.shadow.camera.near = 0.1
-    // this.shadow.camera.far = 200
-    // this.shadow.focus = 1
 
     // 创建圆球体
     this.geometry = new THREE.SphereGeometry(0.2, 10, 10)
@@ -39,7 +34,8 @@ export class ExtSpotLight extends THREE.SpotLight{
     this.add(this.sphere)
     this.add(this.helper)
     this.position.set(pos.x, pos.y, pos.z)
-    this.update()
+    this.showHelper(false)
+    this.updateHelper()
   }
 
   // 更新光照强度，默认为 1
