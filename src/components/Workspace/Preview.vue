@@ -23,4 +23,7 @@ export default {
 </script>
 
 <style>
+#scene_root {
+  height: 100%
+}
 </style>

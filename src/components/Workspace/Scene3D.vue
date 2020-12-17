@@ -1,5 +1,5 @@
 <template>
-  <div id="scene_3d_root" ref="scene_3d_root" v-resize="resizePreview" >
+  <div id="scene_3d_root" ref="scene_3d_root">
     <div id="scene_3d_main" ref="scene_3d_main" @dblclick="doubleClick('scene_3d_main')">
       <div class="prompt_container">
         <svg class="view_icon" aria-hidden="true"><use xlink:href="#icon-main_view"></use></svg>
@@ -23,7 +23,6 @@
 </template>
 
 <script>
-import resize from 'vue-resize-directive'
 
 import * as THREE from 'three'
 import { OrbitControls } from 'three/examples/jsm/controls/OrbitControls'
@@ -34,11 +33,12 @@ import { OBJLoader } from 'three/examples/jsm/loaders/OBJLoader'
 import { ColladaLoader } from 'three/examples/jsm/loaders/ColladaLoader'
 import { ExtSpotLight } from '../../ts/ExtSpotLight'
 import { ipcRenderer } from 'electron'
+import VueResizable from 'vue-resizable'
 
 export default {
   name: 'Scene3D',
-  directives: {
-    resize
+  components: {
+    VueResizable
   },
   data () {
     return {
@@ -101,12 +101,12 @@ export default {
       this.$refs.scene_3d_main.appendChild(this.mainRenderer.domElement)
 
       this.mainControl = new OrbitControls(this.mainCamera, this.mainRenderer.domElement)
-      this.mainControl.enableDamping = true // an animation loop is required when either damping or auto-rotation are enabled
-      this.mainControl.dampingFactor = 0.25
-      this.mainControl.screenSpacePanning = false
-      this.mainControl.minDistance = 1
-      this.mainControl.maxDistance = 10000
-      this.mainControl.maxPolarAngle = Math.PI / 2
+      // this.mainControl.enableDamping = true // an animation loop is required when either damping or auto-rotation are enabled
+      // this.mainControl.dampingFactor = 0.25
+      // this.mainControl.screenSpacePanning = false
+      // this.mainControl.minDistance = 1
+      // this.mainControl.maxDistance = 10000
+      // this.mainControl.maxPolarAngle = Math.PI / 2
     },
     initPreviewLeft () {
       let width = this.$refs.scene_3d_left.clientWidth
@@ -190,7 +190,7 @@ export default {
     },
     createFloor () {
       // 【NOTE】要配合光照才可以看到材质的颜色
-      let material = new THREE.MeshPhongMaterial( { color: 0xFF0000, depthWrite: false } )
+      let material = new THREE.MeshPhongMaterial( { color: 0xDDDDDD, depthWrite: false } )
       material.side = THREE.DoubleSide
       let geometry = new THREE.PlaneBufferGeometry( 20, 20 )
 
@@ -345,6 +345,7 @@ export default {
     },
     // preview 区域大小改变处理
     resizePreview () {
+      console.log('resizePreview')
       let mainPreviewW = this.$refs.scene_3d_main.clientWidth
       let mainPreviewH = this.$refs.scene_3d_main.clientHeight
       this.mainCamera.aspect = mainPreviewW / mainPreviewH
@@ -419,6 +420,9 @@ export default {
   created () {
   },
   mounted () {
+    window.onresize = () =>{
+      this.resizePreview()
+    }
     this.initRenderer()
     this.renderScene()
 
@@ -449,7 +453,7 @@ export default {
 <style scoped>
 #scene_3d_root {
   width: 100%;
-  height: calc(100vh - 96px);
+  height: calc(100vh - 89px);
   display: grid;
   flex: 1;
   grid-template-columns: 100% 0%;

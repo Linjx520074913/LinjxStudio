@@ -103,14 +103,12 @@ import '../../assets/css/inspector.css'
 import * as THREE from 'three'
 import { Euler } from 'three'
 import LightPanel from './LightPanel'
-import MeshPanel from './ObjectPropertyPanel/MeshPropertyPanel'
 import { ExtSpotLight } from '../../ts/ExtSpotLight'
 
 export default {
   name: 'Inspector',
   components: {
-    LightPanel,
-    MeshPanel
+    LightPanel
   },
   data() {
     return {
@@ -196,7 +194,7 @@ export default {
 .inspector_root {
   display: flex;
   flex-direction: column;
-  height: calc(100vh - 64px);
+  height: calc(100vh - 57px);
   background: #141820
 }
 .inspector_tabs {

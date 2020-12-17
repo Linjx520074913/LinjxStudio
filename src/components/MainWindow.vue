@@ -8,11 +8,11 @@
         <el-aside :width="currentSliderBarWidth + 'px'">
           <SliderBar :slw="currentSliderBarWidth"/>
         </el-aside>
-        <div id='resize_left'></div>
+        <!-- <div id='resize_left'></div> -->
         <el-main id="mainwork_root">
           <Preview/>
         </el-main>
-        <div id='resize_right'></div>
+        <!-- <div id='resize_right'></div> -->
         <el-aside :width="currentInspectorWidth + 'px'">
           <Inspector :slw="currentInspectorWidth"/>
         </el-aside>
@@ -105,8 +105,17 @@ export default {
   padding: 0 !important;
 }
 
-.el-header, .el-footer {
+/* 菜单栏 */
+.el-header {
   height: 32px !important; /* el-header 和 el-footer 默认高度为 60 px, 添加 !important 可以修改默认高度，否则无法修改 */
+  background-color: #FFFFFF;
+  text-align: center;
+  line-height: 32px;
+}
+
+/* 状态栏 */
+.el-footer {
+  height: 25px !important; /* el-header 和 el-footer 默认高度为 60 px, 添加 !important 可以修改默认高度，否则无法修改 */
   background-color: #FFFFFF;
   text-align: center;
   line-height: 32px;
@@ -117,7 +126,7 @@ export default {
 .el-main {
   width: 100%;
   background-color: #000;
-  height: calc(100vh - 64px); /* calc(100% - 64px) 这种方式无效 */
+  height: calc(100vh - 57px); /* calc(100% - 64px) 这种方式无效 */
   overflow: hidden !important;
   display: flex;
   flex-direction: colum;
@@ -126,7 +135,7 @@ export default {
 #resize_left, #resize_right{
   cursor: e-resize;
   width: 1px;
-  height: calc(100vh - 64px);
+  height: calc(100vh - 57px);
   background-color:#111111;
 }
 

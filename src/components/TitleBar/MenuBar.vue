@@ -19,7 +19,7 @@
         </li>
       </div>
     </ul>
-    <el-dialog :visible.sync="popupVisible" id="popup_dialog">
+    <el-dialog :visible.sync="popupVisible" id="popup_dialog" :show-close="false">
       <component :is="popupComponent"/>
     </el-dialog>
   </div>
@@ -28,7 +28,7 @@
 <script>
 import { ipcRenderer } from 'electron'
 
-import About from '../About'
+import About from '../Popup/About'
 import License from '../License'
 
 const { dialog } = require('electron').remote

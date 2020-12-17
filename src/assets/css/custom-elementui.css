@@ -55,3 +55,7 @@
 .el-input__inner:focus {
     border: 1px solid #87CEFA !important;
 }
+
+.el-dialog__body {
+    padding: 0 !important
+}
