@@ -1,7 +1,7 @@
 import { protocol, BrowserWindow, ipcMain } from 'electron'
 import { createProtocol } from 'vue-cli-plugin-electron-builder/lib'
 import installExtension, { VUEJS_DEVTOOLS } from 'electron-devtools-installer'
-
+import { LocalServer } from '../server/LocalServer'
 /// 导入 package.json 信息
 let pkg = require('../../package.json')
 
@@ -13,10 +13,13 @@ protocol.registerSchemesAsPrivileged([
 export default class Studio {
   win? : BrowserWindow
   appIcon : string
+  server: LocalServer
 
   constructor () {
     this.appIcon = 'public/imgs/orbbec.png'
     this.handleIpcMainEvent()
+    this.server = new LocalServer()
+    this.server.start()
   }
 
   /// 创建主窗口

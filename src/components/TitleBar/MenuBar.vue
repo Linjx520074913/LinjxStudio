@@ -72,8 +72,8 @@ export default {
             text: '新建窗口',
             icon: '#icon-ic_ranliaojiazhu',
             click: () => {
-              this.popupVisible = true
-              console.log('[新建窗口] 被点击')
+              // this.popupVisible = true
+              // console.log('[新建窗口] 被点击')
             }
           },
           {
