@@ -1,4 +1,4 @@
-import { protocol, BrowserWindow, ipcMain } from 'electron'
+import { protocol, BrowserWindow, ipcMain, screen } from 'electron'
 import { createProtocol } from 'vue-cli-plugin-electron-builder/lib'
 import installExtension, { VUEJS_DEVTOOLS } from 'electron-devtools-installer'
 import { LocalServer } from '../server/LocalServer'
@@ -26,8 +26,8 @@ export default class Studio {
   async createMainWindow () {
     // Create the browser window.
     this.win = new BrowserWindow({
-      width: 1000,
-      height: 690,
+      width: screen.getPrimaryDisplay().workAreaSize.width,
+      height: screen.getPrimaryDisplay().workAreaSize.height,
       minWidth: 1000,
       minHeight: 690,
       frame: false,

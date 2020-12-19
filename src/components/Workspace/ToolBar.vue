@@ -1,14 +1,16 @@
 <template>
-  <div id="toolbar_root">
-    <ul class="toolbar_level_1" v-for="item in content" :key="item.index">
-      <svg class="icon" aria-hidden="true" v-on:click="('click' in item) ? item.click() : emptyClick()"><use v-bind:xlink:href="item.icon"></use></svg>
-      <li class="toolbar_level_2" v-for="child in item.menu" :key="child.index">
-        <el-checkbox class="toolbar_child" v-model="child.value" @change="child.change"/>
-        <svg class="icon" v-if="'icon' in child" aria-hidden="true" style="margin-left:10px;height: 100%"> <use v-bind:xlink:href="child.icon"></use></svg>
-        <a class="toolbar_child">{{child.title}}</a>
-      </li>
-    </ul>
-  </div>
+  <section>
+    <div id="toolbar_root">
+      <ul class="toolbar_level_1" v-for="item in content" :key="item.index">
+        <svg class="icon" aria-hidden="true" v-on:click="('click' in item) ? item.click() : emptyClick()"><use v-bind:xlink:href="item.icon"></use></svg>
+        <li class="toolbar_level_2" v-for="child in item.menu" :key="child.index">
+          <el-checkbox class="toolbar_child" v-model="child.value" @change="child.change"/>
+          <svg class="icon" v-if="'icon' in child" aria-hidden="true" style="margin-left:10px;height: 100%"> <use v-bind:xlink:href="child.icon"></use></svg>
+          <a class="toolbar_child">{{child.title}}</a>
+        </li>
+      </ul>
+    </div>
+  </section>
 </template>
 
 <script>

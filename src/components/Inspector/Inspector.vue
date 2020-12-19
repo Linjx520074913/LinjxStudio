@@ -1,7 +1,7 @@
 <template>
   <section class="inspector_root">
     <div class="inspector_tabs">
-      <div v-for="(tab, index) in tabs" :key="index" @click="selectProperty(index)" class="property_item" :style="{background: changeBackground(index)}">
+      <div v-for="(tab, index) in tabs" :key="index" @click="selectProperty(index)" class="property_item" :style="index == selectedPropertyIndex ? 'color: #6A9DEA;' : 'color: #555555;'">
         {{ tab.name }}
       </div>
     </div>
@@ -195,7 +195,7 @@ export default {
   display: flex;
   flex-direction: column;
   height: calc(100vh - 57px);
-  background: #141820
+  background: #141820;
 }
 .inspector_tabs {
   display: flex;
@@ -213,7 +213,6 @@ export default {
 }
 .inspector_content {
   flex: 1;
-  background: #333B4F;
 }
 .detail {
   margin: 5px;

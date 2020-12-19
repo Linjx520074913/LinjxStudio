@@ -93,7 +93,7 @@ export default {
 #scenetree_content {
   flex: 1;
   margin: 5px;
-  border:1px solid #666
+  border:1px solid #666;
 }
 .el-tree {
   background: transparent !important

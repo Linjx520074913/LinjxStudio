@@ -1,7 +1,7 @@
 <template>
   <div id="slider_bar_root" :width="slw + 'px'">
     <div id="slider_bar_header">
-      <div class="header_tab" v-for="tab in tabs" :key="tab.index">
+      <div class="header_tab" v-for="(tab, index) in tabs" :key="index" @click="activeTab(index)" :style="index == activedTabIndex ? 'color: #6A9DEA; background:#333B4F' : 'color: #555555; background:#262C3B'">
         {{tab.name}}
       </div>
     </div>
@@ -30,7 +30,13 @@ export default {
           name: '导入',
           component: 'SceneTree'
         }
-      ]
+      ],
+      activedTabIndex: 0
+    }
+  },
+  methods: {
+    activeTab (index) {
+      this.activedTabIndex = index
     }
   }
 }
@@ -58,7 +64,6 @@ export default {
 #slider_bar_content {
   width:100%;
   flex: 1;
-  background: #333B4F;
 }
 .header_tab {
   padding-left: 10px;

@@ -20,14 +20,16 @@ export default {
 <style scoped>
 #status_bar{
   display:flex;
-  flex-direction: column;
+  flex-direction: row;
   width:100%;
-  height:100%;
-  background:#1d232f;
+  height: 100%;
+  background:#171C26;
+  box-sizing: border-box;
+  border-top: 1px solid #111;
 }
 .icon {
-  width: 25px;
-  height: 25px;
+  width: 24px;
+  height: 24px;
 }
 .icon:hover {
   background:#343940;

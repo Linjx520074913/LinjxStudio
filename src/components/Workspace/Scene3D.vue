@@ -1,25 +1,27 @@
 <template>
-  <div id="scene_3d_root" ref="scene_3d_root">
-    <div id="scene_3d_main" ref="scene_3d_main" @dblclick="doubleClick('scene_3d_main')">
-      <div class="prompt_container">
-        <svg class="view_icon" aria-hidden="true"><use xlink:href="#icon-main_view"></use></svg>
-        <a class="view_title">正视图</a>
+  <section>
+    <div id="scene_3d_root" ref="scene_3d_root">
+      <div id="scene_3d_main" ref="scene_3d_main" @dblclick="doubleClick('scene_3d_main')">
+        <div class="prompt_container">
+          <svg class="view_icon" aria-hidden="true"><use xlink:href="#icon-main_view"></use></svg>
+          <a class="view_title">正视图</a>
+        </div>
       </div>
-    </div>
-    <div id="scene_3d_left" ref="scene_3d_left" v-show='this.$store.state.show4Views==true' @dblclick="doubleClick('scene_3d_left')">
-      <div class="prompt_container">
-        <svg class="view_icon" aria-hidden="true"><use xlink:href="#icon-left_view"></use></svg>
-        <a class="view_title">侧视图</a>
+      <div id="scene_3d_left" ref="scene_3d_left" v-show='this.$store.state.show4Views==true' @dblclick="doubleClick('scene_3d_left')">
+        <div class="prompt_container">
+          <svg class="view_icon" aria-hidden="true"><use xlink:href="#icon-left_view"></use></svg>
+          <a class="view_title">侧视图</a>
+        </div>
       </div>
-    </div>
-    <div id="scene_3d_top" ref="scene_3d_top" v-show='this.$store.state.show4Views==true'>
-      <div  class="prompt_container">
-        <svg class="view_icon" aria-hidden="true"><use xlink:href="#icon-top_view"></use></svg>
-        <a class="view_title">俯视图</a>
+      <div id="scene_3d_top" ref="scene_3d_top" v-show='this.$store.state.show4Views==true'>
+        <div  class="prompt_container">
+          <svg class="view_icon" aria-hidden="true"><use xlink:href="#icon-top_view"></use></svg>
+          <a class="view_title">俯视图</a>
+        </div>
       </div>
+      <div id="scene_3d_bottom" ref="scene_3d_bottom" v-show='this.$store.state.show4Views==true'/>
     </div>
-    <div id="scene_3d_bottom" ref="scene_3d_bottom" v-show='this.$store.state.show4Views==true'/>
-  </div>
+  </section>
 </template>
 
 <script>
@@ -453,14 +455,13 @@ export default {
 <style scoped>
 #scene_3d_root {
   width: 100%;
-  height: calc(100vh - 89px);
+  height: 100%;
   display: grid;
-  flex: 1;
   grid-template-columns: 100% 0%;
   grid-template-rows: 100% 0%;
 }
 #scene_3d_main, #scene_3d_left, #scene_3d_top, #scene_3d_bottom {
-  border: 1px solid transparent;
+  border: 0px solid transparent;
 }
 /* 视图左上角图标和标题样式 */
 .prompt_container {

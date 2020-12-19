@@ -1,7 +1,9 @@
 <template>
+  <section>
   <div id="scene_2d_root" ref="scene_2d_root">
-    <h1>我是 2d 预览区11</h1>
-  </div>
+      <h1>我是 2d 预览区11</h1>
+    </div>
+  </section>
 </template>
 
 <script>
