@@ -1,11 +1,11 @@
 <template>
   <section class="inspector_root">
-    <div class="inspector_tabs">
+    <div class="inspector_tabs" v-show="activedComponent != ''">
       <div v-for="(tab, index) in tabs" :key="index" @click="selectProperty(index)" class="property_item" :style="index == selectedPropertyIndex ? 'color: #6A9DEA;' : 'color: #555555;'">
         {{ tab.name }}
       </div>
     </div>
-    <div class="inspector_content">
+    <div class="inspector_content" v-show="activedComponent != ''">
       <div class="detail">
         <div>
           <div class="inspector_item_title">
@@ -131,6 +131,7 @@ export default {
       scale: new THREE.Vector3(0, 0, 0),
       isVisible: true,
       isHelperVisible: true,
+      componentName: '',
       // 属性
       tabs: [
         {
@@ -196,6 +197,8 @@ export default {
   flex-direction: column;
   height: calc(100vh - 57px);
   background: #141820;
+  box-sizing: border-box;
+  border-left: 1px solid #111;
 }
 .inspector_tabs {
   display: flex;

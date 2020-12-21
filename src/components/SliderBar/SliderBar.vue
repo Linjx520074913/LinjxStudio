@@ -1,21 +1,26 @@
 <template>
   <div id="slider_bar_root" :width="slw + 'px'">
-    <div id="slider_bar_header">
-      <div class="header_tab" v-for="(tab, index) in tabs" :key="index" @click="activeTab(index)" :style="index == activedTabIndex ? 'color: #6A9DEA; background:#333B4F' : 'color: #555555; background:#262C3B'">
-        {{tab.name}}
+    <ActivityBar/>
+    <div id="activity_area">
+      <div id="activity_area_header">
+        <div class="header_tab" v-for="(tab, index) in tabs" :key="index" @click="activeTab(index)" :style="index == activedTabIndex ? 'color: #6A9DEA; background:#333B4F' : 'color: #555555; background:#262C3B'">
+          {{tab.name}}
+        </div>
       </div>
-    </div>
-    <div id="slider_bar_content">
-      <component :is="tabs[0].component"/>
+      <div id="activity_area_content">
+        <component :is="tabs[0].component"/>
+      </div>
     </div>
   </div>
 </template>
 
 <script>
+import ActivityBar from './ActivityBar'
 import SceneTree from './SceneTree'
 export default {
   name: 'SliderBar',
   components: {
+    ActivityBar,
     SceneTree
   },
   props: ['slw'],
@@ -46,13 +51,18 @@ export default {
 /* 设置根 div 样式 */
 #slider_bar_root{
   display:flex;
-  flex-direction: column;
+  flex-direction: row;
   min-width: 100%; /* 设置该属性，解决 slider_bar_root 大小改变时，背景颜色没有完全填充的问题 */
   width:100%;
   height:100%;
-  background:#141820;
+  background:#171C26;
+  box-sizing: border-box;
+  border-right: 1px solid #111;
 }
-#slider_bar_header {
+#activity_area {
+  flex: 1
+}
+#activity_area_header {
   display:flex;
   flex-direction: row;
   width:100%;
@@ -61,9 +71,8 @@ export default {
   text-align: center;
   color: #CCCED3;
 }
-#slider_bar_content {
+#activity_area_content {
   width:100%;
-  flex: 1;
 }
 .header_tab {
   padding-left: 10px;
