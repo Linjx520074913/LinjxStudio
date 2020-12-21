@@ -1,6 +1,6 @@
 # studio
 
-![软件截图](./doc/screenshot.jpg)
+![软件截图](./doc/screenshot.png)
 
 ## Project setup
 ```
