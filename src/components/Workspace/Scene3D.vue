@@ -1,6 +1,6 @@
 <template>
   <section>
-    <div id="scene_3d_root" ref="scene_3d_root">
+    <div id="scene_3d_root" ref="scene_3d_root" v-resize:throttle="resizePreview">
       <div id="scene_3d_main" ref="scene_3d_main" @dblclick="doubleClick('scene_3d_main')">
         <div class="prompt_container">
           <svg class="view_icon" aria-hidden="true"><use xlink:href="#icon-main_view"></use></svg>
@@ -25,7 +25,7 @@
 </template>
 
 <script>
-
+import resize from 'vue-resize-directive'
 import * as THREE from 'three'
 import { OrbitControls } from 'three/examples/jsm/controls/OrbitControls'
 import { PCDLoader } from 'three/examples/jsm/loaders/PCDLoader'
@@ -39,6 +39,9 @@ import VueResizable from 'vue-resizable'
 
 export default {
   name: 'Scene3D',
+  directives: {
+    resize,
+  },
   components: {
     VueResizable
   },

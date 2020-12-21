@@ -57,7 +57,7 @@ export default {
 #logviewer_content {
   width: 100%;
   flex: 1;
-  background: #1D232F
+  background: #1D232F 
 }
 .tab_item {
   margin: 0px 5px 0px 20px;
