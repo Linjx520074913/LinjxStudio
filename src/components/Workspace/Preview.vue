@@ -4,7 +4,7 @@
     <!-- 通过 this.$store.state.is3D 该值控制 2D / 3D 视图的显示与隐藏 -->
     <Scene2D id="twod" v-show='this.$store.state.is3D==false'/>
     <Scene3D id="threed" v-show='this.$store.state.is3D'/>
-    <LogViewer id="logviewer" />
+    <Console id="logviewer" ref='logviewer' v-show="this.$store.state.showConsole"/>
   </div>
 </template>
 
@@ -12,7 +12,7 @@
 import ToolBar from './ToolBar'
 import Scene2D from './Scene2D'
 import Scene3D from './Scene3D'
-import LogViewer from './LogViewer'
+import Console from './Console'
 
 export default {
   name: 'Preview',
@@ -20,7 +20,9 @@ export default {
     ToolBar,
     Scene2D,
     Scene3D,
-    LogViewer
+    Console
+  },
+  mounted () {
   }
 }
 </script>
@@ -29,14 +31,14 @@ export default {
 #scene_root {
   display: flex;
   flex-direction: column;
-  height: calc(100vh - 57px);
+  height: 100%;
 }
 #twod, #threed {
   width: 100%;
-  height: calc(100vh - 287px);
+  flex: 1
 }
 #logviewer {
   width: 100%;
-  height: 200px
+  flex: 0 0 150px
 }
 </style>

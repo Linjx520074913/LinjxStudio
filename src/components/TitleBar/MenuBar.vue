@@ -120,6 +120,14 @@ export default {
         text: '查看(V)',
         menu: [
           {
+            text:'调试控制台',
+            icon: '#icon-console',
+            click: () => {
+              // 是否显示 console 窗口
+              this.$store.commit('toggleConsole')
+            }
+          },
+          {
             text: '外观',
             icon: '#icon-ic_jiazhuangshebei',
             click: () => { console.log('[外观] 被点击') }

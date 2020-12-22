@@ -18,7 +18,8 @@ export default new Vuex.Store({
     // 是否显示坐标轴
     showAxes: true,
     // 是否显示 4 视图
-    show4Views: true
+    show4Views: true,
+    showConsole: true
   },
   mutations: {
     // 切换 2D / 3D 视图
@@ -34,6 +35,9 @@ export default new Vuex.Store({
     },
     toggleViews (state) {
       state.show4Views = !state.show4Views
+    },
+    toggleConsole (state) {
+      state.showConsole = !state.showConsole
     }
   },
   actions: {

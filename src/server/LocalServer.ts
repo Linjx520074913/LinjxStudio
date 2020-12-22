@@ -38,7 +38,7 @@ export class LocalServer {
           })
       })
     })
-    http.listen(3000, () => {
+    http.listen(port, () => {
       console.log(`⚡️[server]: Server is running at https://localhost:${port}`)
     })
   }

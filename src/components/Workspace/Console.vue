@@ -1,10 +1,10 @@
 <template>
   <section>
-    <div id="logviewer_root">
-      <div id="logviewer_header">
+    <div id="console_root">
+      <div id="console_header">
         <a class="tab_item" v-for="(tab, index) in tabs" :key="index" @click="activeTab(index)" :style="index == actived_tab_index ? 'color: #6A9DEA; border-bottom: 1px solid #BBB' : 'color: #555555'">{{ tab.title }}</a>
       </div>
-      <div id="logviewer_content">
+      <div id="console_content">
       </div>
     </div>
   </section>
@@ -12,7 +12,7 @@
 
 <script>
 export default {
-  name: 'LogViewer',
+  name: 'Console',
   data () {
     return {
       tabs: [
@@ -41,20 +41,20 @@ export default {
 </script>
 
 <style>
-#logviewer_root {
+#console_root {
   width: 100%;
   height: 100%;
   display: flex;
   flex-direction: column;
 }
-#logviewer_header {
+#console_header {
   width: 100%;
   height: 30px;
   background: #171C26;
   display: flex;
   flex-direction: row;
 }
-#logviewer_content {
+#console_content {
   width: 100%;
   flex: 1;
   background: #1D232F 
