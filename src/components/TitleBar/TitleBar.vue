@@ -27,10 +27,13 @@ export default {
     background:#1D232F;
     -webkit-app-region: drag; /* 让元素可拖动，设置了drag的元素不可点击 */
 }
-#logo{
-  height: 32px;
-  width: 32px;
-  margin-right: 10px; /* 设置图标与右边元素的距离 */
+.el-image {
+  margin-top: 4px !important;
+}
+#logo {
+  width: 24px;
+  height: 24px;
+  margin-left: 10px;
 }
 
 </style>

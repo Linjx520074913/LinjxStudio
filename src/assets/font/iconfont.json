@@ -6,6 +6,34 @@
   "description": "",
   "glyphs": [
     {
+      "icon_id": "19035830",
+      "name": "半球光源",
+      "font_class": "halfball_light",
+      "unicode": "e608",
+      "unicode_decimal": 58888
+    },
+    {
+      "icon_id": "6410408",
+      "name": "平行光",
+      "font_class": "directionallight",
+      "unicode": "e83e",
+      "unicode_decimal": 59454
+    },
+    {
+      "icon_id": "7562804",
+      "name": "ICON_点光源",
+      "font_class": "pointlight",
+      "unicode": "e606",
+      "unicode_decimal": 58886
+    },
+    {
+      "icon_id": "18827999",
+      "name": "环境光",
+      "font_class": "ambientlight",
+      "unicode": "e92c",
+      "unicode_decimal": 59692
+    },
+    {
       "icon_id": "8850123",
       "name": "右箭头",
       "font_class": "arrow-right",

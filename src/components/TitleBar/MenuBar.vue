@@ -5,7 +5,7 @@
       <div v-if="isMenu2Active">
         <div class="menu_level_2" v-for="child in item.menu" :key="child.index" @click="'click' in child && child.click()">
           <div id="menu_level_2_title">
-            <svg class="icon" v-if="'icon' in child" aria-hidden="true" style="height: 32px; margin-left: 10px; margin-right: 10px"> <use v-bind:xlink:href="child.icon"></use></svg>
+            <svg class="icon" v-if="'icon' in child" aria-hidden="true" style="height: 30px; margin-left: 10px; margin-right: 10px"> <use v-bind:xlink:href="child.icon"></use></svg>
             <span v-if="'type' in child && child.type == 'upload'">
               <el-upload
                 class="upload-demo"
@@ -18,14 +18,14 @@
             </span>
             <a v-else>{{child.text}}</a>
             <div class="arrow_right">
-              <svg class="icon" v-show="'menu' in child" aria-hidden="true" style="height: 32px; margin-left: 10px; margin-right: 10px"> <use xlink:href="#icon-arrow-right"></use></svg>
+              <svg class="icon" v-show="'menu' in child" aria-hidden="true" style="height: 30px; margin-left: 10px; margin-right: 10px"> <use xlink:href="#icon-arrow-right"></use></svg>
             </div>
           </div>
           <div class="menu_level_3">
             <div class="menu_level_3_title" v-for="submenu in child.menu" :key="submenu.index">
+              <svg class="icon" v-if="'icon' in submenu" aria-hidden="true" style="height: 30px; margin-left: 10px; margin-right: 10px"> <use v-bind:xlink:href="submenu.icon"></use></svg>
               <a>{{ submenu.text }}</a>
             </div>
-            <!-- <svg class="icon" v-if="'icon' in submenu" aria-hidden="true" style="height: 32px; margin-left: 10px; margin-right: 10px"> <use v-bind:xlink:href="submenu.icon"></use></svg> -->
           </div>
         </div>
       </div>
@@ -121,17 +121,61 @@ export default {
                 text: '圆柱',
                 icon: '#icon-ic_wendu',
                 click: () => {}
+              },
+              {
+                text: '球体',
+                icon: '#icon-ic_wendu',
+                click: () => {}
               }
             ]
           },
           {
             text: '相机',
             icon: '#icon-ic_wendu',
-            click: () => {}
+            menu: [
+              {
+                text: '正交相机',
+                icon: '#icon-ic_wendu'
+              },
+              {
+                text: '透视相机',
+                icon: '#icon-ic_wendu'
+              }
+            ]
           },
           {
             text: '光源',
             icon: '#icon-ic_wendu',
+            menu: [
+              {
+                text: '平行光',
+                icon: '#icon-ic_wendu'
+              },
+              {
+                text: '环境光',
+                icon: '#icon-ambientlight'
+              },
+              {
+                text: '点光源',
+                icon: '#icon-pointlight'
+              },
+              {
+                text: '聚光灯',
+                icon: '#icon-spotlight'
+              },
+              {
+                text: '平面光',
+                icon: '#icon-ic_wendu'
+              },
+              {
+                text: '正交相机',
+                icon: '#icon-ic_wendu'
+              },
+              {
+                text: '矩形光',
+                icon: '#icon-ic_wendu'
+              }
+            ]
           },
           {
             text: '文字',
@@ -194,7 +238,7 @@ export default {
           }
         ]
       }, {
-        text: '查看(V)',
+        text: '视图(V)',
         menu: [
           {
             text:'调试控制台',
@@ -205,17 +249,17 @@ export default {
             }
           },
           {
-            text: '外观',
+            text: '侧边栏',
             icon: '#icon-ic_jiazhuangshebei',
             click: () => { console.log('[外观] 被点击') }
           },
           {
-            text: '中端',
+            text: '属性栏',
             icon: '#icon-ic_xiaoxi1',
             click: () => { console.log('[中端] 被点击') }
           },
           {
-            text: '切换自动换行',
+            text: '状态栏',
             icon: '#icon-ic_xiaoxi1',
             click: () => { console.log('[切换自动换行] 被点击') }
           }
@@ -337,6 +381,11 @@ export default {
 }
 .menu_level_2:hover .menu_level_3{
   display: flex;
+}
+.menu_level_3_title {
+  display: flex;
+  width: 100%;
+  flex-direction: row;
 }
 .menu_level_3_title:hover {
   background: #1F2633;
