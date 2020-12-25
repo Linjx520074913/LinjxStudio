@@ -1,24 +1,35 @@
 <template>
   <div id="menu_root">
-    <ul class="menu_level_1" v-for="item in content" :key="item.index" @click="toggleMenu2Active()">
+    <a class="menu_level_1" v-for="item in content" :key="item.index" @click="toggleMenu2Active()">
       <a class="menu_level_1_title">{{item.text}}</a>
       <div v-if="isMenu2Active">
-        <li class="menu_level_2" v-for="child in item.menu" :key="child.index" @click="child.click()">
-          <svg class="icon" v-if="'icon' in child" aria-hidden="true" style="height: 32px; margin-left: 10px; margin-right: 10px"> <use v-bind:xlink:href="child.icon"></use></svg>
-          <span v-if="'type' in child && child.type == 'upload'">
-            <el-upload
-              class="upload-demo"
-              :show-file-list="false"
-              action="https://jsonplaceholder.typicode.com/posts/"
-              :on-change="handleChange"
-              style="{cursor: pointer;}">
-              {{child.text}}
-            </el-upload>
-          </span>
-          <a v-else>{{child.text}}</a>
-        </li>
+        <div class="menu_level_2" v-for="child in item.menu" :key="child.index" @click="'click' in child && child.click()">
+          <div id="menu_level_2_title">
+            <svg class="icon" v-if="'icon' in child" aria-hidden="true" style="height: 32px; margin-left: 10px; margin-right: 10px"> <use v-bind:xlink:href="child.icon"></use></svg>
+            <span v-if="'type' in child && child.type == 'upload'">
+              <el-upload
+                class="upload-demo"
+                :show-file-list="false"
+                action="https://jsonplaceholder.typicode.com/posts/"
+                :on-change="handleChange"
+                style="{cursor: pointer;}">
+                {{child.text}}
+              </el-upload>
+            </span>
+            <a v-else>{{child.text}}</a>
+            <div class="arrow_right">
+              <svg class="icon" v-show="'menu' in child" aria-hidden="true" style="height: 32px; margin-left: 10px; margin-right: 10px"> <use xlink:href="#icon-arrow-right"></use></svg>
+            </div>
+          </div>
+          <div class="menu_level_3">
+            <div class="menu_level_3_title" v-for="submenu in child.menu" :key="submenu.index">
+              <a>{{ submenu.text }}</a>
+            </div>
+            <!-- <svg class="icon" v-if="'icon' in submenu" aria-hidden="true" style="height: 32px; margin-left: 10px; margin-right: 10px"> <use v-bind:xlink:href="submenu.icon"></use></svg> -->
+          </div>
+        </div>
       </div>
-    </ul>
+    </a>
     <el-dialog :visible.sync="popupVisible" id="popup_dialog" :show-close="false">
       <component :is="popupComponent"/>
     </el-dialog>
@@ -71,15 +82,81 @@ export default {
           {
             text: '新建窗口',
             icon: '#icon-ic_ranliaojiazhu',
-            click: () => {
-              // this.popupVisible = true
-              // console.log('[新建窗口] 被点击')
-            }
+            click: () => {}
           },
           {
             text: '退出',
             icon: '#icon-exit',
             click: () => { ipcRenderer.send('closeWindow') }
+          }
+        ]
+      }, {
+        text: '物体(O)',
+        menu: [
+          {
+            text: '组',
+            icon: '#icon-ic_wendu',
+            click: () => { console.log('aaaaaaa') }
+          },
+          {
+            text: '基本几何物体',
+            icon: '#icon-ic_wendu',
+            menu: [
+              {
+                text: '平面',
+                icon: '#icon-ic_wendu',
+                click: () => {}
+              },
+              {
+                text: '正方形',
+                icon: '#icon-ic_wendu',
+                click: () => {}
+              },
+              {
+                text: '圆',
+                icon: '#icon-ic_wendu',
+                click: () => {}
+              },
+              {
+                text: '圆柱',
+                icon: '#icon-ic_wendu',
+                click: () => {}
+              }
+            ]
+          },
+          {
+            text: '相机',
+            icon: '#icon-ic_wendu',
+            click: () => {}
+          },
+          {
+            text: '光源',
+            icon: '#icon-ic_wendu',
+          },
+          {
+            text: '文字',
+            icon: '#icon-ic_wendu',
+            click: () => {}
+          },
+          {
+            text: '曲线',
+            icon: '#icon-ic_wendu',
+            click: () => {}
+          },
+          {
+            text: '标注',
+            icon: '#icon-ic_wendu',
+            click: () => {}
+          },
+          {
+            text: '帮助器',
+            icon: '#icon-ic_wendu',
+            click: () => {}
+          },
+          {
+            text: '精灵',
+            icon: '#icon-ic_wendu',
+            click: () => {}
           }
         ]
       }, {
@@ -148,8 +225,7 @@ export default {
         menu: [
           {
             text: '文档',
-            icon: '#icon-ic_xiaoxi1',
-            click: () => { console.log('[文档] 被点击') }
+            icon: '#icon-ic_xiaoxi1'
           },
           {
             text: '查看许可证',
@@ -163,11 +239,11 @@ export default {
           {
             text: '关于',
             icon: '#icon-ic_xiaoxi1',
-            click: () => {
-              this.popupVisible = true
-              this.popupComponent = 'About'
-              console.log('[关于] 被点击')
-            }
+            // click: () => {
+            //   this.popupVisible = true
+            //   this.popupComponent = 'About'
+            //   console.log('[关于] 被点击')
+            // }
           }
         ]
       }
@@ -194,14 +270,13 @@ export default {
   -webkit-app-region: no-drag;
    margin-left:0px;
    margin-right:auto; /* */
+   display: flex;
+   flex-direction: row;
 }
-/* 设置 float : left, 使之在一行上面 */
 .menu_level_1{
-  float:left;
   margin:0;
   padding:0;
   width: 65px;
-  list-style-type:none; /* 去掉默认列表头样式 */
 }
 /*【一级菜单标签】 */
 .menu_level_1_title{
@@ -218,15 +293,35 @@ export default {
 /*【二级菜单】: 字体颜色, 默认隐藏(hover 时显示)，浮于上层 */
 .menu_level_2{
   color: #BBB;
-  position:relative;
+  position: relative;
   float:left;
+  height: 30px;
   width: 200px;
   z-index: 10;
   background-color: #171C26;
   display: none; /* 二级菜单默认隐藏 */
   user-select: none
 }
-
+#menu_level_2_title {
+  display: flex;
+  width: 100%;
+  flex-direction: row;
+}
+.arrow_right {
+  flex: 1;
+  text-align: right;
+}
+.menu_level_3 {
+  display: none;
+  float: left;
+  flex-direction: column;
+  position: absolute;
+  left: 100%;
+  top: 0px;
+  width: 200px;
+  color: #BBB;
+  background-color: #171C26;
+}
 /*【二级菜单】：点击时隐藏
 .menu_level_1 .menu_level_2:active{
   display: none
@@ -239,6 +334,12 @@ export default {
 /* 【二级菜单】：hover 时改变背景颜色 */
 .menu_level_1 .menu_level_2:hover{
   background-color: #1F2633;
+}
+.menu_level_2:hover .menu_level_3{
+  display: flex;
+}
+.menu_level_3_title:hover {
+  background: #1F2633;
 }
 
 /* el-dialog 弹窗默认为白色背景，此为修改弹窗样式 */

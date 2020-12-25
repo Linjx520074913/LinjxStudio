@@ -1,6 +1,6 @@
 <template>
   <div id="scene_root">
-    <ToolBar/>
+    <ToolBar id="toolbar"/>
     <!-- 通过 this.$store.state.is3D 该值控制 2D / 3D 视图的显示与隐藏 -->
     <Scene2D id="twod" v-show='this.$store.state.is3D==false'/>
     <Scene3D id="threed" v-show='this.$store.state.is3D'/>
@@ -32,6 +32,9 @@ export default {
   display: flex;
   flex-direction: column;
   height: 100%;
+}
+#toolbar {
+  flex: 0 0 1;
 }
 #twod, #threed {
   width: 100%;
