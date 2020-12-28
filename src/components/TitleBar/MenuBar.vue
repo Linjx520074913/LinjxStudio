@@ -5,18 +5,8 @@
       <div v-if="isMenu2Active">
         <div class="menu_level_2" v-for="child in item.menu" :key="child.index" @click="'click' in child && child.click()">
           <div id="menu_level_2_title">
-            <svg class="icon" v-if="'icon' in child" aria-hidden="true" style="height: 30px; margin-left: 10px; margin-right: 10px"> <use v-bind:xlink:href="child.icon"></use></svg>
-            <span v-if="'type' in child && child.type == 'upload'">
-              <el-upload
-                class="upload-demo"
-                :show-file-list="false"
-                action="https://jsonplaceholder.typicode.com/posts/"
-                :on-change="handleChange"
-                style="{cursor: pointer;}">
-                {{child.text}}
-              </el-upload>
-            </span>
-            <a v-else>{{child.text}}</a>
+            <svg class="icon" aria-hidden="true" style="height: 30px; margin-left: 10px; margin-right: 10px"> <use v-if="(('icon' in child) && ((('isActived' in child) && child.isActived())) || !('isActived' in child))" v-bind:xlink:href="child.icon"></use></svg>
+            <a >{{child.text}}</a>
             <div class="arrow_right">
               <svg class="icon" v-show="'menu' in child" aria-hidden="true" style="height: 30px; margin-left: 10px; margin-right: 10px"> <use xlink:href="#icon-arrow-right"></use></svg>
             </div>
@@ -242,26 +232,35 @@ export default {
         menu: [
           {
             text:'调试控制台',
-            icon: '#icon-console',
+            icon: '#icon-actived',
             click: () => {
               // 是否显示 console 窗口
               this.$store.commit('toggleConsole')
+            },
+            isActived: () => {
+              return this.$store.state.showConsole
             }
           },
           {
             text: '侧边栏',
-            icon: '#icon-ic_jiazhuangshebei',
-            click: () => { console.log('[外观] 被点击') }
+            icon: '#icon-actived',
+            click: () => {
+              // 是否显示 SliderBar 窗口
+              this.$store.commit('toggleSliderBar')
+            },
+            isActived: () => {
+              return this.$store.state.showSliderBar
+            }
           },
           {
             text: '属性栏',
-            icon: '#icon-ic_xiaoxi1',
-            click: () => { console.log('[中端] 被点击') }
-          },
-          {
-            text: '状态栏',
-            icon: '#icon-ic_xiaoxi1',
-            click: () => { console.log('[切换自动换行] 被点击') }
+            icon: '#icon-actived',
+            click: () => {
+              this.$store.commit('toggleInspector')
+            },
+            isActived: () => {
+              return this.$store.state.showInspector
+            }
           }
         ]
       }, {

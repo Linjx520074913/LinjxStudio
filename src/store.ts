@@ -19,7 +19,12 @@ export default new Vuex.Store({
     showAxes: true,
     // 是否显示 4 视图
     show4Views: true,
-    showConsole: true
+    // 是否显示控制台视图
+    showConsole: true,
+    // 是否显示侧边栏
+    showSliderBar: true,
+    // 是否显示属性栏
+    showInspector: true
   },
   mutations: {
     // 切换 2D / 3D 视图
@@ -38,6 +43,12 @@ export default new Vuex.Store({
     },
     toggleConsole (state) {
       state.showConsole = !state.showConsole
+    },
+    toggleSliderBar (state) {
+      state.showSliderBar = !state.showSliderBar
+    },
+    toggleInspector (state) {
+      state.showInspector = !state.showInspector
     }
   },
   actions: {

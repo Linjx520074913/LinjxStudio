@@ -6,6 +6,13 @@
   "description": "",
   "glyphs": [
     {
+      "icon_id": "6950100",
+      "name": "打勾",
+      "font_class": "actived",
+      "unicode": "e617",
+      "unicode_decimal": 58903
+    },
+    {
       "icon_id": "19035830",
       "name": "半球光源",
       "font_class": "halfball_light",
