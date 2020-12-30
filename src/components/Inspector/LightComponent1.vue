@@ -120,25 +120,10 @@ export default {
   height: auto
 }
 
-
-
-/* 网格行自动扩展 */
-.grid {
-  padding-left: 10px;
-  display: grid;
-  grid-template-columns: 40% 60%;
-  grid-auto-rows: initial
-}
-
 #colorpicker {
   width: 95%;
   height: 26px;
   border: 0px
 }
-/* 垂直布局 */
-.vertical_layout {
-  display: flex;
-  flex-direction: column;
-  margin-left:10px;
-}
+
 </style>

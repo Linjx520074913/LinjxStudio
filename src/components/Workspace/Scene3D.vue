@@ -28,6 +28,7 @@
 import resize from 'vue-resize-directive'
 import * as THREE from 'three'
 import { OrbitControls } from 'three/examples/jsm/controls/OrbitControls'
+import { TransformControls } from 'three/examples/jsm/controls/TransformControls'
 import { PCDLoader } from 'three/examples/jsm/loaders/PCDLoader'
 import { PLYLoader } from 'three/examples/jsm/loaders/PLYLoader'
 import { STLLoader } from 'three/examples/jsm/loaders/STLLoader'
@@ -48,6 +49,7 @@ export default {
   data () {
     return {
       scene: new THREE.Scene(),
+      transformControls: null,
       geometry: null,
       material: null,
       mesh: null,
@@ -77,6 +79,7 @@ export default {
       this.scene.name = '主场景'
       this.$store.commit('renderer/setScene', this.scene)
       this.scene.background = new THREE.Color(0xAAAAAA)
+
       this.initPreviewMain()
       this.initPreviewLeft()
       this.initPreviewTop()
@@ -106,12 +109,12 @@ export default {
       this.$refs.scene_3d_main.appendChild(this.mainRenderer.domElement)
 
       this.mainControl = new OrbitControls(this.mainCamera, this.mainRenderer.domElement)
-      // this.mainControl.enableDamping = true // an animation loop is required when either damping or auto-rotation are enabled
-      // this.mainControl.dampingFactor = 0.25
-      // this.mainControl.screenSpacePanning = false
-      // this.mainControl.minDistance = 1
-      // this.mainControl.maxDistance = 10000
-      // this.mainControl.maxPolarAngle = Math.PI / 2
+      this.transformControls = new TransformControls(this.mainCamera, this.mainRenderer.domElement)
+      var scope = this
+      this.transformControls.addEventListener( 'dragging-changed', function ( event ) {
+					scope.mainControl.enabled = ! event.value;
+			})
+      this.scene.add(this.transformControls)
     },
     initPreviewLeft () {
       let width = this.$refs.scene_3d_left.clientWidth
@@ -270,8 +273,6 @@ export default {
             // const box = new THREE.BoxHelper(collada.scene, 0xff0000);
             // collada.scene.add(box);
             scope.scene.add(collada.scene)
-
-            console.log(scope.scene.toJSON())
           })
           break
         case 'obj':
@@ -405,7 +406,7 @@ export default {
           // 往 extspotlight-store 中更新聚光灯对象
           this.$store.commit('extspotlight/setExtSpotLight', spotLight)
           // 发送消息，显示聚光灯属性面板
-          this.$EventBus.$emit('showPanel', 'LightPanel', spotLight)
+          this.$EventBus.$emit('showPanel', spotLight)
           break
         case 'AmbientLight':
           var ambient = new THREE.AmbientLight(0xFFFFFF, 0.8)
@@ -446,6 +447,11 @@ export default {
 
     this.$EventBus.$on('addSpotLight', () => {
       this.addLight('SpotLight')
+    })
+
+    this.$EventBus.$on('showSelectObject', (object) => {
+      console.log('aaaaaaaaaaaa')
+      this.transformControls.attach(object)
     })
 
     this.toggleViews(this.$store.state.show4Views)

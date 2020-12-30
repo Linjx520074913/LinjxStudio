@@ -7,8 +7,8 @@
 
 .el-collapse {
     height: auto;
-    padding: 1px;
-    border: 1px solid transparent!important;
+    /* padding: 1px; */
+    border: 0px solid transparent!important;
 }
 
 
@@ -17,7 +17,7 @@
 .el-collapse-item__header {
     height: 30px !important;
     line-height: 30px !important;
-    background: #333947 !important;
+    background: #262C3B !important;
     Color: #CCCED3 !important;
     border: 0px !important;
 }

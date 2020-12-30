@@ -1,13 +1,16 @@
 import { throwDeprecation } from 'process'
 import * as THREE from 'three'
+import { Camera, PerspectiveCamera } from 'three'
 
 export interface InitialState {
-  scene: THREE.Scene
+  scene: THREE.Scene,
+  // transformControl: TransformControls
 }
 
 const initialState: InitialState = {
   // @ts-ignore
-  scene: new THREE.Scene()
+  scene: new THREE.Scene(),
+  // transformControl: new TransformControls(new PerspectiveCamera(), new HTMLElement())
 }
 
 export const RendererStore = {

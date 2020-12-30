@@ -1,100 +1,19 @@
 <template>
-  <section class="inspector_root">
-    <div class="inspector_tabs" v-show="activedComponent != ''">
+  <div class="inspector_root">
+    <div class="inspector_tabs">
       <div v-for="(tab, index) in tabs" :key="index" @click="selectProperty(index)" class="property_item" :style="index == selectedPropertyIndex ? 'color: #6A9DEA;' : 'color: #555555;'">
         {{ tab.name }}
       </div>
     </div>
-    <div class="inspector_content" v-show="activedComponent != ''">
-      <div class="detail">
-        <div>
-          <div class="inspector_item_title">
-            <a>基础属性</a>
-          </div>
-          <div class="common_property">
-            <a>类型</a>
-            <a>{{type}}</a>
-            <a>名字</a>
-            <el-input v-model="name" placeholder=""></el-input>
-            <a>UUID</a>
-            <a style="overflow:hidden;text-overflow:ellipsis;">{{uuid}}</a>
-          </div>
-          <div class="inspector_item_title">
-            <svg class="icon" aria-hidden="true"><use xlink:href="#icon-spatial"></use></svg>
-            <a>Spatial</a>
-          </div>
-          <el-collapse>
-            <el-collapse-item>
-              <span class="collapse-title" slot="title">Transform</span>
-              <div class="vertical_layout">
-                <a>Translation</a>
-                <div style="{width:100%;display:grid;grid-template-columns: 1fr 1fr 1fr;}">
-                  <div class="light_black">
-                    <div class="X">X</div>
-                    <el-input v-model="position.x" placeholder=""></el-input>
-                  </div>
-                  <div class="light_black">
-                    <div class="Y">Y</div>
-                    <el-input v-model="position.y" placeholder=""></el-input>
-                  </div>
-                  <div class="light_black">
-                    <div class="Z">Z</div>
-                    <el-input v-model="position.z" placeholder=""></el-input>
-                  </div>
-                </div>
-              </div>
-              <div class="vertical_layout">
-                <a>Scale</a>
-                <div style="{width:100%;display:grid;grid-template-columns: 1fr 1fr 1fr;}">
-                  <div class="light_black">
-                    <div class="X">X</div>
-                    <el-input v-model="scale.x" placeholder=""></el-input>
-                  </div>
-                  <div class="light_black">
-                    <div class="Y">Y</div>
-                    <el-input v-model="scale.y" placeholder=""></el-input>
-                  </div>
-                  <div class="light_black">
-                    <div class="Z">Z</div>
-                    <el-input v-model="scale.z" placeholder=""></el-input>
-                  </div>
-                </div>
-              </div>
-              <div class="vertical_layout">
-                <a>Rotation(How to use?TBD)</a>
-                <div style="{width:100%;display:grid;grid-template-columns: 1fr 1fr 1fr;}">
-                  <div class="light_black">
-                    <div class="X">X</div>
-                    <el-input v-model="rotation.x" placeholder=""></el-input>
-                  </div>
-                  <div class="light_black">
-                    <div class="Y">Y</div>
-                    <el-input v-model="rotation.y" placeholder=""></el-input>
-                  </div>
-                  <div class="light_black">
-                    <div class="Z">Z</div>
-                    <el-input v-model="rotation.z" placeholder=""></el-input>
-                  </div>
-                </div>
-              </div>
-            </el-collapse-item>
-            <el-collapse-item>
-              <span class="collapse-title" slot="title">Matrix</span>
-              <div class="grid">
-                <el-checkbox v-model="isVisible">Visible</el-checkbox>
-                <el-checkbox v-model="isHelperVisible">Helper</el-checkbox>
-                <a>2</a>
-              </div>
-            </el-collapse-item>
-          </el-collapse>
-        </div>
-        <!-- 【NOTE】 : 组件切换时，通过 keep-alive 保存组件的状态 -->
-        <keep-alive>
-          <component :is="activedComponent"/>
-        </keep-alive>
-      </div>
+    <BasicInfoComponent/>
+    <TransformComponent/>
+    <div v-for="(componentName, index) in componentList" v-bind:key="index">
+     <!-- 【NOTE】 : 组件切换时，通过 keep-alive 保存组件的状态 -->
+      <keep-alive>
+        <component :is="componentName"/>
+      </keep-alive>
     </div>
-  </section>
+  </div>
 </template>
 
 <script>
@@ -102,13 +21,21 @@ import '../../assets/css/custom-elementui.css'
 import '../../assets/css/inspector.css'
 import * as THREE from 'three'
 import { Euler } from 'three'
-import LightPanel from './LightPanel'
+import BasicInfoComponent from './BasicInfoComponent'
+import TransformComponent from './TransformComonent'
+import ShadowComponent from './ShadowComponent'
+import LightComponent from './LightComponent'
+import MaterialComponent from './MaterialComponent'
 import { ExtSpotLight } from '../../ts/ExtSpotLight'
 
 export default {
   name: 'Inspector',
   components: {
-    LightPanel
+    BasicInfoComponent,
+    TransformComponent,
+    ShadowComponent,
+    LightComponent,
+    MaterialComponent
   },
   data() {
     return {
@@ -129,9 +56,7 @@ export default {
       rotation: new THREE.Vector3(0, 0, 0),
       // 缩放
       scale: new THREE.Vector3(0, 0, 0),
-      isVisible: true,
-      isHelperVisible: true,
-      componentName: '',
+      componentList: [''],
       // 属性
       tabs: [
         {
@@ -159,18 +84,19 @@ export default {
     }
   },
   mounted () {
-    this.$EventBus.$on('showPanel', (componentName, object) => {
-      this.activedComponent = componentName
-      this.obj = object
-      this.name = this.obj.name
-      this.type = this.obj.type
-      this.uuid = this.obj.uuid
+    this.$EventBus.$on('showPanel', (object) => {
+      // this.activedComponent = componentName
+      this.$EventBus.$emit('showSelectObject', object)
+      // this.obj = object
+      // this.name = this.obj.name
+      // this.type = this.obj.type
+      // this.uuid = this.obj.uuid
 
-      this.position = this.obj.position
-      this.rotation.set(THREE.Math.radToDeg(object.rotation.x),
-                        THREE.Math.radToDeg(object.rotation.y),
-                        THREE.Math.radToDeg(object.rotation.z))
-      this.scale = this.obj.scale
+      // this.position = this.obj.position
+      // this.rotation.set(THREE.Math.radToDeg(object.rotation.x),
+      //                   THREE.Math.radToDeg(object.rotation.y),
+      //                   THREE.Math.radToDeg(object.rotation.z))
+      // this.scale = this.obj.scale
     })
   },
   watch: {
@@ -217,24 +143,5 @@ export default {
 .inspector_content {
   flex: 1;
 }
-.detail {
-  margin: 5px;
-  display: flex;
-  flex-direction: column;
-  border: 1px solid #666;
-  height: auto
-}
-/* 通用属性栏 */
-.common_property {
-  /* 网格行自动扩展 */
-  display: grid;
-  grid-template-columns: 40% 60%;
-  grid-auto-rows: initial;
-  background: #262C3B
-}
-/* 设置图标大小 */
-.icon {
-  width: 30px;
-  height: 100%
-}
+
 </style>

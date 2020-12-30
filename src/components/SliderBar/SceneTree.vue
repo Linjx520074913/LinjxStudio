@@ -38,10 +38,11 @@ export default {
         // 根据 uuid 找到对应的对象
         var selectedObject = this.$store.getters['renderer/findObjectByUuid'](uuid)
         // Inspector 显示选中对象属性面板
-        this.$EventBus.$emit('showPanel', 'LightPanel', selectedObject)
+        this.$EventBus.$emit('showPanel', selectedObject)
       },
       // 重建场景树
       buildChildrensTree(parent, node) {
+        // TODO : GridHelper、ArrowHelper 等对象需要设置不在 SceneTree 中显示
         // 遍历 parent 下所有的 parent.children 对象
         parent.children.forEach( (child, index) => {
           // 判断是否在 childrensTree 中更新 child 对象
