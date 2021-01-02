@@ -36,15 +36,11 @@ import { OBJLoader } from 'three/examples/jsm/loaders/OBJLoader'
 import { ColladaLoader } from 'three/examples/jsm/loaders/ColladaLoader'
 import { ExtSpotLight } from '../../ts/ExtSpotLight'
 import { ipcRenderer } from 'electron'
-import VueResizable from 'vue-resizable'
 
 export default {
   name: 'Scene3D',
   directives: {
     resize,
-  },
-  components: {
-    VueResizable
   },
   data () {
     return {
@@ -450,7 +446,6 @@ export default {
     })
 
     this.$EventBus.$on('showSelectObject', (object) => {
-      console.log('aaaaaaaaaaaa')
       this.transformControls.attach(object)
     })
 
