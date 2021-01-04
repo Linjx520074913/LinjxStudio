@@ -1,20 +1,16 @@
 <template>
   <div id="scenetree_root">
     <div id="scenetree_content">
-      <tree :data="getTree" @node:selected="onNodeSelected">
-        <span slot-scope="{ node }">
-          <template v-if="!node.hasChildren()">
-            <div class="node-item">
-              <a class="tree-text"> {{ node.text }} </a>
-            </div>
-          </template>
+      <sl-vue-tree ref="slvuetree" v-model="tree" @nodeclick="nodeClick">
+        <template slot="title" slot-scope="{ node }">
 
-          <template v-else>
-            <a class="tree-text"> {{ node.text }} </a>
-            <svg class="icon" aria-hidden="true" style="margin-left: 10px; margin-right: 10px"> <use xlink:href="#icon-visiable"></use></svg>
-          </template>
-        </span>
-     </tree>
+          <!-- <span class="item-icon">
+            <i class="fa fa-file" v-if="node.isLeaf"></i>
+            <i class="fa fa-folder" v-if="!node.isLeaf"></i>
+          </span> -->
+          <a class="tree-text">{{ node.title }}</a>
+        </template>
+    </sl-vue-tree>
     </div>
   </div>
 </template>
@@ -22,15 +18,19 @@
 <script>
 import * as THREE from 'three'
 import { Object3D } from 'three'
-import { truncate, truncateSync } from 'fs';
+import { truncate, truncateSync } from 'fs'
+import SlVueTree, { ISlTreeNode, ISlTreeNodeModel, ICursorPosition } from 'sl-vue-tree'
+import 'sl-vue-tree/src/sl-vue-tree-minimal.css'
 
 export default {
   name: 'SceneTree',
+  components: {
+    SlVueTree
+  },
   data() {
       return {
-        tree: [
-        ]
-      };
+        tree: []
+      }
     },
     created() {
     },
@@ -45,7 +45,7 @@ export default {
       }
     },
     methods: {
-      onNodeSelected(node) {
+      nodeClick(node) {
         console.log(node)
       },
       // 处理 el-tree 点击事件
@@ -57,49 +57,80 @@ export default {
         // Inspector 显示选中对象属性面板
         this.$EventBus.$emit('showPanel', selectedObject)
       },
-      // tree: [
-      //     {
-      //       id: 'linjx',
-      //       children: [
-      //         {
-      //           id: 'linjxq'
-      //         }
-      //       ]
-      //     }
-      //   ]
       // 在 root 列表中查找 uuid 节点
-      findNode (parent, uuid) {
-        for(var child of parent){
-          if(child.id == uuid){
-            return child
-          }else{
-            if(child.children && child.children.length){
-              return this.findNode(child.children, uuid)
+      findNode (uuid) {
+        var target
+        if(this.tree.length > 0){
+          this.$refs.slvuetree.traverse((node, nodeModel, path) => {
+            if(node.data.uuid == uuid){
+              target = node
+              return false
             }
-          }
+          })
         }
+        return target
       },
       // 重建场景树
       buildSceneTree(scene) {
         var sceneUuid = scene.uuid
-        // TODO : GridHelper、ArrowHelper 等对象需要设置不在 SceneTree 中显示
-        // 遍历 parent 下所有的 parent.children 对象
+
         scene.traverse( (child) => {
-          var node = this.findNode(this.tree, child.uuid)
-          if(null == node){
-            var parentUuid = (child.parent == null) ? '' : child.parent.uuid
-            if(parentUuid == '' || parentUuid == sceneUuid){
-              var root = this.findNode(this.tree, parentUuid)
-              var parentNode = (null == root) ? this.tree : root.children
-              parentNode.push({
-                text: child.name == '' ? child.type : child.name,
-                id: child.uuid,
-                children: []
+
+          if(null == this.findNode(child.uuid)){
+            var parentUuid = (null == child.parent) ? '' : child.parent.uuid
+            var parent = this.findNode(parentUuid)
+            // 父节点为空，则说明该节点为根节点
+            if(null == parent){
+              this.tree.push({
+                title: child.name == "" ? child.type : child.name,
+                isExpanded: true,
+                data: {
+                  uuid: child.uuid
+                }
+              })
+            }else if(null == this.findNode(child.uuid)){
+              this.$refs.slvuetree.updateNode(parent.path, {
+                isLeaf: false
+              })
+              var pos = {
+                node: parent,
+                placement: 'inside'
+              }
+              this.$refs.slvuetree.insert(pos, {
+                title: child.name == "" ? child.type : child.name,
+                isExpanded: false,
+                isLeaf: true,
+                data: {
+                  uuid: child.uuid
+                }
               })
             }
           }
         })
-        console.log(this.tree)
+        // TODO : GridHelper、ArrowHelper 等对象需要设置不在 SceneTree 中显示
+        // 遍历 parent 下所有的 parent.children 对象
+        // scene.traverse( (child) => {
+        //   var node = this.findNode(this.tree, child.uuid)
+        //   if(null == node){
+        //     var parentUuid = (child.parent == null) ? '' : child.parent.uuid
+        //     if(parentUuid == '' || parentUuid == sceneUuid){
+        //       console.log("Child")
+        //       console.log(child)
+        //       var root = this.findNode(this.tree, parentUuid)
+        //       var parentNode = (null == root) ? this.tree : root.children
+        //       console.log("Root")
+        //       console.log(root)
+        //       console.log("ParentNode")
+        //       console.log(parentNode)
+        //       parentNode.push({
+        //         title: child.name == '' ? child.type : child.name,
+        //         id: child.uuid,
+        //         children: []
+        //       })
+        //     }
+        //   }
+        // })
+        // console.log(scene)
       }
     },
     watch: {
@@ -131,7 +162,7 @@ export default {
 .tree-content:hover {
   background: #1F2633!important;
 }
-.tree-node {
+/* .tree-node {
   white-space: normal !important;
 }
 .tree-anchor {
@@ -143,12 +174,19 @@ export default {
   display: flex;
   line-height: 30px !important;
   padding-left: 10px;
+} */
+
+.sl-vue-tree-title {
+  display: flex !important;
+}
+.sl-vue-tree-toggle {
+  width: 10px !important;
 }
 .tree-text {
   width: 100px;
   overflow:hidden;
   text-overflow:ellipsis;
   white-space:nowrap;
+  flex: 1
 }
-
 </style>
