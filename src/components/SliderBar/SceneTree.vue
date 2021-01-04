@@ -1,14 +1,29 @@
 <template>
   <div id="scenetree_root">
     <div id="scenetree_content">
-      <sl-vue-tree ref="slvuetree" v-model="tree" @nodeclick="nodeClick">
+      <sl-vue-tree ref="slVueTree" v-model="tree" @nodeclick="nodeClick">
         <template slot="title" slot-scope="{ node }">
 
-          <!-- <span class="item-icon">
+          <span class="item-icon">
             <i class="fa fa-file" v-if="node.isLeaf"></i>
             <i class="fa fa-folder" v-if="!node.isLeaf"></i>
-          </span> -->
+          </span>
           <a class="tree-text">{{ node.title }}</a>
+        </template>
+
+        <template slot="toggle" slot-scope="{ node }">
+          <span v-if="!node.isLeaf">
+            <i v-if="node.isExpanded" class="fa fa-chevron-down"></i>
+            <i v-if="!node.isExpanded" class="fa fa-chevron-right"></i>
+          </span>
+        </template>
+
+
+        <template slot="sidebar" slot-scope="{ node }">
+          <span class="visible-icon" @click="event => toggleVisibility(event, node)">
+            <i v-if="!node.data || node.data.visible !== false" class="fa fa-eye"></i>
+            <i v-if="node.data && node.data.visible === false" class="fa fa-eye-slash"></i>
+          </span>
         </template>
     </sl-vue-tree>
     </div>
@@ -45,6 +60,13 @@ export default {
       }
     },
     methods: {
+      toggleVisibility: function (event, node) {
+        const slVueTree = this.$refs.slVueTree;
+        event.stopPropagation();
+        const visible = !node.data || node.data.visible !== false;
+        slVueTree.updateNode(node.path, {data: { visible: !visible}});
+        this.lastEvent = `Node ${node.title} is ${ visible ? 'visible' : 'invisible'} now`;
+      },
       nodeClick(node) {
         console.log(node)
       },
@@ -61,7 +83,7 @@ export default {
       findNode (uuid) {
         var target
         if(this.tree.length > 0){
-          this.$refs.slvuetree.traverse((node, nodeModel, path) => {
+          this.$refs.slVueTree.traverse((node, nodeModel, path) => {
             if(node.data.uuid == uuid){
               target = node
               return false
@@ -70,6 +92,19 @@ export default {
         }
         return target
       },
+      // uuid 对象类型是否包含 Helper 关键字
+      isHelper (uuid) {
+        // 根据 uuid 找到对应的对象
+        var selectedObject = this.$store.getters['renderer/findObjectByUuid'](uuid)
+        var res = false
+        while(selectedObject){
+           if(selectedObject.type.includes("Helper")){
+             return true
+           }
+          selectedObject = selectedObject.parent
+        }
+        return false
+      },
       // 重建场景树
       buildSceneTree(scene) {
         var sceneUuid = scene.uuid
@@ -77,6 +112,12 @@ export default {
         scene.traverse( (child) => {
 
           if(null == this.findNode(child.uuid)){
+
+            // 辅助类节点不在 sceneTree 中显示
+            if(this.isHelper(child.uuid)){
+              return
+            }
+
             var parentUuid = (null == child.parent) ? '' : child.parent.uuid
             var parent = this.findNode(parentUuid)
             // 父节点为空，则说明该节点为根节点
@@ -85,23 +126,25 @@ export default {
                 title: child.name == "" ? child.type : child.name,
                 isExpanded: true,
                 data: {
-                  uuid: child.uuid
+                  uuid: child.uuid,
+                  visible: true
                 }
               })
             }else if(null == this.findNode(child.uuid)){
-              this.$refs.slvuetree.updateNode(parent.path, {
+              this.$refs.slVueTree.updateNode(parent.path, {
                 isLeaf: false
               })
               var pos = {
                 node: parent,
                 placement: 'inside'
               }
-              this.$refs.slvuetree.insert(pos, {
+              this.$refs.slVueTree.insert(pos, {
                 title: child.name == "" ? child.type : child.name,
                 isExpanded: false,
                 isLeaf: true,
                 data: {
-                  uuid: child.uuid
+                  uuid: child.uuid,
+                  visible: true
                 }
               })
             }
@@ -151,14 +194,9 @@ export default {
   flex-direction: colum;
 }
 #scenetree_content {
-  flex: 1;
+  flex-grow: 1
 }
 
-.tree-content {
-  padding: 0px !important;
-  height: 30px !important;
-  background: #171C26 !important;
-}
 .tree-content:hover {
   background: #1F2633!important;
 }
@@ -176,12 +214,24 @@ export default {
   padding-left: 10px;
 } */
 
+.sl-vue-tree.sl-vue-tree-root {
+  flex-grow: 1;
+  overflow-x: hidden;
+  overflow-y: auto;
+  height: 300px;
+}
+
 .sl-vue-tree-title {
-  display: flex !important;
+  display: flex;
+  flex-direction: row;
 }
-.sl-vue-tree-toggle {
-  width: 10px !important;
+
+.item-icon {
+  display: inline-block;
+  text-align: left;
+  width: 20px;
 }
+
 .tree-text {
   width: 100px;
   overflow:hidden;
