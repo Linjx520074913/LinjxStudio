@@ -3,11 +3,10 @@
     <div id="scenetree_content">
       <sl-vue-tree ref="slVueTree" v-model="tree" @nodeclick="nodeClick">
         <template slot="title" slot-scope="{ node }">
-
-          <span class="item-icon">
+          <!-- <span class="item-icon">
             <i class="fa fa-file" v-if="node.isLeaf"></i>
             <i class="fa fa-folder" v-if="!node.isLeaf"></i>
-          </span>
+          </span> -->
           <a class="tree-text">{{ node.title }}</a>
         </template>
 
@@ -17,8 +16,6 @@
             <i v-if="!node.isExpanded" class="fa fa-chevron-right"></i>
           </span>
         </template>
-
-
         <template slot="sidebar" slot-scope="{ node }">
           <span class="visible-icon" @click="event => toggleVisibility(event, node)">
             <i v-if="!node.data || node.data.visible !== false" class="fa fa-eye"></i>
@@ -150,30 +147,6 @@ export default {
             }
           }
         })
-        // TODO : GridHelper、ArrowHelper 等对象需要设置不在 SceneTree 中显示
-        // 遍历 parent 下所有的 parent.children 对象
-        // scene.traverse( (child) => {
-        //   var node = this.findNode(this.tree, child.uuid)
-        //   if(null == node){
-        //     var parentUuid = (child.parent == null) ? '' : child.parent.uuid
-        //     if(parentUuid == '' || parentUuid == sceneUuid){
-        //       console.log("Child")
-        //       console.log(child)
-        //       var root = this.findNode(this.tree, parentUuid)
-        //       var parentNode = (null == root) ? this.tree : root.children
-        //       console.log("Root")
-        //       console.log(root)
-        //       console.log("ParentNode")
-        //       console.log(parentNode)
-        //       parentNode.push({
-        //         title: child.name == '' ? child.type : child.name,
-        //         id: child.uuid,
-        //         children: []
-        //       })
-        //     }
-        //   }
-        // })
-        // console.log(scene)
       }
     },
     watch: {
@@ -194,42 +167,23 @@ export default {
   flex-direction: colum;
 }
 #scenetree_content {
-  flex-grow: 1
+  flex: 1
 }
 
 .tree-content:hover {
   background: #1F2633!important;
 }
-/* .tree-node {
-  white-space: normal !important;
-}
-.tree-anchor {
-  padding: 0px !important;
-  margin: 0px !important;
-}
-.node-item {
-  height: 30px !important;
-  display: flex;
-  line-height: 30px !important;
-  padding-left: 10px;
-} */
 
-.sl-vue-tree.sl-vue-tree-root {
+.sl-vue-tree.sl-vue-tree-root, .sl-vue-tree-nodes-list {
   flex-grow: 1;
   overflow-x: hidden;
-  overflow-y: auto;
-  height: 300px;
+  overflow-y: hidden;
+  height: 100%;
 }
 
 .sl-vue-tree-title {
   display: flex;
   flex-direction: row;
-}
-
-.item-icon {
-  display: inline-block;
-  text-align: left;
-  width: 20px;
 }
 
 .tree-text {
@@ -238,5 +192,16 @@ export default {
   text-overflow:ellipsis;
   white-space:nowrap;
   flex: 1
+}
+
+.item-icon, .sl-vue-tree-sidebar, .sl-vue-tree-toggle {
+  display: flex !important;
+  align-items: center !important;
+  margin-right: 10px;
+  justify-content: center !important;
+}
+.fa {
+  line-height: 100%;
+  color: white !important
 }
 </style>
