@@ -33,6 +33,7 @@ import { Object3D } from 'three'
 import { truncate, truncateSync } from 'fs'
 import SlVueTree, { ISlTreeNode, ISlTreeNodeModel, ICursorPosition } from 'sl-vue-tree'
 import 'sl-vue-tree/src/sl-vue-tree-minimal.css'
+import { TransformControls } from 'three/examples/jsm/controls/TransformControls'
 
 export default {
   name: 'SceneTree',
@@ -58,36 +59,32 @@ export default {
     },
     methods: {
       toggleVisibility: function (event, node) {
-        const slVueTree = this.$refs.slVueTree;
-        event.stopPropagation();
-        const visible = !node.data || node.data.visible !== false;
-        slVueTree.updateNode(node.path, {data: { visible: !visible}});
-        this.lastEvent = `Node ${node.title} is ${ visible ? 'visible' : 'invisible'} now`;
+        const slVueTree = this.$refs.slVueTree
+        event.stopPropagation()
+        // 
+        const visible = !node.data || node.data.visible !== false
+        node.data.visible = !visible
+        slVueTree.updateNode(node.path, node)
+        this.lastEvent = `Node ${node.title} is ${ visible ? 'visible' : 'invisible'} now`
+
+        var object = this.findObject(node.data.uuid)
+        if(object != null) {
+          object.visible = !visible
+        }
+        this.nodeClick(node)
       },
+      // 处理节点点击事件
       nodeClick(node) {
-        console.log(node)
-      },
-      // 处理 el-tree 点击事件
-      handleNodeClick(node) {
         // 选中的节点对象的 uuid
-        var uuid = node.uuid
+        var uuid = node.data.uuid
         // 根据 uuid 找到对应的对象
-        var selectedObject = this.$store.getters['renderer/findObjectByUuid'](uuid)
+        var selectedObject = this.findObject(uuid)
         // Inspector 显示选中对象属性面板
         this.$EventBus.$emit('showPanel', selectedObject)
       },
-      // 在 root 列表中查找 uuid 节点
-      findNode (uuid) {
-        var target
-        if(this.tree.length > 0){
-          this.$refs.slVueTree.traverse((node, nodeModel, path) => {
-            if(node.data.uuid == uuid){
-              target = node
-              return false
-            }
-          })
-        }
-        return target
+      // 查找 uuid 对象
+      findObject (uuid) {
+        return this.$store.getters['renderer/findObjectByUuid'](uuid)
       },
       // uuid 对象类型是否包含 Helper 关键字
       isHelper (uuid) {
@@ -102,6 +99,57 @@ export default {
         }
         return false
       },
+      // uuid 对象或其父对象是否为 TransformControl 实例
+      isTransformControl (uuid){
+        // 根据 uuid 找到对应的对象
+        var selectedObject = this.$store.getters['renderer/findObjectByUuid'](uuid)
+        var res = false
+        while(selectedObject){
+          if(selectedObject instanceof TransformControls){
+            return true
+          }
+          selectedObject = selectedObject.parent
+        }
+        return false
+      },
+      // 在 root 列表中查找 uuid 节点
+      findNode (uuid) {
+        var target
+        if(this.tree.length > 0){
+          this.$refs.slVueTree.traverse((node, nodeModel, path) => {
+            if(node.data.uuid == uuid){
+              target = node
+              return false
+            }
+          })
+        }
+        return target
+      },
+      // 添加节点
+      addNode (parent, node) {
+        // 父节点为空，则说明该节点为根节点
+        if(null == parent){
+          this.tree.push(node)
+        }
+        // 节点不存在，则添加
+        else if(null == this.findNode(node.data.uuid)){
+          // 修改父节点 isLeaf 属性，将其设置为 false , 表示该节点不是叶子节点
+          this.$refs.slVueTree.updateNode(parent.path, {
+            isLeaf: false
+          })
+          var pos = {
+            node: parent,
+            placement: 'inside'
+          }
+          node.isExpanded = false
+          node.isLeaf = true
+          this.$refs.slVueTree.insert(pos, node)
+        }
+      },
+      // 移除节点
+      removeNode (node) {
+
+      },
       // 重建场景树
       buildSceneTree(scene) {
         var sceneUuid = scene.uuid
@@ -111,40 +159,24 @@ export default {
           if(null == this.findNode(child.uuid)){
 
             // 辅助类节点不在 sceneTree 中显示
-            if(this.isHelper(child.uuid)){
+            if(this.isHelper(child.uuid) ||
+               this.isTransformControl(child.uuid)){
               return
             }
 
             var parentUuid = (null == child.parent) ? '' : child.parent.uuid
             var parent = this.findNode(parentUuid)
             // 父节点为空，则说明该节点为根节点
-            if(null == parent){
-              this.tree.push({
-                title: child.name == "" ? child.type : child.name,
-                isExpanded: true,
-                data: {
-                  uuid: child.uuid,
-                  visible: true
-                }
-              })
-            }else if(null == this.findNode(child.uuid)){
-              this.$refs.slVueTree.updateNode(parent.path, {
-                isLeaf: false
-              })
-              var pos = {
-                node: parent,
-                placement: 'inside'
+            var node = {
+              title: child.name == "" ? child.type : child.name,
+              isExpanded: true,
+              isLeaf: false,
+              data: {
+                uuid: child.uuid,
+                visible: child.visible
               }
-              this.$refs.slVueTree.insert(pos, {
-                title: child.name == "" ? child.type : child.name,
-                isExpanded: false,
-                isLeaf: true,
-                data: {
-                  uuid: child.uuid,
-                  visible: true
-                }
-              })
             }
+            this.addNode(parent, node)
           }
         })
       }

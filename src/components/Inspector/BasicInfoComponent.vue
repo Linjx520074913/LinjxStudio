@@ -8,13 +8,6 @@
       <a>{{ currentObj.type }}</a>
       <a>名字</a>
       <el-input v-model="currentObj.name" placeholder=""></el-input>
-      <!-- <a>UUID</a>
-      <a style="overflow:hidden;text-overflow:ellipsis;">{{ currentObj.uuid }}</a> -->
-      <a>Visiable</a>
-      <div>
-        <el-checkbox v-model="currentObj.visible"></el-checkbox>
-        <a></a>
-      </div>
     </div>
   </div>
 </template>
