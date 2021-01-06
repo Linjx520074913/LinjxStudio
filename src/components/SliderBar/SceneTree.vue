@@ -1,5 +1,5 @@
 <template>
-  <div id="scenetree_root">
+  <div id="scenetree_root" @click="contextMenuIsVisible = false">
     <div id="scenetree_content">
       <sl-vue-tree ref="slVueTree" v-model="tree" @nodeclick="nodeClick">
         <template slot="title" slot-scope="{ node }">
@@ -42,7 +42,8 @@ export default {
   },
   data() {
       return {
-        tree: []
+        tree: [],
+        contextMenuIsVisible: false
       }
     },
     created() {
@@ -65,7 +66,6 @@ export default {
         const visible = !node.data || node.data.visible !== false
         node.data.visible = !visible
         slVueTree.updateNode(node.path, node)
-        this.lastEvent = `Node ${node.title} is ${ visible ? 'visible' : 'invisible'} now`
 
         var object = this.findObject(node.data.uuid)
         if(object != null) {
@@ -85,6 +85,10 @@ export default {
       // 查找 uuid 对象
       findObject (uuid) {
         return this.$store.getters['renderer/findObjectByUuid'](uuid)
+      },
+      // 移除 uuid 对象
+      removeObject (uuid) {
+        this.$store.getters['renderer/removeObjectByUuid'](uuid)
       },
       // uuid 对象类型是否包含 Helper 关键字
       isHelper (uuid) {
@@ -133,10 +137,6 @@ export default {
         }
         // 节点不存在，则添加
         else if(null == this.findNode(node.data.uuid)){
-          // 修改父节点 isLeaf 属性，将其设置为 false , 表示该节点不是叶子节点
-          this.$refs.slVueTree.updateNode(parent.path, {
-            isLeaf: false
-          })
           var pos = {
             node: parent,
             placement: 'inside'
@@ -145,10 +145,33 @@ export default {
           node.isLeaf = true
           this.$refs.slVueTree.insert(pos, node)
         }
+        this.updateTree()
+      },
+      // 更新 tree
+      updateTree () {
+        this.$refs.slVueTree.traverse((node, nodeModel, path) => {
+          // 更新节点 isLeaf 属性，当有子节点时，该节点为非叶子节点
+          node.isLeaf = node.children.length > 0 ? false : true
+          this.$refs.slVueTree.updateNode(node.path, node)
+        })
       },
       // 移除节点
-      removeNode (node) {
-
+      removeNode () {
+        // 获取选中的节点
+        var selectedNode = this.$refs.slVueTree.getSelected()
+        // 获取节点的路径
+        var paths = selectedNode.map(n => n.path)
+        // 删除节点
+        this.$refs.slVueTree.remove(paths)
+        // 更新 tree
+        this.updateTree()
+        
+        // 删除 scene 中对应节点
+        // 1、获取 uuid
+        var uuid = selectedNode[0].data.uuid
+        console.log(uuid)
+        // 2、从 scene 中移除 uuid 对应的对象
+        this.removeObject(uuid)
       },
       // 重建场景树
       buildSceneTree(scene) {
@@ -179,7 +202,15 @@ export default {
             this.addNode(parent, node)
           }
         })
+      },
+      keyEvent (event) {
+        if(event.code == 'Delete'){
+          this.removeNode()
+        }
       }
+    },
+    mounted () {
+      document.onkeydown = this.keyEvent
     },
     watch: {
       // 监听 scene 中子对象的变化

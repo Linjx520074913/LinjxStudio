@@ -105,12 +105,12 @@ export default {
       this.$refs.scene_3d_main.appendChild(this.mainRenderer.domElement)
 
       this.mainControl = new OrbitControls(this.mainCamera, this.mainRenderer.domElement)
-      this.transformControls = new TransformControls(this.mainCamera, this.mainRenderer.domElement)
-      var scope = this
-      this.transformControls.addEventListener( 'dragging-changed', function ( event ) {
-					scope.mainControl.enabled = ! event.value;
-			})
-      this.scene.add(this.transformControls)
+      // this.transformControls = new TransformControls(this.mainCamera, this.mainRenderer.domElement)
+      // var scope = this
+      // this.transformControls.addEventListener( 'dragging-changed', function ( event ) {
+			// 		scope.mainControl.enabled = ! event.value;
+			// })
+      // this.scene.add(this.transformControls)
     },
     initPreviewLeft () {
       let width = this.$refs.scene_3d_left.clientWidth
@@ -446,7 +446,7 @@ export default {
     })
 
     this.$EventBus.$on('showSelectObject', (object) => {
-      this.transformControls.attach(object)
+      // this.transformControls.attach(object)
     })
 
     this.toggleViews(this.$store.state.show4Views)

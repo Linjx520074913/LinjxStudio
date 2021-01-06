@@ -37,6 +37,17 @@ export const RendererStore = {
         })
         return selectedObj
      }
+    },
+    // 移除 uuid 对应的对象
+    removeObjectByUuid (state: any, getters: any) {
+      return (uuid: String) => {
+        state.scene.traverse( (child: THREE.Object3D) => {
+          if (child.uuid == uuid) {
+            state.scene.remove(child)
+            return
+          }
+        })
+      }
     }
   }
 }
