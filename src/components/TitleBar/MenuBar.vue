@@ -12,7 +12,7 @@
             </div>
           </div>
           <div class="menu_level_3">
-            <div class="menu_level_3_title" v-for="submenu in child.menu" :key="submenu.index">
+            <div class="menu_level_3_title" v-for="submenu in child.menu" :key="submenu.index" @click="'click' in submenu && submenu.click()">
               <svg class="icon" v-if="'icon' in submenu" aria-hidden="true" style="height: 30px; margin-left: 10px; margin-right: 10px"> <use v-bind:xlink:href="submenu.icon"></use></svg>
               <a>{{ submenu.text }}</a>
             </div>
@@ -31,8 +31,10 @@ import { ipcRenderer } from 'electron'
 
 import About from '../Popup/About'
 import License from '../License'
+import { Action } from '../../main/Action'
 
 const { dialog } = require('electron').remote
+
 
 export default {
   name: 'MenuBar',
@@ -83,53 +85,55 @@ export default {
       }, {
         text: '物体(O)',
         menu: [
-          {
-            text: '组',
-            icon: '#icon-ic_wendu',
-            click: () => { console.log('aaaaaaa') }
-          },
-          {
-            text: '基本几何物体',
-            icon: '#icon-ic_wendu',
-            menu: [
-              {
-                text: '平面',
-                icon: '#icon-ic_wendu',
-                click: () => {}
-              },
-              {
-                text: '正方形',
-                icon: '#icon-ic_wendu',
-                click: () => {}
-              },
-              {
-                text: '圆',
-                icon: '#icon-ic_wendu',
-                click: () => {}
-              },
-              {
-                text: '圆柱',
-                icon: '#icon-ic_wendu',
-                click: () => {}
-              },
-              {
-                text: '球体',
-                icon: '#icon-ic_wendu',
-                click: () => {}
-              }
-            ]
-          },
+          // {
+          //   text: '组',
+          //   icon: '#icon-ic_wendu',
+          //   click: () => { console.log('aaaaaaa') }
+          // },
+          // {
+          //   text: '基本几何物体',
+          //   icon: '#icon-ic_wendu',
+          //   menu: [
+          //     {
+          //       text: '平面',
+          //       icon: '#icon-ic_wendu',
+          //       click: () => {}
+          //     },
+          //     {
+          //       text: '正方形',
+          //       icon: '#icon-ic_wendu',
+          //       click: () => {}
+          //     },
+          //     {
+          //       text: '圆',
+          //       icon: '#icon-ic_wendu',
+          //       click: () => {}
+          //     },
+          //     {
+          //       text: '圆柱',
+          //       icon: '#icon-ic_wendu',
+          //       click: () => {}
+          //     },
+          //     {
+          //       text: '球体',
+          //       icon: '#icon-ic_wendu',
+          //       click: () => {}
+          //     }
+          //   ]
+          // },
           {
             text: '相机',
             icon: '#icon-ic_wendu',
             menu: [
               {
                 text: '正交相机',
-                icon: '#icon-ic_wendu'
+                icon: '#icon-ic_wendu',
+                click: () => { ipcRenderer.send(Action.CREATE_ORTHORGAPHIC_CAMERA) }
               },
               {
                 text: '透视相机',
-                icon: '#icon-ic_wendu'
+                icon: '#icon-ic_wendu',
+                click: () => { ipcRenderer.send(Action.CREATE_PERSPECTIVE_CAMERA) }
               }
             ]
           },
@@ -138,60 +142,62 @@ export default {
             icon: '#icon-ic_wendu',
             menu: [
               {
-                text: '平行光',
-                icon: '#icon-ic_wendu'
+                text: '环境光',
+                icon: '#icon-ambientlight',
+                click: () => { ipcRenderer.send('createAmbientLight') }
               },
               {
-                text: '环境光',
-                icon: '#icon-ambientlight'
+                text: '平行光',
+                icon: '#icon-ic_wendu',
+                click: () => { ipcRenderer.send('createDirectionalLight') }
+              },
+              {
+                text: '半球光',
+                icon: '#icon-ic_wendu',
+                click: () => { ipcRenderer.send('createHemisphereLight') }
               },
               {
                 text: '点光源',
-                icon: '#icon-pointlight'
-              },
-              {
-                text: '聚光灯',
-                icon: '#icon-spotlight'
+                icon: '#icon-pointlight',
+                click: () => { ipcRenderer.send('createPointLight') }
               },
               {
                 text: '平面光',
-                icon: '#icon-ic_wendu'
+                icon: '#icon-ic_wendu',
+                click: () => { ipcRenderer.send('createRectAreaLight') }
               },
               {
-                text: '正交相机',
-                icon: '#icon-ic_wendu'
-              },
-              {
-                text: '矩形光',
-                icon: '#icon-ic_wendu'
+                text: '聚光灯',
+                icon: '#icon-spotlight',
+                click: () => { ipcRenderer.send('createSpotLight') }
               }
             ]
           },
-          {
-            text: '文字',
-            icon: '#icon-ic_wendu',
-            click: () => {}
-          },
-          {
-            text: '曲线',
-            icon: '#icon-ic_wendu',
-            click: () => {}
-          },
-          {
-            text: '标注',
-            icon: '#icon-ic_wendu',
-            click: () => {}
-          },
-          {
-            text: '帮助器',
-            icon: '#icon-ic_wendu',
-            click: () => {}
-          },
-          {
-            text: '精灵',
-            icon: '#icon-ic_wendu',
-            click: () => {}
-          }
+          // {
+          //   text: '文字',
+          //   icon: '#icon-ic_wendu',
+          //   click: () => {}
+          // },
+          // {
+          //   text: '曲线',
+          //   icon: '#icon-ic_wendu',
+          //   click: () => {}
+          // },
+          // {
+          //   text: '标注',
+          //   icon: '#icon-ic_wendu',
+          //   click: () => {}
+          // },
+          // {
+          //   text: '帮助器',
+          //   icon: '#icon-ic_wendu',
+          //   click: () => {}
+          // },
+          // {
+          //   text: '精灵',
+          //   icon: '#icon-ic_wendu',
+          //   click: () => {}
+          // }
         ]
       }, {
         text: '编辑(E)',

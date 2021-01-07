@@ -2,6 +2,7 @@ import { protocol, BrowserWindow, ipcMain, screen } from 'electron'
 import { createProtocol } from 'vue-cli-plugin-electron-builder/lib'
 import installExtension, { VUEJS_DEVTOOLS } from 'electron-devtools-installer'
 import { LocalServer } from '../server/LocalServer'
+import { ObjectCreator } from './ObjectCreator'
 /// 导入 package.json 信息
 let pkg = require('../../package.json')
 
@@ -14,20 +15,27 @@ export default class Studio {
   win? : BrowserWindow
   appIcon : string
   server: LocalServer
+  objCreator: ObjectCreator
 
   constructor () {
     this.appIcon = 'public/imgs/orbbec.png'
     this.handleIpcMainEvent()
+
     this.server = new LocalServer()
     this.server.start()
+
+    this.objCreator = new ObjectCreator()
+    this.objCreator.listenCreationEvents()
   }
 
   /// 创建主窗口
   async createMainWindow () {
     // Create the browser window.
     this.win = new BrowserWindow({
-      width: screen.getPrimaryDisplay().workAreaSize.width,
-      height: screen.getPrimaryDisplay().workAreaSize.height,
+      // width: screen.getPrimaryDisplay().workAreaSize.width,
+      // height: screen.getPrimaryDisplay().workAreaSize.height,
+      width: 1000,
+      height: 690,
       minWidth: 1000,
       minHeight: 690,
       frame: false,
