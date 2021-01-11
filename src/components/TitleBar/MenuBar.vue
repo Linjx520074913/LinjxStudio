@@ -3,7 +3,7 @@
     <a class="menu_level_1" v-for="item in content" :key="item.index" @click="toggleMenu2Active()">
       <a class="menu_level_1_title">{{item.text}}</a>
       <div v-if="isMenu2Active">
-        <div class="menu_level_2" v-for="child in item.menu" :key="child.index" @click="'click' in child && child.click()">
+        <div class="menu_level_2" v-for="child in item.menu" :key="child.index" @click="'click' in child && child.click() && (isMenu2Active = !isMenu2Active)">
           <div id="menu_level_2_title">
             <svg class="icon" aria-hidden="true" style="height: 30px; margin-left: 10px; margin-right: 10px"> <use v-if="(('icon' in child) && ((('isActived' in child) && child.isActived())) || !('isActived' in child))" v-bind:xlink:href="child.icon"></use></svg>
             <a >{{child.text}}</a>
@@ -31,7 +31,7 @@ import { ipcRenderer } from 'electron'
 
 import About from '../Popup/About'
 import License from '../License'
-import { Action } from '../../main/Action'
+import { Action, ActionParam } from '../../main/Action'
 
 const { dialog } = require('electron').remote
 
@@ -90,37 +90,42 @@ export default {
           //   icon: '#icon-ic_wendu',
           //   click: () => { console.log('aaaaaaa') }
           // },
-          // {
-          //   text: '基本几何物体',
-          //   icon: '#icon-ic_wendu',
-          //   menu: [
-          //     {
-          //       text: '平面',
-          //       icon: '#icon-ic_wendu',
-          //       click: () => {}
-          //     },
-          //     {
-          //       text: '正方形',
-          //       icon: '#icon-ic_wendu',
-          //       click: () => {}
-          //     },
-          //     {
-          //       text: '圆',
-          //       icon: '#icon-ic_wendu',
-          //       click: () => {}
-          //     },
-          //     {
-          //       text: '圆柱',
-          //       icon: '#icon-ic_wendu',
-          //       click: () => {}
-          //     },
-          //     {
-          //       text: '球体',
-          //       icon: '#icon-ic_wendu',
-          //       click: () => {}
-          //     }
-          //   ]
-          // },
+          {
+            text: '模型',
+            icon: '#icon-ic_wendu',
+            click: () => { ipcRenderer.send(Action.LOAD_MODEL, 'models/collada/elf/elf.dae') }
+          },
+          {
+            text: '基本几何物体',
+            icon: '#icon-ic_wendu',
+            menu: [
+              {
+                text: '平面',
+                icon: '#icon-ic_wendu',
+                click: () => { ipcRenderer.send(Action.CREATE_OBJECT3D, Action.CREATE_GEOMETRY_PLANE) }
+              },
+              // {
+              //   text: '正方形',
+              //   icon: '#icon-ic_wendu',
+              //   click: () => {}
+              // },
+              // {
+              //   text: '圆',
+              //   icon: '#icon-ic_wendu',
+              //   click: () => {}
+              // },
+              // {
+              //   text: '圆柱',
+              //   icon: '#icon-ic_wendu',
+              //   click: () => {}
+              // },
+              // {
+              //   text: '球体',
+              //   icon: '#icon-ic_wendu',
+              //   click: () => {}
+              // }
+            ]
+          },
           {
             text: '相机',
             icon: '#icon-ic_wendu',
@@ -144,7 +149,7 @@ export default {
               {
                 text: '环境光',
                 icon: '#icon-ambientlight',
-                click: () => { ipcRenderer.send('createAmbientLight') }
+                click: () => { ipcRenderer.send(Action.CREATE_OBJECT3D, Action.CREATE_LIGHT_AMBIENT) }
               },
               {
                 text: '平行光',
@@ -236,6 +241,26 @@ export default {
       }, {
         text: '视图(V)',
         menu: [
+          {
+            text:'辅助网格',
+            icon: '#icon-actived',
+            click: () => {
+              ipcRenderer.send(Action.SHOW, { action: Action.SHOW_GRID })
+            },
+            isActived: () => {
+              return this.$store.state.showConsole
+            }
+          },
+          {
+            text:'坐标轴',
+            icon: '#icon-actived',
+            click: () => {
+              ipcRenderer.send(Action.SHOW, { action: Action.SHOW_AXES })
+            },
+            isActived: () => {
+              return this.$store.state.showConsole
+            }
+          },
           {
             text:'调试控制台',
             icon: '#icon-actived',

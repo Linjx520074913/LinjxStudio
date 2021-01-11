@@ -33,7 +33,10 @@ import { Object3D } from 'three'
 import { truncate, truncateSync } from 'fs'
 import SlVueTree, { ISlTreeNode, ISlTreeNodeModel, ICursorPosition } from 'sl-vue-tree'
 import 'sl-vue-tree/src/sl-vue-tree-minimal.css'
+import { Action } from '../../main/Action'
+import { ipcRenderer } from 'electron'
 import { TransformControls } from 'three/examples/jsm/controls/TransformControls'
+import { ThreeJSEngine } from '@/main/ThreeJSEngine'
 
 export default {
   name: 'SceneTree',
@@ -51,77 +54,38 @@ export default {
     actived () {
     },
     computed: {
-      getSceneChildrens () {
-        return this.$store.state.renderer.scene.children
-      },
       getTree () {
         return this.tree
       }
     },
     methods: {
+
       toggleVisibility: function (event, node) {
         const slVueTree = this.$refs.slVueTree
         event.stopPropagation()
-        // 
+
         const visible = !node.data || node.data.visible !== false
         node.data.visible = !visible
         slVueTree.updateNode(node.path, node)
 
-        var object = this.findObject(node.data.uuid)
-        if(object != null) {
-          object.visible = !visible
-        }
+        ipcRenderer.send(Action.SHOW, { action: Action.TOGGLE_VISIBLE, id: node.data.id})
         this.nodeClick(node)
       },
       // 处理节点点击事件
       nodeClick(node) {
-        // 选中的节点对象的 uuid
-        var uuid = node.data.uuid
+        // 选中的节点对象的 id
+        var id = node.data.id
         // 根据 uuid 找到对应的对象
-        var selectedObject = this.findObject(uuid)
+        var selectedObject = ThreeJSEngine.getInstance().findObjectById(id)
         // Inspector 显示选中对象属性面板
         this.$EventBus.$emit('showPanel', selectedObject)
       },
-      // 查找 uuid 对象
-      findObject (uuid) {
-        return this.$store.getters['renderer/findObjectByUuid'](uuid)
-      },
-      // 移除 uuid 对象
-      removeObject (uuid) {
-        this.$store.getters['renderer/removeObjectByUuid'](uuid)
-      },
-      // uuid 对象类型是否包含 Helper 关键字
-      isHelper (uuid) {
-        // 根据 uuid 找到对应的对象
-        var selectedObject = this.$store.getters['renderer/findObjectByUuid'](uuid)
-        var res = false
-        while(selectedObject){
-           if(selectedObject.type.includes("Helper")){
-             return true
-           }
-          selectedObject = selectedObject.parent
-        }
-        return false
-      },
-      // uuid 对象或其父对象是否为 TransformControl 实例
-      isTransformControl (uuid){
-        // 根据 uuid 找到对应的对象
-        var selectedObject = this.$store.getters['renderer/findObjectByUuid'](uuid)
-        var res = false
-        while(selectedObject){
-          if(selectedObject instanceof TransformControls){
-            return true
-          }
-          selectedObject = selectedObject.parent
-        }
-        return false
-      },
       // 在 root 列表中查找 uuid 节点
-      findNode (uuid) {
+      findNode (id) {
         var target
         if(this.tree.length > 0){
           this.$refs.slVueTree.traverse((node, nodeModel, path) => {
-            if(node.data.uuid == uuid){
+            if(node.data.id == id){
               target = node
               return false
             }
@@ -136,7 +100,7 @@ export default {
           this.tree.push(node)
         }
         // 节点不存在，则添加
-        else if(null == this.findNode(node.data.uuid)){
+        else if(null == this.findNode(node.data.id)){
           var pos = {
             node: parent,
             placement: 'inside'
@@ -165,13 +129,12 @@ export default {
         this.$refs.slVueTree.remove(paths)
         // 更新 tree
         this.updateTree()
-        
+
         // 删除 scene 中对应节点
-        // 1、获取 uuid
-        var uuid = selectedNode[0].data.uuid
-        console.log(uuid)
+        // 1、获取 id
+        var id = selectedNode[0].data.id
         // 2、从 scene 中移除 uuid 对应的对象
-        this.removeObject(uuid)
+        ThreeJSEngine.getInstance().removeObjectById(id)
       },
       // 重建场景树
       buildSceneTree(scene) {
@@ -179,23 +142,22 @@ export default {
 
         scene.traverse( (child) => {
 
-          if(null == this.findNode(child.uuid)){
+          if(null == this.findNode(child.id)){
 
             // 辅助类节点不在 sceneTree 中显示
-            if(this.isHelper(child.uuid) ||
-               this.isTransformControl(child.uuid)){
+            if(ThreeJSEngine.getInstance().isHelper(child.id)){
               return
             }
 
-            var parentUuid = (null == child.parent) ? '' : child.parent.uuid
-            var parent = this.findNode(parentUuid)
+            var parentId = (null == child.parent) ? '' : child.parent.id
+            var parent = this.findNode(parentId)
             // 父节点为空，则说明该节点为根节点
             var node = {
-              title: child.name == "" ? child.type : child.name,
+              title: child.name == '' ? child.type : child.name,
               isExpanded: true,
               isLeaf: false,
               data: {
-                uuid: child.uuid,
+                id: child.id,
                 visible: child.visible
               }
             }
@@ -211,13 +173,13 @@ export default {
     },
     mounted () {
       document.onkeydown = this.keyEvent
+      // 监听 UPDATE_SCENE_TREE 事件，更新场景树
+      ipcRenderer.on(Action.UPDATE_SCENE_TREE, (event, args) => {
+        var scene = ThreeJSEngine.getInstance().getScene()
+        this.buildSceneTree(scene)
+      })
     },
     watch: {
-      // 监听 scene 中子对象的变化
-      getSceneChildrens (childrens) {
-        var scene = this.$store.state.renderer.scene
-        this.buildSceneTree(scene)
-      }
     }
 }
 </script>

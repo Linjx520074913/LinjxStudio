@@ -26,7 +26,6 @@ export default {
   mounted () {
     this.$EventBus.$on('showSelectObject', (object) => {
       this.currentObj = object
-      console.log(this.currentObj)
     })
   }
 }

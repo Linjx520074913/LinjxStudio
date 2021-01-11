@@ -1,3 +1,4 @@
+import * as THREE from 'three'
 import { ipcMain } from 'electron'
 import { Action } from './Action'
 
@@ -6,18 +7,26 @@ export class CameraCreator {
 
     }
 
-    handleCreationEvents () {
-        ipcMain.on(Action.CREATE_PERSPECTIVE_CAMERA, this.createPerspectiveCamera)
-        ipcMain.on(Action.CREATE_ORTHORGAPHIC_CAMERA,this.createOrthorgaphicCamera)
-    }
-
     // 创建透视相机
-    createPerspectiveCamera () {
+    public static createPerspectiveCamera (fov?: number,
+        aspect?: number,
+        near?: number,
+        far?: number) {
         console.log('创建透视相机')
+        var camera = new THREE.PerspectiveCamera(fov, aspect, near, far)
+        return camera
+
     }
 
     // 创建正交相机
-    createOrthorgaphicCamera () {
+    public static createOrthorgaphicCamera (left: number,
+		right: number,
+		top: number,
+		bottom: number,
+		near?: number,
+		far?: number) {
         console.log('创建正交相机')
+        var camera = new THREE.OrthographicCamera(left, right, top, bottom, near, far)
+        return camera
     }
 }

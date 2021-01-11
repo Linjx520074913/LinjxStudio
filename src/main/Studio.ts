@@ -2,9 +2,9 @@ import { protocol, BrowserWindow, ipcMain, screen } from 'electron'
 import { createProtocol } from 'vue-cli-plugin-electron-builder/lib'
 import installExtension, { VUEJS_DEVTOOLS } from 'electron-devtools-installer'
 import { LocalServer } from '../server/LocalServer'
-import { ObjectCreator } from './ObjectCreator'
 /// 导入 package.json 信息
 let pkg = require('../../package.json')
+import { Action } from '../main/Action'
 
 // Scheme must be registered before the app is ready
 protocol.registerSchemesAsPrivileged([
@@ -15,7 +15,6 @@ export default class Studio {
   win? : BrowserWindow
   appIcon : string
   server: LocalServer
-  objCreator: ObjectCreator
 
   constructor () {
     this.appIcon = 'public/imgs/orbbec.png'
@@ -23,9 +22,6 @@ export default class Studio {
 
     this.server = new LocalServer()
     this.server.start()
-
-    this.objCreator = new ObjectCreator()
-    this.objCreator.listenCreationEvents()
   }
 
   /// 创建主窗口
@@ -100,8 +96,17 @@ export default class Studio {
     ipcMain.on('closeWindow', () => {
       this.close()
     })
-    // ipcMain.on('updatePos', (event, x, y) => {
-    //   console.log(x + ' ' + y)
-    // })
+    ipcMain.on(Action.CREATE_OBJECT3D, (event, action) => {
+      event.sender.send(Action.CREATE_OBJECT3D, action)
+    })
+    ipcMain.on(Action.SHOW, (event, args) => {
+      event.sender.send(Action.SHOW, args)
+    })
+    ipcMain.on(Action.LOAD_MODEL, (event, args) => {
+      event.sender.send(Action.LOAD_MODEL, args)
+    })
+    ipcMain.on(Action.UPDATE_SCENE_TREE, (event, args) => {
+      event.sender.send(Action.UPDATE_SCENE_TREE)
+    })
   }
 }
