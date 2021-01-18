@@ -5,9 +5,9 @@
     </div>
     <div class="row_auto_extend_grid">
       <a>类型</a>
-      <a>{{ currentObj.type }}</a>
+      <a>{{ selectedObject.type }}</a>
       <a>名字</a>
-      <el-input v-model="currentObj.name" placeholder=""></el-input>
+      <el-input v-model="selectedObject.name" placeholder=""></el-input>
     </div>
   </div>
 </template>
@@ -18,16 +18,7 @@ import '../../assets/css/inspector.css'
 
 export default {
   name: 'BasicInfoComponent',
-  data () {
-    return {
-      currentObj: new Object3D()
-    }
-  },
-  mounted () {
-    this.$EventBus.$on('showSelectObject', (object) => {
-      this.currentObj = object
-    })
-  }
+  props: ['selectedObject']
 }
 </script>
 

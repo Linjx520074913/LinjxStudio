@@ -2,6 +2,10 @@ import { resolve } from 'dns'
 import * as THREE from 'three'
 import { Object3D } from 'three'
 import { ColladaLoader } from 'three/examples/jsm/loaders/ColladaLoader'
+import { PCDLoader } from 'three/examples/jsm/loaders/PCDLoader'
+import { PLYLoader } from 'three/examples/jsm/loaders/PLYLoader'
+import { STLLoader } from 'three/examples/jsm/loaders/STLLoader'
+import { OBJLoader } from 'three/examples/jsm/loaders/OBJLoader'
 
 export class ModelLoader {
 

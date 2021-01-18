@@ -32,6 +32,8 @@ import { ipcRenderer } from 'electron'
 import About from '../Popup/About'
 import License from '../License'
 import { Action, ActionParam } from '../../main/Action'
+import { Editor } from '../../main/Editor'
+import { LightType } from '../../main/Definition'
 
 const { dialog } = require('electron').remote
 
@@ -44,6 +46,7 @@ export default {
   },
   data () {
     return {
+      signalManager: Editor.getInstance().signalManager,
       content: [{
         text: '文件(F)',
         menu: [
@@ -74,7 +77,8 @@ export default {
           {
             text: '新建窗口',
             icon: '#icon-ic_ranliaojiazhu',
-            click: () => {}
+            click: () => {
+            }
           },
           {
             text: '退出',
@@ -93,7 +97,7 @@ export default {
           {
             text: '模型',
             icon: '#icon-ic_wendu',
-            click: () => { ipcRenderer.send(Action.LOAD_MODEL, 'models/collada/elf/elf.dae') }
+            click: () => { this.signalManager.loadModel.dispatch('models/collada/elf/elf.dae') }
           },
           {
             text: '基本几何物体',
@@ -102,7 +106,7 @@ export default {
               {
                 text: '平面',
                 icon: '#icon-ic_wendu',
-                click: () => { ipcRenderer.send(Action.CREATE_OBJECT3D, Action.CREATE_GEOMETRY_PLANE) }
+                click: () => {}
               },
               // {
               //   text: '正方形',
@@ -149,32 +153,32 @@ export default {
               {
                 text: '环境光',
                 icon: '#icon-ambientlight',
-                click: () => { ipcRenderer.send(Action.CREATE_OBJECT3D, Action.CREATE_LIGHT_AMBIENT) }
+                click: () => { this.signalManager.addLight.dispatch(LightType.AMBIENT_LIGHT) }
               },
               {
                 text: '平行光',
                 icon: '#icon-ic_wendu',
-                click: () => { ipcRenderer.send('createDirectionalLight') }
+                click: () => { this.signalManager.addLight.dispatch(LightType.DIRECTIONAL_LIGHT) }
               },
               {
                 text: '半球光',
                 icon: '#icon-ic_wendu',
-                click: () => { ipcRenderer.send('createHemisphereLight') }
+                click: () => { this.signalManager.addLight.dispatch(LightType.HEMISPHERE_LIGHT) }
               },
               {
                 text: '点光源',
                 icon: '#icon-pointlight',
-                click: () => { ipcRenderer.send('createPointLight') }
+                click: () => { this.signalManager.addLight.dispatch(LightType.POINT_LIGHT) }
               },
               {
                 text: '平面光',
                 icon: '#icon-ic_wendu',
-                click: () => { ipcRenderer.send('createRectAreaLight') }
+                click: () => { this.signalManager.addLight.dispatch(LightType.RECTAREA_LIGHT) }
               },
               {
                 text: '聚光灯',
                 icon: '#icon-spotlight',
-                click: () => { ipcRenderer.send('createSpotLight') }
+                click: () => { this.signalManager.addLight.dispatch(LightType.SPOT_LIGHT) }
               }
             ]
           },
@@ -221,20 +225,6 @@ export default {
             click: () => {
               console.log('[复制] 被点击')
               this.$EventBus.$emit('loadModel', 'models/obj/tree.obj', 'tree.obj')
-            }
-          },
-          {
-            text: 'elf.dae',
-            icon: '#icon-ic_wendu',
-            click: () => {
-              this.$EventBus.$emit('loadModel', 'models/collada/elf/elf.dae', 'elf.dae')
-            }
-          },
-          {
-            text: '添加聚光灯',
-            icon: '#icon-ic_wendu',
-            click: () => {
-              this.$EventBus.$emit('addSpotLight')
             }
           }
         ]

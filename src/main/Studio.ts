@@ -96,17 +96,5 @@ export default class Studio {
     ipcMain.on('closeWindow', () => {
       this.close()
     })
-    ipcMain.on(Action.CREATE_OBJECT3D, (event, action) => {
-      event.sender.send(Action.CREATE_OBJECT3D, action)
-    })
-    ipcMain.on(Action.SHOW, (event, args) => {
-      event.sender.send(Action.SHOW, args)
-    })
-    ipcMain.on(Action.LOAD_MODEL, (event, args) => {
-      event.sender.send(Action.LOAD_MODEL, args)
-    })
-    ipcMain.on(Action.UPDATE_SCENE_TREE, (event, args) => {
-      event.sender.send(Action.UPDATE_SCENE_TREE)
-    })
   }
 }

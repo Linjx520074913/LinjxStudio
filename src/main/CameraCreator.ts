@@ -14,6 +14,8 @@ export class CameraCreator {
         far?: number) {
         console.log('创建透视相机')
         var camera = new THREE.PerspectiveCamera(fov, aspect, near, far)
+        camera.position.set(20, 20, 30)
+        camera.lookAt(new THREE.Vector3())
         return camera
 
     }

@@ -5,13 +5,15 @@
         {{ tab.name }}
       </div>
     </div>
-    <BasicInfoComponent/>
-    <TransformComponent/>
-    <div v-for="(componentName, index) in componentList" v-bind:key="index">
-     <!-- 【NOTE】 : 组件切换时，通过 keep-alive 保存组件的状态 -->
-      <keep-alive>
-        <component :is="componentName"/>
-      </keep-alive>
+    <div v-if='selectedObject'>
+      <BasicInfoComponent :selectedObject.sync='selectedObject'/>
+      <TransformComponent :selectedObject.sync='selectedObject'/>
+      <div v-for="(componentName, index) in componentList" v-bind:key="index">
+      <!-- 【NOTE】 : 组件切换时，通过 keep-alive 保存组件的状态 -->
+        <keep-alive>
+          <component :is="componentName" :selectedObject.sync='selectedObject'/>
+        </keep-alive>
+      </div>
     </div>
   </div>
 </template>
@@ -26,7 +28,7 @@ import TransformComponent from './TransformComonent'
 import ShadowComponent from './ShadowComponent'
 import LightComponent from './LightComponent'
 import MaterialComponent from './MaterialComponent'
-import { ExtSpotLight } from '../../ts/ExtSpotLight'
+import { Editor } from '@/main/Editor'
 
 export default {
   name: 'Inspector',
@@ -39,23 +41,11 @@ export default {
   },
   data() {
     return {
+      editor: Editor.getInstance(),
+      // 选中的物体
+      selectedObject: null,
       // 要显示的面板名称
       activedComponent: '',
-      // 当前面板中显示的对象
-      obj: null,
-      // 名字
-      name: ' ',
-      // 类型
-      type: ' ',
-      // uuid, 唯一标识 object 对象
-      uuid: ' ',
-      // 位置
-      position: new THREE.Vector3(0, 0, 0),
-      // 旋转, NOTE:Object3D 中的这个属性类型是 Euler 弧度，而在属性面板上显示是 角度，所以在
-      // 设置 rotation 的时候需要弧度和角度直接的转换
-      rotation: new THREE.Vector3(0, 0, 0),
-      // 缩放
-      scale: new THREE.Vector3(0, 0, 0),
       componentList: [''],
       // 属性
       tabs: [
@@ -75,43 +65,33 @@ export default {
       return this.tabs[this.selectedPropertyIndex]
     }
   },
+  created () {
+    // 1、处理【物体选中】信号
+    // 2、显示物体信息面板
+    this.editor.signalManager.objectSelected.add( (object) => {
+      this.selectedObject = object
+
+      this.showSpecialComponent(this.selectedObject.type)
+    })
+    this.editor.signalManager.objectRemoved.add( (object) => {
+      console.log('remove')
+    })
+  },
   methods: {
     selectProperty (index) {
       this.selectedPropertyIndex = index
     },
     changeBackground (index) {
       return this.selectedPropertyIndex == index ? '#333B4F' : '#262C3B'
-    }
-  },
-  mounted () {
-    this.$EventBus.$on('showPanel', (object) => {
-      // this.activedComponent = componentName
-      this.$EventBus.$emit('showSelectObject', object)
-      // this.obj = object
-      // this.name = this.obj.name
-      // this.type = this.obj.type
-      // this.uuid = this.obj.uuid
-
-      // this.position = this.obj.position
-      // this.rotation.set(THREE.Math.radToDeg(object.rotation.x),
-      //                   THREE.Math.radToDeg(object.rotation.y),
-      //                   THREE.Math.radToDeg(object.rotation.z))
-      // this.scale = this.obj.scale
-    })
-  },
-  watch: {
-    rotation: {
-      handler (newValue, oldValue) {
-        this.rotation.set(newValue.x, newValue.y, newValue.z)
-        this.obj.rotation.set(THREE.Math.degToRad(newValue.x), THREE.Math.degToRad(newValue.y), THREE.Math.degToRad(newValue.z))
-      },
-      deep: true
     },
-    // NOTE : this.name = this.obj.name， 为什么修改 this.name, thi.obj.name 不会跟着修改呢
-    // 同样的操作，this.position 是会修改的？？？？？？？
-    name (newValue, oldValue) {
-      this.obj.name = newValue
-      console.log(this.obj)
+    // 根据物体的类型，显示具体的组件
+    showSpecialComponent (type){
+      // 光源类型
+      if (type.includes('Light')) {
+        this.componentList = ['LightComponent']
+      }else {
+        this.componentList = []
+      }
     }
   }
 }

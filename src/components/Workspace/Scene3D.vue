@@ -1,44 +1,22 @@
 <template>
   <section>
     <div id="scene_3d_root" ref="scene_3d_root" v-resize:throttle="resizePreview">
-      <div id="scene_3d_main" ref="scene_3d_main" @dblclick="doubleClick('scene_3d_main')">
+      <div id="scene_3d_main" ref="scene_3d_main">
         <div class="prompt_container">
           <svg class="view_icon" aria-hidden="true"><use xlink:href="#icon-main_view"></use></svg>
           <a class="view_title">正视图</a>
         </div>
       </div>
-      <!-- <div id="scene_3d_left" ref="scene_3d_left" v-show='this.$store.state.show4Views==true' @dblclick="doubleClick('scene_3d_left')">
-        <div class="prompt_container">
-          <svg class="view_icon" aria-hidden="true"><use xlink:href="#icon-left_view"></use></svg>
-          <a class="view_title">侧视图</a>
-        </div>
-      </div>
-      <div id="scene_3d_top" ref="scene_3d_top" v-show='this.$store.state.show4Views==true'>
-        <div  class="prompt_container">
-          <svg class="view_icon" aria-hidden="true"><use xlink:href="#icon-top_view"></use></svg>
-          <a class="view_title">俯视图</a>
-        </div>
-      </div>
-      <div id="scene_3d_bottom" ref="scene_3d_bottom" v-show='this.$store.state.show4Views==true'/> -->
     </div>
   </section>
 </template>
 
 <script>
 import resize from 'vue-resize-directive'
-import * as THREE from 'three'
-import { OrbitControls } from 'three/examples/jsm/controls/OrbitControls'
-import { TransformControls } from 'three/examples/jsm/controls/TransformControls'
-import { PCDLoader } from 'three/examples/jsm/loaders/PCDLoader'
-import { PLYLoader } from 'three/examples/jsm/loaders/PLYLoader'
-import { STLLoader } from 'three/examples/jsm/loaders/STLLoader'
-import { OBJLoader } from 'three/examples/jsm/loaders/OBJLoader'
 
-import { ExtSpotLight } from '../../ts/ExtSpotLight'
-import { ipcRenderer } from 'electron'
-import { ThreeJSEngine } from '../../main/ThreeJSEngine'
-import { CameraCreator } from '../../main/CameraCreator'
 import { worker } from 'cluster'
+import { Viewport } from '../../main/Viewport'
+import { Editor } from '@/main/Editor'
 
 export default {
   name: 'Scene3D',
@@ -47,112 +25,30 @@ export default {
   },
   data () {
     return {
-      engine: null
+      editor: Editor.getInstance(),
+      viewport: null,
+      preview: null
     }
   },
   methods: {
     // preview 区域大小改变处理
     resizePreview () {
-      // console.log('resizePreview')
-      // let mainPreviewW = this.$refs.scene_3d_main.clientWidth
-      // let mainPreviewH = this.$refs.scene_3d_main.clientHeight
-      // this.mainCamera.aspect = mainPreviewW / mainPreviewH
-      // this.mainCamera.updateProjectionMatrix()
-      // this.mainRenderer.setSize(mainPreviewW, mainPreviewH)
+      // // TODO : 这里不把宽高 -2，会一直触发 resizePreview，需要弄清楚原因
+      let w = this.$refs.scene_3d_main.clientWidth - 2
+      let h = this.$refs.scene_3d_main.clientHeight - 2
+      if(w < 0 || h <0)
+        return
 
-      // let leftPreviewW = this.$refs.scene_3d_left.clientWidth
-      // let leftPreviewH = this.$refs.scene_3d_left.clientHeight
-      // this.leftCamera.aspect = leftPreviewW / leftPreviewH
-      // this.leftCamera.updateProjectionMatrix()
-      // this.leftRenderer.setSize(leftPreviewW, leftPreviewH)
-
-      // let topPreviewW = this.$refs.scene_3d_top.clientWidth
-      // let topPreviewH = this.$refs.scene_3d_top.clientHeight
-      // this.topCamera.aspect = topPreviewW / topPreviewH
-      // this.topCamera.updateProjectionMatrix()
-      // this.topRenderer.setSize(topPreviewW, topPreviewH)
-    },
-    doubleClick (id) {
-      switch (id) {
-        case 'scene_3d_main':
-          this.$store.commit('toggleViews')
-          this.toggleViews(this.$store.state.show4Views)
-          break
-        case 'scene_3d_left':
-          break
-        default:
-          break
-      }
-    },
-    handleMouseMoveEvent (event) {
-      // 坐标归一化,转换到标准设备坐标系
-      // 设备标准坐标系原点在中心，x 往右为正方向 [-1, 1], y 往上为正方向 [-1, 1]
-      var sceneMain = this.$refs.scene_3d_main
-      this.normalizeMouse.x = (event.offsetX / sceneMain.getBoundingClientRect().width) * 2 - 1
-      this.normalizeMouse.y = -(event.offsetY / sceneMain.getBoundingClientRect().height) * 2 + 1
-    },
-    createThreeJSItem (id) {
-
-      let width = this.$refs.scene_3d_main.clientWidth
-      let height = this.$refs.scene_3d_main.clientHeight
-
-      // 创建 scene
-      var scene = new THREE.Scene()
-      scene.name = '主场景'
-      scene.background = new THREE.Color(0xAAAAAA)
-
-      // 创建 Camera
-      var camera = CameraCreator.createPerspectiveCamera(45, width / height, 1, 1000)
-      camera.position.x = 20
-      camera.position.y = 20
-      camera.position.z = 15
-      camera.lookAt(scene.position)
-
-      // 创建 renderer
-      var renderer = new THREE.WebGLRenderer({ antialias: true })
-      renderer.setSize(width, height)
-      // 允许阴影投射
-      renderer.shadowMap.enabled = true
-      // 阴影边渲染出来更加模糊，比默认效果要好
-      renderer.shadowMap.type = THREE.PCFSoftShadowMap
-      this.$refs.scene_3d_main.appendChild(renderer.domElement)
-
-      var orbitControls = new OrbitControls(camera, renderer.domElement)
-
-      return {
-        id: id,
-        scene: scene,
-        camera: camera,
-        renderer: renderer,
-        orbitControls: orbitControls,
-        renderFlag: true
-      }
+      this.editor.signalManager.resize.dispatch(w, h)
     }
   },
   created () {
+    this.viewport = new Viewport(this.editor)
   },
   mounted () {
-    var item = this.createThreeJSItem(0)
-    ThreeJSEngine.getInstance().addThreeJSItem(item)
-
-    var raycaster = new THREE.Raycaster()
-    var mouse = new THREE.Vector2()
-    item.renderer.domElement.addEventListener('click', (event) => {
-        var w = this.$refs.scene_3d_main.clientWidth
-        var h = this.$refs.scene_3d_main.clientHeight
-        //屏幕坐标转标准设备坐标
-        mouse.x = (event.offsetX / w) * 2 - 1;
-        mouse.y = -(event.offsetY / h) * 2 + 1;
-        raycaster.setFromCamera(mouse, item.camera)
-
-        //返回射线选中的对象 //第一个参数是检测的目标对象 第二个参数是目标对象的子元素
-        let intersects = raycaster.intersectObjects(item.scene.children, true)
-        if (intersects.length > 0) {
-            console.log(intersects)
-        }else{
-            console.log("没捕获到对象")
-        }
-    })
+    this.$refs.scene_3d_main.appendChild(this.viewport.getViewport())
+    this.viewport.render()
+    this.editor.signalManager.sceneGraphChanged.dispatch(this.editor.scene)
   }
 }
 </script>
@@ -172,6 +68,11 @@ export default {
 .prompt_container {
   position:absolute;
   z-index:5;
+}
+#preview {
+  background: white;
+  position:absolute;
+  right: 0px
 }
 .view_icon {
   width:40px;

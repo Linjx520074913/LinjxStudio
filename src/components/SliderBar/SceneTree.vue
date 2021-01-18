@@ -3,10 +3,9 @@
     <div id="scenetree_content">
       <sl-vue-tree ref="slVueTree" v-model="tree" @nodeclick="nodeClick">
         <template slot="title" slot-scope="{ node }">
-          <!-- <span class="item-icon">
-            <i class="fa fa-file" v-if="node.isLeaf"></i>
-            <i class="fa fa-folder" v-if="!node.isLeaf"></i>
-          </span> -->
+          <svg class="icon objtype" aria-hidden="true">
+            <use v-bind:xlink:href="node.data.icon"></use>
+          </svg>
           <a class="tree-text">{{ node.title }}</a>
         </template>
 
@@ -36,7 +35,7 @@ import 'sl-vue-tree/src/sl-vue-tree-minimal.css'
 import { Action } from '../../main/Action'
 import { ipcRenderer } from 'electron'
 import { TransformControls } from 'three/examples/jsm/controls/TransformControls'
-import { ThreeJSEngine } from '@/main/ThreeJSEngine'
+import { Editor } from '@/main/Editor'
 
 export default {
   name: 'SceneTree',
@@ -45,40 +44,43 @@ export default {
   },
   data() {
       return {
+        editor: Editor.getInstance(),
         tree: [],
         contextMenuIsVisible: false
       }
     },
     created() {
+      // 监听 updateSceneTree 信号，更新场景树
+      this.editor.signalManager.sceneGraphChanged.add( (scene) => {
+        this.buildSceneTree(scene)
+      })
     },
     actived () {
     },
     computed: {
-      getTree () {
-        return this.tree
-      }
     },
     methods: {
 
       toggleVisibility: function (event, node) {
+        // 获取 slVueTree 对象
         const slVueTree = this.$refs.slVueTree
         event.stopPropagation()
 
+        // 更新 slVueTree 状态
         const visible = !node.data || node.data.visible !== false
         node.data.visible = !visible
         slVueTree.updateNode(node.path, node)
 
-        ipcRenderer.send(Action.SHOW, { action: Action.TOGGLE_VISIBLE, id: node.data.id})
+        // 发送【物体显示/隐藏】信号
+        this.editor.signalManager.objectShown.dispatch(node.data.id, !visible)
         this.nodeClick(node)
       },
       // 处理节点点击事件
       nodeClick(node) {
         // 选中的节点对象的 id
         var id = node.data.id
-        // 根据 uuid 找到对应的对象
-        var selectedObject = ThreeJSEngine.getInstance().findObjectById(id)
-        // Inspector 显示选中对象属性面板
-        this.$EventBus.$emit('showPanel', selectedObject)
+        // 选中物体
+        this.editor.selectObject(id)
       },
       // 在 root 列表中查找 uuid 节点
       findNode (id) {
@@ -133,8 +135,18 @@ export default {
         // 删除 scene 中对应节点
         // 1、获取 id
         var id = selectedNode[0].data.id
-        // 2、从 scene 中移除 uuid 对应的对象
-        ThreeJSEngine.getInstance().removeObjectById(id)
+        this.editor.removeObject(id)
+      },
+      getIcon (type) {
+        console.log(type)
+        switch(type){
+          case 'Group':
+            return '#icon-group'
+          case 'Mesh':
+            return '#icon-mesh'
+          default:
+            return '#icon-grid'
+        }
       },
       // 重建场景树
       buildSceneTree(scene) {
@@ -143,11 +155,6 @@ export default {
         scene.traverse( (child) => {
 
           if(null == this.findNode(child.id)){
-
-            // 辅助类节点不在 sceneTree 中显示
-            if(ThreeJSEngine.getInstance().isHelper(child.id)){
-              return
-            }
 
             var parentId = (null == child.parent) ? '' : child.parent.id
             var parent = this.findNode(parentId)
@@ -158,12 +165,14 @@ export default {
               isLeaf: false,
               data: {
                 id: child.id,
-                visible: child.visible
+                visible: child.visible,
+                icon: this.getIcon(child.type)
               }
             }
             this.addNode(parent, node)
           }
         })
+        console.log(scene)
       },
       keyEvent (event) {
         if(event.code == 'Delete'){
@@ -173,11 +182,6 @@ export default {
     },
     mounted () {
       document.onkeydown = this.keyEvent
-      // 监听 UPDATE_SCENE_TREE 事件，更新场景树
-      ipcRenderer.on(Action.UPDATE_SCENE_TREE, (event, args) => {
-        var scene = ThreeJSEngine.getInstance().getScene()
-        this.buildSceneTree(scene)
-      })
     },
     watch: {
     }
@@ -213,6 +217,7 @@ export default {
 
 .tree-text {
   width: 100px;
+  font-size: small;
   overflow:hidden;
   text-overflow:ellipsis;
   white-space:nowrap;
@@ -222,11 +227,17 @@ export default {
 .item-icon, .sl-vue-tree-sidebar, .sl-vue-tree-toggle {
   display: flex !important;
   align-items: center !important;
-  margin-right: 10px;
+  margin-right: 0px;
   justify-content: center !important;
 }
 .fa {
   line-height: 100%;
   color: white !important
+}
+
+.objtype {
+  height: 30px;
+  margin-left: 5px;
+  margin-right: 5px
 }
 </style>
