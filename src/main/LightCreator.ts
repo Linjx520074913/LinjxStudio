@@ -9,7 +9,7 @@ export enum LightType {
     SPOT_LIGHT
 }
 
-let DEFAULT_COLOR = 0x0000FF
+let DEFAULT_COLOR = 0xFFFFFF
 
 export class LightCreator {
 

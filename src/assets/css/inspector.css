@@ -10,6 +10,11 @@
     justify-content: center;
     background: #404553;
     line-height: 30px;
+    user-select: none;
+}
+
+.inspector_item_title:hover {
+    cursor: pointer
 }
 
 

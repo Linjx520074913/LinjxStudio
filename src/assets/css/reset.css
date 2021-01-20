@@ -157,3 +157,13 @@ input::-webkit-inner-spin-button {
 input[type="number"] {
     -moz-appearance: textfield;
 }
+
+
+/* TODO : 研究如何通过 resize 属性来实现调整布局大小效果 */
+
+
+/* .el-aside .el-main {
+    max-width: 400px !important;
+    resize: both !important;
+    overflow: auto !important
+} */

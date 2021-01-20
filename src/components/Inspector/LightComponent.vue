@@ -1,9 +1,9 @@
 <template>
   <div id="light_root">
-    <div class="inspector_item_title">
+    <div class="inspector_item_title" @click="expand =! expand">
       <a>Light</a>
     </div>
-    <div class="row_auto_extend_grid">
+    <div class="row_auto_extend_grid" v-show="expand">
       <a>颜色</a>
       <el-color-picker v-model="color" @active-change="changeColor"/>
       <a>a</a>
@@ -20,6 +20,7 @@ export default {
   props: { selectedObject: THREE.Light },
   data () {
     return {
+      expand: true
     }
   },
   methods: {

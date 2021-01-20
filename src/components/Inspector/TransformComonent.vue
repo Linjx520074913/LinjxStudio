@@ -1,10 +1,10 @@
 <template>
   <div id="transform_root">
-    <div class="inspector_item_title">
+    <div class="inspector_item_title"  @click="expand =! expand">
       <svg class="inspector_icon" aria-hidden="true"><use xlink:href="#icon-spatial"></use></svg>
       <a>Transform</a>
     </div>
-    <div class="vertical_layout">
+    <div class="vertical_layout"  v-show="expand">
       <div style="{width:100%;display:grid;grid-template-columns: 1fr 2fr 2fr 2fr;}">
         <a>位置</a>
         <div class="light_black">
@@ -66,10 +66,13 @@ export default {
   name: 'TransformComponent',
   data () {
     return {
-      rotation: new Euler()
+      rotation: new Euler(),
+      expand: true
     }
   },
   props: { selectedObject: Object3D },
+  methods: {
+  },
   watch: {
     selectedObject: {
       immediate:true,

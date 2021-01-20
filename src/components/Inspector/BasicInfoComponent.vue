@@ -1,9 +1,9 @@
 <template>
   <div class="basicinfo_root">
-    <div class="inspector_item_title">
+    <div class="inspector_item_title" @click="expand =! expand">
       <a>基础属性</a>
     </div>
-    <div class="row_auto_extend_grid">
+    <div class="row_auto_extend_grid" v-show="expand">
       <a>类型</a>
       <a>{{ selectedObject.type }}</a>
       <a>名字</a>
@@ -18,7 +18,12 @@ import '../../assets/css/inspector.css'
 
 export default {
   name: 'BasicInfoComponent',
-  props: ['selectedObject']
+  props: ['selectedObject'],
+  data () {
+    return {
+      expand: true
+    }
+  }
 }
 </script>
 
