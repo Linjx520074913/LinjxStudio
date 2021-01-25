@@ -51,7 +51,7 @@ export default {
     },
     created() {
       // 监听 updateSceneTree 信号，更新场景树
-      this.editor.signalManager.sceneGraphChanged.add( (scene) => {
+      this.editor._signalManager.sceneGraphChanged.add( (scene) => {
         this.buildSceneTree(scene)
       })
     },
@@ -72,7 +72,7 @@ export default {
         slVueTree.updateNode(node.path, node)
 
         // 发送【物体显示/隐藏】信号
-        this.editor.signalManager.objectShown.dispatch(node.data.id, !visible)
+        this.editor._signalManager.objectShown.dispatch(node.data.id, !visible)
         this.nodeClick(node)
       },
       // 处理节点点击事件

@@ -25,15 +25,15 @@
           <a>缩放</a>
           <div class="light_black">
             <div class="X">X</div>
-            <el-input v-model="selectedObject.scale.x" placeholder="" type="number" maxlength="5"></el-input>
+            <el-input v-model="selectedObject.scale.x" placeholder="" type="number" maxlength="5" min="0"></el-input>
           </div>
           <div class="light_black">
             <div class="Y">Y</div>
-            <el-input v-model="selectedObject.scale.y" placeholder="" type="number" maxlength="5"></el-input>
+            <el-input v-model="selectedObject.scale.y" placeholder="" type="number" maxlength="5" min="0"></el-input>
           </div>
           <div class="light_black">
             <div class="Z">Z</div>
-            <el-input v-model="selectedObject.scale.z" placeholder="" type="number" maxlength="5"></el-input>
+            <el-input v-model="selectedObject.scale.z" placeholder="" type="number" maxlength="5" min="0"></el-input>
           </div>
         </div>
       </div>

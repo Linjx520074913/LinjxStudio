@@ -68,12 +68,12 @@ export default {
   created () {
     // 1、处理【物体选中】信号
     // 2、显示物体信息面板
-    this.editor.signalManager.objectSelected.add( (object) => {
+    this.editor._signalManager.objectSelected.add( (object) => {
       this.selectedObject = object
 
       this.showSpecialComponent(this.selectedObject.type)
     })
-    this.editor.signalManager.objectRemoved.add( (object) => {
+    this.editor._signalManager.objectRemoved.add( (object) => {
       console.log('remove')
     })
   },

@@ -47,13 +47,13 @@ export class LightCreator {
     static createDirectionalLight () {
         console.log('创建平行光')
         var light = new THREE.DirectionalLight(DEFAULT_COLOR, 0.5)
+        light.name = '平行光'
         light.position.set(0, 20, 0)
         return light
     }
 
     // 创建半球光
     static createHemisphereLight () {
-        console.log('创建半球光')
         var light = new THREE.AmbientLight(DEFAULT_COLOR) // soft white
         light.name = '环境光'
         return light
@@ -61,7 +61,6 @@ export class LightCreator {
 
     // 创建点光源
     static createPointLight () {
-        console.log('创建点光源')
         var light = new THREE.AmbientLight(DEFAULT_COLOR) // soft white
         light.name = '环境光'
         return light
@@ -78,8 +77,10 @@ export class LightCreator {
     // 创建聚光灯
     static createSpotLight () {
         console.log('创建聚光灯')
-        var light = new THREE.AmbientLight(DEFAULT_COLOR) // soft white
-        light.name = '环境光'
+        var light = new THREE.SpotLight(DEFAULT_COLOR, 1, 20, Math.PI / 6) // soft white
+        light.position.set(0, 10, 10)
+        light.lookAt(new THREE.Vector3(0, 0, 0))
+        light.name = '聚光灯'
         return light
     }
 }

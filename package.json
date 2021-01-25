@@ -23,6 +23,7 @@
         "core-js": "^2.6.5",
         "element-ui": "^2.4.5",
         "express": "^4.17.1",
+        "rosbag": "^2.6.3",
         "signals": "^1.0.0",
         "sl-vue-tree": "^1.8.5",
         "socket.io": "^2.3.0",

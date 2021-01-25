@@ -39,16 +39,19 @@ export default {
       if(w < 0 || h <0)
         return
 
-      this.editor.signalManager.resize.dispatch(w, h)
+      this.editor._signalManager.resize.dispatch(w, h)
     }
   },
   created () {
     this.viewport = new Viewport(this.editor)
+    this.editor._signalManager.rosbag.add( (res) => {
+      console.log(res)
+    })
   },
   mounted () {
     this.$refs.scene_3d_main.appendChild(this.viewport.getViewport())
     this.viewport.render()
-    this.editor.signalManager.sceneGraphChanged.dispatch(this.editor.scene)
+    this.editor._signalManager.sceneGraphChanged.dispatch(this.editor.scene)
   }
 }
 </script>

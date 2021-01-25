@@ -46,7 +46,7 @@ export default {
   },
   data () {
     return {
-      signalManager: Editor.getInstance().signalManager,
+      signalManager: Editor.getInstance()._signalManager,
       content: [{
         text: '文件(F)',
         menu: [
@@ -97,7 +97,7 @@ export default {
           {
             text: '模型',
             icon: '#icon-ic_wendu',
-            click: () => { this.signalManager.loadModel.dispatch('models/collada/elf/elf.dae') }
+            click: () => { this.signalManager._loadModel.dispatch('models/collada/elf/elf.dae') }
           },
           {
             text: '基本几何物体',
@@ -153,32 +153,32 @@ export default {
               {
                 text: '环境光',
                 icon: '#icon-ambientlight',
-                click: () => { this.signalManager.addLight.dispatch(LightType.AMBIENT_LIGHT) }
+                click: () => { this.signalManager._addLight.dispatch(LightType.AMBIENT_LIGHT) }
               },
               {
                 text: '平行光',
                 icon: '#icon-ic_wendu',
-                click: () => { this.signalManager.addLight.dispatch(LightType.DIRECTIONAL_LIGHT) }
+                click: () => { this.signalManager._addLight.dispatch(LightType.DIRECTIONAL_LIGHT) }
               },
               {
                 text: '半球光',
                 icon: '#icon-ic_wendu',
-                click: () => { this.signalManager.addLight.dispatch(LightType.HEMISPHERE_LIGHT) }
+                click: () => { this.signalManager._addLight.dispatch(LightType.HEMISPHERE_LIGHT) }
               },
               {
                 text: '点光源',
                 icon: '#icon-pointlight',
-                click: () => { this.signalManager.addLight.dispatch(LightType.POINT_LIGHT) }
+                click: () => { this.signalManager._addLight.dispatch(LightType.POINT_LIGHT) }
               },
               {
                 text: '平面光',
                 icon: '#icon-ic_wendu',
-                click: () => { this.signalManager.addLight.dispatch(LightType.RECTAREA_LIGHT) }
+                click: () => { this.signalManager._addLight.dispatch(LightType.RECTAREA_LIGHT) }
               },
               {
                 text: '聚光灯',
                 icon: '#icon-spotlight',
-                click: () => { this.signalManager.addLight.dispatch(LightType.SPOT_LIGHT) }
+                click: () => { this.signalManager._addLight.dispatch(LightType.SPOT_LIGHT) }
               }
             ]
           },
@@ -216,7 +216,6 @@ export default {
             icon: '#icon-ic_wendu',
             click: () => {
               console.log('[剪切] 被点击')
-              this.$EventBus.$emit('loadModel', 'models/Zaghetto.pcd', 'Zaghetto.pcd')
             }
           },
           {
@@ -224,7 +223,6 @@ export default {
             icon: '#icon-ic_anzhuangshebei',
             click: () => {
               console.log('[复制] 被点击')
-              this.$EventBus.$emit('loadModel', 'models/obj/tree.obj', 'tree.obj')
             }
           }
         ]

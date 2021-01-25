@@ -1,3 +1,7 @@
 import { LightType } from './LightCreator'
 
-export { LightType }
+enum HelperType {
+    BOUNDING_BOX
+}
+
+export { LightType, HelperType }

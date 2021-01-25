@@ -143,6 +143,7 @@ a {
     color: #CCCED3;
     height: 30px;
     line-height: 30px;
+    user-select: none;
 }
 
 body * {

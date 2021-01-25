@@ -1,5 +1,6 @@
+import { BrowserView } from 'electron'
 import * as THREE from 'three'
-import { Object3D } from 'three'
+import { MeshBasicMaterial, Object3D, SpotLightHelper } from 'three'
 
 export class HelperCreator {
     constructor() {
@@ -48,8 +49,22 @@ export class HelperCreator {
 
     // 创建包围盒
     public static createBoundingBox(){
-        var target = new Object3D()
-        const box = new THREE.BoxHelper(target, 0xffff00)
-        return box
+        // var box = new THREE.Box3()
+        // const helper = new THREE.Box3Helper(box, new THREE.Color(125, 125, 125))
+        // return helper
+        var sphere = new THREE.SphereGeometry()
+        var object = new THREE.Mesh(sphere, new THREE.MeshBasicMaterial())
+        var helper = new THREE.BoxHelper(object, 0xffff00)
+        return helper
+    }
+
+    public static createDirectionalLightHelper(light: THREE.DirectionalLight){
+        var helper = new THREE.DirectionalLightHelper(light, 5)
+        return helper
+    }
+
+    public static createSpotLightHelper(light: THREE.SpotLight){
+        var helper = new THREE.SpotLightHelper(light)
+        return helper
     }
 }

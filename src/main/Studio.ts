@@ -4,7 +4,9 @@ import installExtension, { VUEJS_DEVTOOLS } from 'electron-devtools-installer'
 import { LocalServer } from '../server/LocalServer'
 /// 导入 package.json 信息
 let pkg = require('../../package.json')
+import { Rosbag } from '@/main/Rosbag'
 import { Action } from '../main/Action'
+import { Editor } from './Editor'
 
 // Scheme must be registered before the app is ready
 protocol.registerSchemesAsPrivileged([
@@ -87,11 +89,12 @@ export default class Studio {
 
   /// 处理 ipcMain 事件 : 【minWindow】 【maxWindow】 【close】
   handleIpcMainEvent () {
-    ipcMain.on('minWindow', () => {
+    ipcMain.on('minWindow', (event, arg) => {
       this.minimize()
     })
     ipcMain.on('maxWindow', () => {
       this.maximize()
+      Rosbag.open('E:\\Practice\\electron-vue\\d435i_sample_data\\d435i_walking.bag')
     })
     ipcMain.on('closeWindow', () => {
       this.close()
