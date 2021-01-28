@@ -78,7 +78,6 @@ export class Editor {
             }
         })
         this._signalManager.helperAdded.add( (type: string, helper: Object3D) => {
-            
         })
         this._signalManager.objectSelected.add( (object: THREE.Object3D) => {
             // if(this.boundingBoxHelper.isEmpty()){
@@ -91,7 +90,7 @@ export class Editor {
         })
         this._signalManager.objectDeselected.add( () => {
             if(this.sceneHelper.getObjectById(this.boundingBoxHelper.id)){
-                this.sceneHelper.add(this.boundingBoxHelper)
+                this.sceneHelper.remove(this.boundingBoxHelper)
             }
         })
     }

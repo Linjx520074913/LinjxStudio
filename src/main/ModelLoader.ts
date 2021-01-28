@@ -6,6 +6,7 @@ import { PCDLoader } from 'three/examples/jsm/loaders/PCDLoader'
 import { PLYLoader } from 'three/examples/jsm/loaders/PLYLoader'
 import { STLLoader } from 'three/examples/jsm/loaders/STLLoader'
 import { OBJLoader } from 'three/examples/jsm/loaders/OBJLoader'
+import { GLTFLoader } from 'three/examples/jsm/loaders/GLTFLoader'
 
 export class ModelLoader {
 
@@ -39,6 +40,20 @@ export class ModelLoader {
                         resolve(collada.scene)
                     })
 
+                    break
+                case 'obj':
+                    var objLoader = new OBJLoader()
+                    objLoader.load(path, (object) => {
+                        resolve(object)
+                    })
+                    break
+                case 'gltf':
+                    var gltfLoader = new GLTFLoader()
+                    gltfLoader.load(path, (gltf) => {
+                        resolve(gltf.scene)
+                    })
+                    break
+                case 'stl':
                     break
                 default:
                     resolve(new Object3D())

@@ -95,9 +95,14 @@ export default {
           //   click: () => { console.log('aaaaaaa') }
           // },
           {
-            text: '模型',
+            text: '人偶模型',
             icon: '#icon-ic_wendu',
             click: () => { this.signalManager._loadModel.dispatch('models/collada/elf/elf.dae') }
+          },
+          {
+            text: '相机模型',
+            icon: '#icon-ic_wendu',
+            click: () => { this.signalManager._loadModel.dispatch('models/gltf/camera.gltf') }
           },
           {
             text: '基本几何物体',
